@@ -122,3 +122,8 @@ svg{display:block}
 .bar--soft{background:var(--color-accent-soft)}
 .bar--ink{background:var(--color-ink)}
 .bar--paper{background:var(--color-paper-3)}
+
+/* progress spinner for active auto steps (We're On It); still under reduced motion */
+@keyframes kspin{to{transform:rotate(360deg)}}
+.icon--spin svg{animation:kspin 1.1s linear infinite;transform-origin:50% 50%}
+@media (prefers-reduced-motion:reduce){.icon--spin svg{animation:none}}
