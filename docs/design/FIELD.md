@@ -1,0 +1,9 @@
+# Window Dust
+
+An algorithmic philosophy for the landing hero's particle field, written to be expressed in code.
+
+Window Dust is the behaviour of motes in a shaft of morning light: a slow, almost still drift that only reveals the invisible air moving through a kitchen. The field is a vector field built from two octaves of seeded noise, coarse and fine, so that broad currents carry the particles across the paper while a finer turbulence keeps any two of them from ever moving in lockstep. Nothing accelerates. Velocity is capped low and eased, because the subject is patience, and the meticulously tuned balance between the two octaves is what makes the motion read as air rather than as a screensaver.
+
+Particles are few and faint: between sixty and one hundred and twenty, each a point one to two and a half pixels across in the pharmacy green at eight to twenty-two percent opacity, brighter only where the window light falls. Light is three skewed panes, fixed on the paper; a particle inside a pane gains opacity and a slight warmth, and loses both as it leaves, so the panes are visible only through what passes through them. There are no trails, no glow, no bloom; the painstaking restraint of the alpha curve is the craft.
+
+Time is a function, never a clock. The field advances by a small fixed step per frame and pauses entirely when the hero scrolls out of view or when the viewer prefers reduced motion, in which case the particles are drawn once at their seeded positions and left still. Every run with the same seed produces the same first frame, which doubles as the poster frame of the hero. The algorithm must feel like the product of deep computational expertise refined over countless iterations: every parameter chosen so that a viewer who never notices the field still feels the room is lit.
