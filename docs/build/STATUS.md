@@ -7,12 +7,12 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 | 0 Handoff scaffolding | done | runbook, tracker, `/build-next`, three pilot hospitals (2026-11-09 13:05 KST) |
 | 1 Domain core | done | 45 tests green: money, types, state machine, route, compare, FPL + tiers (three pilot hospitals), atlas loader, savings, demo clock, audit |
 | 2 Adapters and guards | done | fixtures (6 cases, 8 synthetic document images), extractor (fixture + Gemini with fake-client tests), synthetic Blue Button, demo-partner hospital connector, memory store + seed, templates with number validation, pipeline; atlas via vendor/waive-data submodule. 107 tests green, build green |
-| 3 Caregiver flow | done (smoke pending) | shell, six screens, edge variants, demo controls; tsc clean |
-| 4 Staff workspace (lite) | built, unverified | dashboard, case detail, actions, resolution, audit; needs the smoke pass |
+| 3 Caregiver flow | done | shell, six screens, edge variants, demo controls; tsc clean |
+| 4 Staff workspace (lite) | done (smoke-tested locally) | dashboard, case detail, actions, resolution, audit; needs the smoke pass |
 | 5 Demo video | skipped (founder, 15:25 KST) | script and voice-over beats exist in video/; no capture or assembly |
 | 6 Persistence and auth | in progress | project + schema done via MCP; store and auth code next; service-role key needed |
 | 7 Landing and polish | landing built | axe spec and design-floor pass pending |
-| 8 Deploy | in progress | Vercel project linked, env set; first deploy after Phase 3 |
+| 8 Deploy | live | https://kindred-snap.vercel.app — production env: EXTERNAL_ACTIONS=simulated, EXTRACTOR=fixture, STORE=memory (service-role key pending for STORE=supabase); staff pages show not-available without a staff session |
 | 9 Docs and honest report | skipped (founder, 15:25 KST) | README still the Phase 0 stub plus links |
 
 ## Log
@@ -28,6 +28,8 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 - 2026-11-09 14:35 KST — Phase 2 done (Fable + agents): 16 test files, 107 tests; npm run build green. Atlas is a submodule source (no copies).
 
 - 2026-11-09 15:20 KST — Phases 3, 4, 6 (store + sign-in scaffold), 7 (landing) committed; first production deploy started (Fable + agents).
+
+- 2026-11-09 15:45 KST — Smoke pass green (148 tests, build, route probes). Founder: demo-partner pill removed app-wide; Simulated badges kept. Demo case is investigated at seed so /case/demo lands on the result; "Download a demo bill" on the landing serves the fixture bill. Deployed to Vercel production.
 
 ## Blockers
 
