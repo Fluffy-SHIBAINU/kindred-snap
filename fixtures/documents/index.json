@@ -1,0 +1,51 @@
+[
+  {
+    "sha256": "7fdd09aba5bc9f9ba2db4c4f2f77c2bb31d48142131be6a7fa5839a16270da95",
+    "kind": "bill",
+    "fixtureKey": "main",
+    "file": "bill-main.png"
+  },
+  {
+    "sha256": "5ea8e07d2caa13e1bb5aba8e20fa2b24101c344b199205c1b311091b3cae7838",
+    "kind": "msn",
+    "fixtureKey": "main",
+    "file": "msn-main.png"
+  },
+  {
+    "sha256": "9dc37c5343eb9ffa6629af3daf7c87405f6545dc44c612d9dce3efb2ab191685",
+    "kind": "income",
+    "fixtureKey": "main",
+    "file": "income-letter.png"
+  },
+  {
+    "sha256": "c13d99a49e4ea7ec314606884b7c116053172c7a279c7098ae78c170e8e819d6",
+    "kind": "bill",
+    "fixtureKey": "edge-no-discrepancy",
+    "file": "bill-caseb.png"
+  },
+  {
+    "sha256": "e90709602af2970c0bfc3500a8d7d6fe796a45899b6f761283aa25df97928707",
+    "kind": "msn",
+    "fixtureKey": "edge-no-discrepancy",
+    "file": "msn-caseb.png"
+  },
+  {
+    "sha256": "00e5bb39aca6c79b85df9d10b5a57bf2930284cc477299bf47c541b5152d4352",
+    "kind": "bill",
+    "fixtureKey": "edge-needs-review",
+    "file": "bill-ekg.png"
+  },
+  {
+    "sha256": "3ad4e4b915574b638302219e45664803b988d02d996b09ce87c0820440764c32",
+    "kind": "msn",
+    "fixtureKey": "edge-needs-review",
+    "file": "msn-ekg.png"
+  },
+  {
+    "sha256": "308d528d19087b5b501a1c1569511f4af94ee6f57f8ea87971fd89a8da680a85",
+    "kind": "bill",
+    "fixtureKey": "edge-unreadable",
+    "unreadable": true,
+    "file": "bill-blurry.png"
+  }
+]

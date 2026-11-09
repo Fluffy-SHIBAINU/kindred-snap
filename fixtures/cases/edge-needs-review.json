@@ -1,0 +1,233 @@
+{
+  "case": {
+    "id": "edge-needs-review",
+    "code": "SNAP-2MF7HB",
+    "state": "created",
+    "patientName": "Harold T. Nkemelu (synthetic)",
+    "hospitalName": "Riverbend Community Hospital",
+    "ownerId": "demo-helper",
+    "fixtureKey": "edge-needs-review",
+    "consent": null,
+    "income": null,
+    "dueDate": "2026-12-05",
+    "balanceCents": 1800,
+    "steps": [],
+    "createdAt": "2026-11-09T01:40:00Z",
+    "updatedAt": "2026-11-09T01:40:00Z"
+  },
+  "documents": [
+    {
+      "id": "edge-needs-review-bill",
+      "caseId": "edge-needs-review",
+      "kind": "bill",
+      "fileName": "bill-ekg.png",
+      "pages": 1,
+      "fields": [
+        {
+          "key": "hospital_name",
+          "value": "Riverbend Community Hospital",
+          "originalValue": "Riverbend Community Hospital",
+          "source": {
+            "documentId": "edge-needs-review-bill",
+            "page": 1,
+            "quote": "Riverbend Community Hospital"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "patient_name",
+          "value": "Harold T. Nkemelu (synthetic)",
+          "originalValue": "Harold T. Nkemelu (synthetic)",
+          "source": {
+            "documentId": "edge-needs-review-bill",
+            "page": 1,
+            "quote": "Patient Harold T. Nkemelu (synthetic)"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "account",
+          "value": "****2284",
+          "originalValue": "****2284",
+          "source": {
+            "documentId": "edge-needs-review-bill",
+            "page": 1,
+            "quote": "Account ****2284"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "statement_date",
+          "value": "2026-10-24",
+          "originalValue": "2026-10-24",
+          "source": {
+            "documentId": "edge-needs-review-bill",
+            "page": 1,
+            "quote": "Statement date 2026-10-24"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "due_date",
+          "value": "2026-12-05",
+          "originalValue": "2026-12-05",
+          "source": {
+            "documentId": "edge-needs-review-bill",
+            "page": 1,
+            "quote": "Due date 2026-12-05"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "total_charges",
+          "value": "$330.00",
+          "originalValue": "$330.00",
+          "source": {
+            "documentId": "edge-needs-review-bill",
+            "page": 1,
+            "quote": "Total charges $330.00"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "adjustments",
+          "value": "$240.00",
+          "originalValue": "$240.00",
+          "source": {
+            "documentId": "edge-needs-review-bill",
+            "page": 1,
+            "quote": "Adjustments $240.00"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "insurance_paid",
+          "value": "$72.00",
+          "originalValue": "$72.00",
+          "source": {
+            "documentId": "edge-needs-review-bill",
+            "page": 1,
+            "quote": "Insurance paid $72.00"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "patient_owes",
+          "value": "$18.00",
+          "originalValue": "$18.00",
+          "source": {
+            "documentId": "edge-needs-review-bill",
+            "page": 1,
+            "quote": "Patient owes $18.00"
+          },
+          "confidence": 0.97
+        }
+      ],
+      "billLines": [
+        {
+          "n": 1,
+          "code": "93005",
+          "description": "Electrocardiogram, tracing only",
+          "serviceDate": "2026-09-21",
+          "chargeCents": 16500,
+          "source": {
+            "documentId": "edge-needs-review-bill",
+            "page": 1,
+            "line": 1,
+            "quote": "93005 Electrocardiogram, tracing only $165.00"
+          }
+        },
+        {
+          "n": 2,
+          "code": "93005",
+          "description": "Electrocardiogram, tracing only",
+          "serviceDate": "2026-09-21",
+          "chargeCents": 16500,
+          "source": {
+            "documentId": "edge-needs-review-bill",
+            "page": 1,
+            "line": 2,
+            "quote": "93005 Electrocardiogram, tracing only $165.00"
+          }
+        }
+      ],
+      "billTotals": {
+        "totalChargesCents": 33000,
+        "adjustmentsCents": 24000,
+        "insurancePaidCents": 7200,
+        "patientOwesCents": 1800,
+        "dueDate": "2026-12-05",
+        "statementDate": "2026-10-24",
+        "source": {
+          "documentId": "edge-needs-review-bill",
+          "page": 1,
+          "quote": "Patient owes $18.00"
+        }
+      },
+      "status": "readable",
+      "uploadedAt": "2026-11-09T01:40:00Z"
+    },
+    {
+      "id": "edge-needs-review-msn",
+      "caseId": "edge-needs-review",
+      "kind": "msn",
+      "fileName": "msn-ekg.png",
+      "pages": 1,
+      "fields": [
+        {
+          "key": "period",
+          "value": "Part B summary notice for claims processed 07/01/2026 – 09/30/2026; this claim processed 2026-10-06 (synthetic)",
+          "originalValue": "Part B summary notice for claims processed 07/01/2026 – 09/30/2026; this claim processed 2026-10-06 (synthetic)",
+          "source": {
+            "documentId": "edge-needs-review-msn",
+            "page": 1,
+            "quote": "Part B summary notice for claims processed 07/01/2026 – 09/30/2026; this claim processed 2026-10-06 (synthetic)"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "max_you_may_be_billed",
+          "value": "$18.00",
+          "originalValue": "$18.00",
+          "source": {
+            "documentId": "edge-needs-review-msn",
+            "page": 1,
+            "quote": "Maximum You May Be Billed $18.00"
+          },
+          "confidence": 0.97
+        }
+      ],
+      "msnLines": [
+        {
+          "n": 1,
+          "code": "93005",
+          "service": "93005 Electrocardiogram, tracing only (2 units)",
+          "serviceDate": "2026-09-21",
+          "billedCents": 33000,
+          "approvedCents": 9000,
+          "medicarePaidCents": 7200,
+          "youMayBeBilledCents": 1800,
+          "note": "Approved, 2 units. 20% coinsurance.",
+          "source": {
+            "documentId": "edge-needs-review-msn",
+            "page": 1,
+            "line": 1,
+            "quote": "93005 Electrocardiogram, tracing only (2 units) $330.00 $90.00 $72.00 $18.00"
+          }
+        }
+      ],
+      "msnTotals": {
+        "maxYouMayBeBilledCents": 1800,
+        "period": "Part B summary notice for claims processed 07/01/2026 – 09/30/2026; this claim processed 2026-10-06 (synthetic)",
+        "source": {
+          "documentId": "edge-needs-review-msn",
+          "page": 1,
+          "quote": "Maximum You May Be Billed $18.00"
+        }
+      },
+      "status": "readable",
+      "uploadedAt": "2026-11-09T01:40:00Z"
+    }
+  ],
+  "consentText": "I agree that Kindred Snap may read these documents and prepare letters for my approval. Nothing is sent until I approve it. Demo: synthetic data only."
+}

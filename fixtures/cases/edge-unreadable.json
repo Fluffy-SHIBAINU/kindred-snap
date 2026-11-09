@@ -1,0 +1,53 @@
+{
+  "case": {
+    "id": "edge-unreadable",
+    "code": "SNAP-3HR8PW",
+    "state": "created",
+    "patientName": "Dorothy M. Hale",
+    "hospitalName": "Riverbend Community Hospital",
+    "ownerId": "demo-helper",
+    "fixtureKey": "edge-unreadable",
+    "consent": null,
+    "income": null,
+    "steps": [],
+    "createdAt": "2026-11-09T01:40:00Z",
+    "updatedAt": "2026-11-09T01:40:00Z",
+    "helperName": "Jenna Hale"
+  },
+  "documents": [
+    {
+      "id": "edge-unreadable-bill",
+      "caseId": "edge-unreadable",
+      "kind": "bill",
+      "fileName": "bill-blurry.png",
+      "pages": 1,
+      "fields": [
+        {
+          "key": "hospital_name",
+          "value": "Riverbend Community Hospital",
+          "originalValue": "Riverbend Community Hospital",
+          "source": {
+            "documentId": "edge-unreadable-bill",
+            "page": 1,
+            "quote": "Riverbend Community Hospital"
+          },
+          "confidence": 0.6
+        },
+        {
+          "key": "account",
+          "value": "****4821",
+          "originalValue": "****4821",
+          "source": {
+            "documentId": "edge-unreadable-bill",
+            "page": 1,
+            "quote": "Account ****4821"
+          },
+          "confidence": 0.6
+        }
+      ],
+      "status": "unreadable",
+      "uploadedAt": "2026-11-09T01:40:00Z"
+    }
+  ],
+  "consentText": "I, Jenna Hale, am helping Dorothy M. Hale and agree that Kindred Snap may read these documents and prepare letters for my approval. Nothing is sent until I approve it. Demo: synthetic data only."
+}

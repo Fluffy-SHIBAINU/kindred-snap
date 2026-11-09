@@ -1,0 +1,340 @@
+{
+  "case": {
+    "id": "edge-connector-down",
+    "code": "SNAP-8PX3RC",
+    "state": "created",
+    "patientName": "Eleanor P. Vance (synthetic)",
+    "hospitalName": "Riverbend Community Hospital",
+    "ownerId": "demo-helper",
+    "fixtureKey": "edge-connector-down",
+    "consent": null,
+    "income": null,
+    "dueDate": "2026-11-30",
+    "balanceCents": 46600,
+    "steps": [],
+    "createdAt": "2026-11-09T01:40:00Z",
+    "updatedAt": "2026-11-09T01:40:00Z"
+  },
+  "documents": [
+    {
+      "id": "edge-connector-down-bill",
+      "caseId": "edge-connector-down",
+      "kind": "bill",
+      "fileName": "bill-main.png",
+      "pages": 1,
+      "fields": [
+        {
+          "key": "hospital_name",
+          "value": "Riverbend Community Hospital",
+          "originalValue": "Riverbend Community Hospital",
+          "source": {
+            "documentId": "edge-connector-down-bill",
+            "page": 1,
+            "quote": "Riverbend Community Hospital"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "patient_name",
+          "value": "Eleanor P. Vance (synthetic)",
+          "originalValue": "Eleanor P. Vance (synthetic)",
+          "source": {
+            "documentId": "edge-connector-down-bill",
+            "page": 1,
+            "quote": "Patient Eleanor P. Vance (synthetic)"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "account",
+          "value": "****4821",
+          "originalValue": "****4821",
+          "source": {
+            "documentId": "edge-connector-down-bill",
+            "page": 1,
+            "quote": "Account ****4821"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "statement_date",
+          "value": "2026-10-20",
+          "originalValue": "2026-10-20",
+          "source": {
+            "documentId": "edge-connector-down-bill",
+            "page": 1,
+            "quote": "Statement date 2026-10-20"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "due_date",
+          "value": "2026-11-30",
+          "originalValue": "2026-11-30",
+          "source": {
+            "documentId": "edge-connector-down-bill",
+            "page": 1,
+            "quote": "Due date 2026-11-30"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "total_charges",
+          "value": "$5,360.00",
+          "originalValue": "$5,360.00",
+          "source": {
+            "documentId": "edge-connector-down-bill",
+            "page": 1,
+            "quote": "Total charges $5,360.00"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "adjustments",
+          "value": "$3,990.00",
+          "originalValue": "$3,990.00",
+          "source": {
+            "documentId": "edge-connector-down-bill",
+            "page": 1,
+            "quote": "Adjustments $3,990.00"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "insurance_paid",
+          "value": "$904.00",
+          "originalValue": "$904.00",
+          "source": {
+            "documentId": "edge-connector-down-bill",
+            "page": 1,
+            "quote": "Insurance paid $904.00"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "patient_owes",
+          "value": "$466.00",
+          "originalValue": "$466.00",
+          "source": {
+            "documentId": "edge-connector-down-bill",
+            "page": 1,
+            "quote": "Patient owes $466.00"
+          },
+          "confidence": 0.97
+        }
+      ],
+      "billLines": [
+        {
+          "n": 1,
+          "code": "99284",
+          "description": "Emergency department visit, moderate complexity",
+          "serviceDate": "2026-09-14",
+          "chargeCents": 148000,
+          "source": {
+            "documentId": "edge-connector-down-bill",
+            "page": 1,
+            "line": 1,
+            "quote": "99284 Emergency department visit, moderate complexity $1,480.00"
+          }
+        },
+        {
+          "n": 2,
+          "code": "74177",
+          "description": "CT scan, abdomen and pelvis, with contrast",
+          "serviceDate": "2026-09-14",
+          "chargeCents": 295000,
+          "source": {
+            "documentId": "edge-connector-down-bill",
+            "page": 1,
+            "line": 2,
+            "quote": "74177 CT scan, abdomen and pelvis, with contrast $2,950.00"
+          }
+        },
+        {
+          "n": 3,
+          "code": "Q9967",
+          "description": "Contrast material for CT (low osmolar), 100 mL",
+          "serviceDate": "2026-09-14",
+          "chargeCents": 24000,
+          "source": {
+            "documentId": "edge-connector-down-bill",
+            "page": 1,
+            "line": 3,
+            "quote": "Q9967 Contrast material for CT (low osmolar), 100 mL $240.00"
+          }
+        },
+        {
+          "n": 4,
+          "code": "96374",
+          "description": "Intravenous push, medication (anti-nausea)",
+          "serviceDate": "2026-09-14",
+          "chargeCents": 31000,
+          "source": {
+            "documentId": "edge-connector-down-bill",
+            "page": 1,
+            "line": 4,
+            "quote": "96374 Intravenous push, medication (anti-nausea) $310.00"
+          }
+        },
+        {
+          "n": 5,
+          "code": "71046",
+          "description": "Chest X-ray, 2 views",
+          "serviceDate": "2026-09-14",
+          "chargeCents": 38000,
+          "source": {
+            "documentId": "edge-connector-down-bill",
+            "page": 1,
+            "line": 5,
+            "quote": "71046 Chest X-ray, 2 views $380.00"
+          }
+        }
+      ],
+      "billTotals": {
+        "totalChargesCents": 536000,
+        "adjustmentsCents": 399000,
+        "insurancePaidCents": 90400,
+        "patientOwesCents": 46600,
+        "dueDate": "2026-11-30",
+        "statementDate": "2026-10-20",
+        "source": {
+          "documentId": "edge-connector-down-bill",
+          "page": 1,
+          "quote": "Patient owes $466.00"
+        }
+      },
+      "status": "readable",
+      "uploadedAt": "2026-11-09T01:40:00Z"
+    },
+    {
+      "id": "edge-connector-down-msn",
+      "caseId": "edge-connector-down",
+      "kind": "msn",
+      "fileName": "msn-main.png",
+      "pages": 1,
+      "fields": [
+        {
+          "key": "period",
+          "value": "Part B Medicare Summary Notice for claims processed 07/01/2026 – 09/30/2026; this claim processed 2026-10-02 (synthetic)",
+          "originalValue": "Part B Medicare Summary Notice for claims processed 07/01/2026 – 09/30/2026; this claim processed 2026-10-02 (synthetic)",
+          "source": {
+            "documentId": "edge-connector-down-msn",
+            "page": 1,
+            "quote": "Part B Medicare Summary Notice for claims processed 07/01/2026 – 09/30/2026; this claim processed 2026-10-02 (synthetic)"
+          },
+          "confidence": 0.97
+        },
+        {
+          "key": "max_you_may_be_billed",
+          "value": "$226.00",
+          "originalValue": "$226.00",
+          "source": {
+            "documentId": "edge-connector-down-msn",
+            "page": 1,
+            "quote": "Maximum You May Be Billed $226.00"
+          },
+          "confidence": 0.97
+        }
+      ],
+      "msnLines": [
+        {
+          "n": 1,
+          "code": "99284",
+          "service": "99284 Emergency department visit, moderate complexity (2026-09-14)",
+          "serviceDate": "2026-09-14",
+          "billedCents": 148000,
+          "approvedCents": 42000,
+          "medicarePaidCents": 33600,
+          "youMayBeBilledCents": 8400,
+          "note": "Approved. 20% coinsurance; deductible already met.",
+          "source": {
+            "documentId": "edge-connector-down-msn",
+            "page": 1,
+            "line": 1,
+            "quote": "99284 Emergency department visit, moderate complexity (2026-09-14) $1,480.00 $420.00 $336.00 $84.00"
+          }
+        },
+        {
+          "n": 2,
+          "code": "74177",
+          "service": "74177 CT abdomen and pelvis with contrast (2026-09-14)",
+          "serviceDate": "2026-09-14",
+          "billedCents": 295000,
+          "approvedCents": 46500,
+          "medicarePaidCents": 37200,
+          "youMayBeBilledCents": 9300,
+          "note": "Approved. 20% coinsurance.",
+          "source": {
+            "documentId": "edge-connector-down-msn",
+            "page": 1,
+            "line": 2,
+            "quote": "74177 CT abdomen and pelvis with contrast (2026-09-14) $2,950.00 $465.00 $372.00 $93.00"
+          }
+        },
+        {
+          "n": 3,
+          "code": "Q9967",
+          "service": "Q9967 Contrast material, low osmolar, 100 mL (2026-09-14)",
+          "serviceDate": "2026-09-14",
+          "billedCents": 24000,
+          "approvedCents": 0,
+          "medicarePaidCents": 0,
+          "youMayBeBilledCents": 0,
+          "note": "Payment for this item is included in the payment for another service on this claim (the CT scan). The facility may not bill you separately for it.",
+          "source": {
+            "documentId": "edge-connector-down-msn",
+            "page": 1,
+            "line": 3,
+            "quote": "Q9967 Contrast material, low osmolar, 100 mL (2026-09-14) $240.00 $0.00 $0.00 $0.00"
+          }
+        },
+        {
+          "n": 4,
+          "code": "96374",
+          "service": "96374 Intravenous push, medication (2026-09-14)",
+          "serviceDate": "2026-09-14",
+          "billedCents": 31000,
+          "approvedCents": 15000,
+          "medicarePaidCents": 12000,
+          "youMayBeBilledCents": 3000,
+          "note": "Approved. 20% coinsurance.",
+          "source": {
+            "documentId": "edge-connector-down-msn",
+            "page": 1,
+            "line": 4,
+            "quote": "96374 Intravenous push, medication (2026-09-14) $310.00 $150.00 $120.00 $30.00"
+          }
+        },
+        {
+          "n": 5,
+          "code": "71046",
+          "service": "71046 Chest X-ray, 2 views (2026-09-14)",
+          "serviceDate": "2026-09-14",
+          "billedCents": 38000,
+          "approvedCents": 9500,
+          "medicarePaidCents": 7600,
+          "youMayBeBilledCents": 1900,
+          "note": "Approved. 20% coinsurance.",
+          "source": {
+            "documentId": "edge-connector-down-msn",
+            "page": 1,
+            "line": 5,
+            "quote": "71046 Chest X-ray, 2 views (2026-09-14) $380.00 $95.00 $76.00 $19.00"
+          }
+        }
+      ],
+      "msnTotals": {
+        "maxYouMayBeBilledCents": 22600,
+        "period": "Part B Medicare Summary Notice for claims processed 07/01/2026 – 09/30/2026; this claim processed 2026-10-02 (synthetic)",
+        "source": {
+          "documentId": "edge-connector-down-msn",
+          "page": 1,
+          "quote": "Maximum You May Be Billed $226.00"
+        }
+      },
+      "status": "readable",
+      "uploadedAt": "2026-11-09T01:40:00Z"
+    }
+  ],
+  "consentText": "I agree that Kindred Snap may read these documents and prepare letters for my approval. Nothing is sent until I approve it. Demo: synthetic data only."
+}
