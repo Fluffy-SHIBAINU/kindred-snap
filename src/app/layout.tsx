@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Atkinson_Hyperlegible_Next } from "next/font/google";
+import { Atkinson_Hyperlegible_Mono, Atkinson_Hyperlegible_Next } from "next/font/google";
 import "./globals.css";
 
 // One typeface, chosen for low-vision legibility (Braille Institute). Weights cover body, labels and headlines.
@@ -7,6 +7,13 @@ const hyperlegible = Atkinson_Hyperlegible_Next({
   subsets: ["latin"],
   weight: ["400", "500", "700", "800"],
   variable: "--font-sans",
+  display: "swap",
+});
+
+const hyperlegibleMono = Atkinson_Hyperlegible_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -25,7 +32,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={hyperlegible.variable}>
+    <html lang="en" className={`${hyperlegible.variable} ${hyperlegibleMono.variable}`}>
       <body className="min-h-dvh bg-background font-sans text-foreground antialiased">{children}</body>
     </html>
   );

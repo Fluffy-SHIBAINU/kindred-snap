@@ -1,4 +1,10 @@
+/* Hallmark · shape: app screen · genre: modern-minimal · theme: Dose (deal 1/3, seed kindred-snap-phone-app-deb4·6ae2ed86·2026-11-09·r0)
+ * nav: top bar, one wordmark and one action · signature: the clipping · states: loading, empty, error, full · dose: white
+ * axes: light/grotesk-sans/chromatic-green · posture: committed · contrast: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P_ H_ E_ S_ R_ V_ · weakest: _, filled at the first build pass */
 @import "tailwindcss";
+@import "./tokens.css";
+@import "./base.css" layer(base);
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
