@@ -9,11 +9,11 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 | 2 Adapters and guards | done | fixtures (6 cases, 8 synthetic document images), extractor (fixture + Gemini with fake-client tests), synthetic Blue Button, demo-partner hospital connector, memory store + seed, templates with number validation, pipeline; atlas via vendor/waive-data submodule. 107 tests green, build green |
 | 3 Caregiver flow | done (smoke pending) | shell, six screens, edge variants, demo controls; tsc clean |
 | 4 Staff workspace (lite) | built, unverified | dashboard, case detail, actions, resolution, audit; needs the smoke pass |
-| 5 Demo video | not started | |
+| 5 Demo video | skipped (founder, 15:25 KST) | script and voice-over beats exist in video/; no capture or assembly |
 | 6 Persistence and auth | in progress | project + schema done via MCP; store and auth code next; service-role key needed |
 | 7 Landing and polish | landing built | axe spec and design-floor pass pending |
 | 8 Deploy | in progress | Vercel project linked, env set; first deploy after Phase 3 |
-| 9 Docs and honest report | not started | |
+| 9 Docs and honest report | skipped (founder, 15:25 KST) | README still the Phase 0 stub plus links |
 
 ## Log
 
