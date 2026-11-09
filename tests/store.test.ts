@@ -132,8 +132,12 @@ describe("getStore", () => {
     expect(getStore()).toBe(getStore());
     expect(getStore()).toBeInstanceOf(MemoryStore);
   });
-  it("refuses supabase in this phase", () => {
+  it("STORE=supabase without the service-role key fails clearly", () => {
     process.env.STORE = "supabase";
-    expect(() => getStore()).toThrow(/not implemented/);
+    const saved = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    process.env.NEXT_PUBLIC_SUPABASE_URL ??= "https://example.supabase.co";
+    delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+    expect(() => getStore()).toThrow(/SUPABASE_SERVICE_ROLE_KEY/);
+    if (saved !== undefined) process.env.SUPABASE_SERVICE_ROLE_KEY = saved;
   });
 });
