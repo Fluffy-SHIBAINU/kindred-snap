@@ -1,357 +1,307 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>
-Case actions</title><script src="./support.js"></script></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Case Actions</title><script src="./support.js"></script></head><body>
 <x-dc>
 <helmet><style>
-body{margin:0}
+/* Kindred Snap mock kit — the DESIGN.md tokens and components as plain CSS for the Design-canvas artboards.
+   Paste whole into each artboard's <helmet><style>. The app uses src/app/tokens.css (same values) instead. */
 :root{
-  --paper:#F2F4F6;--sheet:#FFFFFF;--ink:#0B1220;--ink-2:#364152;--muted:#4B5668;
-  --rule:#D6DCE4;--rule-strong:#B6C0CD;--signal:#0B5E75;--brand:#06B6D4;--mark:rgba(6,182,212,.22);
-  --btn:#0B1220;--btn-ink:#F4F7FA;--ok:#036444;--warn:#8A3F05;--bad:#9E1E14;
-  --night:#080D18;--night-rule:#1F2A3D;--night-ink:#E7EDF6;--night-muted:#97A3B6;--night-signal:#22D3EE;
-  --font:'Atkinson Hyperlegible Next','Atkinson Hyperlegible',system-ui,sans-serif;
-  --font-wordmark:'Libre Caslon Display',Georgia,serif;
-  --fs-body:18px;--fs-lead:20px;--fs-h1:30px;--fs-h2:24px;--fs-h3:20px;--fs-value:24px;--fs-meta:15px;
-  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;
-  --r-card:16px;--r-ctl:12px;--r-plate:12px;--r-pill:999px;
-  --ctl:56px;--touch:48px;--ease:cubic-bezier(.2,0,0,1);--t:150ms;
+  --color-paper:#FAF7EF;--color-paper-2:#E9F8EF;--color-paper-3:#D4F0E0;--color-ink:#0C1C16;--color-ink-2:#26342F;--color-muted:#54655D;--color-rule:#CBD6C9;
+  --color-accent:#007948;--color-accent-deep:#005F3A;--color-accent-soft:#A9E8C6;--color-accent-ink:#F8FDFA;--color-focus:#006B38;--color-night:#040807;--color-green-ground:#006B40;
+  --glint:#FFFFFF;--color-white:#FFFFFF;
+  --font-body:"Atkinson Hyperlegible Next",ui-sans-serif,system-ui,sans-serif;--font-mono:"Atkinson Hyperlegible Mono",ui-monospace,monospace;
+  --text-sm:16px;--text-md:18px;--text-lg:22px;--text-xl:26px;--text-2xl:32px;--text-3xl:38px;--text-display:46px;
+  --radius-input:10px;--radius-card:14px;--radius-pill:999px;--radius-phone:28px;
+  --shadow-card:0 1px 2px rgb(12 28 22 / .08),0 24px 48px -24px rgb(12 28 22 / .35);
+  --shadow-glint:inset 0 1px 0 rgb(255 255 255 / .25);--shadow-tray:inset 0 1.5px 0 var(--glint),inset 0 -24px 36px -28px rgb(12 28 22 / .10);
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --paper:#070B13;--sheet:#0D1421;--ink:#E8EDF5;--ink-2:#B3BECD;--muted:#8C98AA;--rule:#1E2838;--rule-strong:#2E3C52;
-  --signal:#22D3EE;--brand:#22D3EE;--mark:rgba(34,211,238,.22);--btn:#E8EDF5;--btn-ink:#0B1220;
-  --ok:#34D399;--warn:#FBBF24;--bad:#F87171;--night:#0B1322;}}
-:root[data-theme="dark"]{
-  --paper:#070B13;--sheet:#0D1421;--ink:#E8EDF5;--ink-2:#B3BECD;--muted:#8C98AA;--rule:#1E2838;--rule-strong:#2E3C52;
-  --signal:#22D3EE;--brand:#22D3EE;--mark:rgba(34,211,238,.22);--btn:#E8EDF5;--btn-ink:#0B1220;
-  --ok:#34D399;--warn:#FBBF24;--bad:#F87171;--night:#0B1322;}
-@media (min-width:768px){:root{--fs-h1:36px;}}
-
+body{margin:0;background:var(--color-paper);color:var(--color-ink);font-family:var(--font-body);font-size:var(--text-md);line-height:1.5;-webkit-font-smoothing:antialiased}
 *,*::before,*::after{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:var(--fs-body);line-height:1.5;-webkit-font-smoothing:antialiased}
-h1,h2,h3,p,ul,ol,figure{margin:0}
-h1{font-size:var(--fs-h1);line-height:1.2;font-weight:600;letter-spacing:-.01em}
-h2{font-size:var(--fs-h2);line-height:1.25;font-weight:600}
-h3{font-size:var(--fs-h3);line-height:1.3;font-weight:600}
-.lead{font-size:var(--fs-lead);line-height:1.5;color:var(--ink-2)}
-.meta{font-size:var(--fs-meta);line-height:1.4;color:var(--muted)}
-.eyebrow{font-size:var(--fs-meta);line-height:1.4;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
-.num{font-variant-numeric:tabular-nums}
-a{color:var(--signal);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:2px}
-a:hover{color:var(--ink)}
-:focus-visible{outline:3px solid var(--signal);outline-offset:3px;border-radius:var(--r-ctl)}
-.icon{width:24px;height:24px;flex:0 0 24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-hr,.rule{border:0;border-top:1px solid var(--rule);margin:0}
-.stack>*+*{margin-top:var(--s3)}
-.section>*+*{margin-top:var(--s6)}
-.row{display:flex;align-items:center;gap:var(--s3)}
-.vis-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+h1,h2,h3{margin:0;font-weight:700;line-height:1.15;letter-spacing:-0.01em;overflow-wrap:break-word;min-width:0}
+h1{font-size:var(--text-2xl)}h2{font-size:var(--text-xl)}h3{font-size:var(--text-lg)}
+p{margin:0}
+a{color:var(--color-ink);text-decoration-thickness:1px;text-underline-offset:.16em}a:hover{color:var(--color-accent)}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.mono,.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--color-muted)}.small{font-size:var(--text-sm)}
+svg{display:block}
 
-/* wordmark + header */
-.wordmark{font-family:var(--font-wordmark);font-size:26px;line-height:1;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;gap:var(--s2)}
-.wordmark__dot{width:10px;height:10px;border-radius:50%;background:var(--brand);flex:0 0 10px}
-.app-header{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);min-height:var(--ctl);padding-bottom:var(--s4);border-bottom:1px solid var(--rule)}
+/* phone shell */
+.phone{width:390px;height:844px;background:var(--color-paper);display:flex;flex-direction:column;overflow:hidden}
+.appbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 24px 8px}
+.wordmark{font-weight:800;font-size:var(--text-lg);letter-spacing:-0.02em}
+.screen{flex:1;min-height:0;overflow:hidden;padding:8px 24px 16px;display:flex;flex-direction:column;gap:16px}
+.actionbar{padding:12px 24px 28px;display:flex;flex-direction:column;gap:8px;background:var(--color-paper);border-top:1px solid var(--color-rule)}
 
-/* buttons: 56px tall, 12px radius */
-.btn-primary,.btn-secondary,.btn-text{font:inherit;font-weight:600;font-size:var(--fs-body);line-height:1.2;min-height:var(--ctl);padding:0 var(--s5);border-radius:var(--r-ctl);display:inline-flex;align-items:center;justify-content:center;gap:var(--s2);cursor:pointer;text-decoration:none;transition:background-color var(--t) var(--ease),color var(--t) var(--ease),border-color var(--t) var(--ease);width:100%}
-.btn-primary{background:var(--btn);color:var(--btn-ink);border:2px solid var(--btn)}
-.btn-primary:hover{background:var(--ink-2);border-color:var(--ink-2)}
-.btn-secondary{background:var(--sheet);color:var(--ink);border:2px solid var(--rule-strong)}
-.btn-secondary:hover{border-color:var(--ink)}
-.btn-text{background:transparent;color:var(--signal);border:2px solid transparent;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:2px}
-.btn-text:hover{color:var(--ink)}
-.btn-danger{background:var(--sheet);color:var(--bad);border:2px solid var(--bad)}
-.btn-danger:hover{background:var(--bad);color:var(--sheet)}
-.btn-primary[disabled],.btn-secondary[disabled]{opacity:.55;cursor:not-allowed}
+/* controls */
+.btn-primary,.btn-secondary{display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 20px;border-radius:var(--radius-input);font-weight:500;font-size:var(--text-md);text-decoration:none;cursor:pointer;border:0;width:100%;transition:transform 120ms cubic-bezier(.16,1,.3,1)}
+.btn-primary{background:var(--color-accent);color:var(--color-accent-ink);box-shadow:var(--shadow-glint),0 0 0 1px var(--color-accent-deep),0 3px 0 var(--color-accent-deep)}
+.btn-primary:hover{background:var(--color-accent-deep)}
+.btn-primary:active{transform:translateY(3px);box-shadow:var(--shadow-glint),0 0 0 1px var(--color-accent-deep)}
+.btn-secondary{background:var(--color-white);color:var(--color-ink);box-shadow:inset 0 1px 0 var(--glint),0 0 0 1px var(--color-rule),0 3px 0 var(--color-rule)}
+.btn-secondary:active{transform:translateY(3px);box-shadow:inset 0 1px 0 var(--glint),0 0 0 1px var(--color-rule)}
+.btn-text{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 8px;background:none;border:0;color:var(--color-ink);font-weight:500;text-decoration:underline;text-underline-offset:.16em;text-decoration-thickness:1px;cursor:pointer;width:100%}
+.btn-text:hover{color:var(--color-accent)}
 
 /* surfaces */
-.card{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r-card);padding:20px}
-.card>*+*{margin-top:var(--s3)}
-.plate{background:var(--night);color:var(--night-ink);border-radius:var(--r-plate);padding:20px;box-shadow:0 8px 24px rgba(8,13,24,.18)}
-.plate .meta,.plate .eyebrow{color:var(--night-muted)}
-.plate a{color:var(--night-signal)}
-.mark{background:linear-gradient(var(--mark),var(--mark)) no-repeat 0 0/100% 100%;border-radius:2px;padding:0 2px;animation:sweep 1.3s var(--ease) 1}
-@keyframes sweep{from{background-size:0 100%}to{background-size:100% 100%}}
+.card{background:var(--color-white);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:20px;display:flex;flex-direction:column;gap:12px}
+.tray{background:var(--color-paper-2);border-radius:var(--radius-card);padding:16px;box-shadow:var(--shadow-tray)}
+.tray--sunken{background:var(--color-paper-3)}
+.rule{height:1px;background:var(--color-rule);border:0;margin:0}
 
-/* steps */
-.step{display:flex;align-items:flex-start;gap:var(--s3);padding:var(--s4) 0;border-top:1px solid var(--rule);min-height:var(--ctl)}
-.step:first-child{border-top:0}
-.step__icon{width:40px;height:40px;flex:0 0 40px;border-radius:50%;border:2px solid currentColor;display:grid;place-items:center}
-.step__title{font-weight:600;color:var(--ink)}
-.step__state{font-size:var(--fs-meta);font-weight:600;line-height:1.4}
-.step__note{font-size:var(--fs-meta);color:var(--muted);line-height:1.4}
-.step--done .step__icon,.step--done .step__state{color:var(--ok)}
-.step--active .step__icon,.step--active .step__state{color:var(--signal)}
-.step--active .step__icon{background:var(--signal);color:var(--sheet)}
-.step--waiting .step__icon,.step--waiting .step__state{color:var(--muted);border-style:dashed}
-.step--needs-you .step__icon,.step--needs-you .step__state{color:var(--warn)}
+/* progress feed */
+.step{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:var(--radius-card);background:var(--color-paper-2)}
+.step .icon{width:28px;height:28px;flex:0 0 28px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:var(--color-white);color:var(--color-ink);box-shadow:0 0 0 1px var(--color-rule)}
+.step .title{font-weight:500}
+.step .sub{color:var(--color-muted);font-size:var(--text-sm)}
+.step--done{background:var(--color-accent-soft)}
+.step--done .icon{background:var(--color-accent);color:var(--color-accent-ink);box-shadow:none}
+.step--active{background:var(--color-white);box-shadow:0 0 0 2px var(--color-accent),var(--shadow-card)}
+.step--active .icon{color:var(--color-accent);box-shadow:0 0 0 1px var(--color-accent)}
+.step--waiting{background:var(--color-paper-2);color:var(--color-ink-2)}
+.step--waiting .icon{color:var(--color-muted)}
+.step--needs-you{background:var(--color-white);box-shadow:0 0 0 1px var(--color-rule),var(--shadow-card)}
 
-/* evidence pair */
-.evidence{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r-card);display:grid;grid-template-columns:1fr;overflow:hidden}
-.evidence__side{padding:20px}
-.evidence__side+.evidence__side{border-top:1px solid var(--rule)}
-@media (min-width:600px){.evidence{grid-template-columns:1fr 1fr}.evidence__side+.evidence__side{border-top:0;border-left:1px solid var(--rule)}}
-.evidence__line{font-size:var(--fs-body);color:var(--ink);margin-top:var(--s2)}
-.evidence__amount{font-size:var(--fs-value);line-height:1.2;font-weight:600;font-variant-numeric:tabular-nums;margin-top:var(--s2)}
-.evidence__source{font-size:var(--fs-meta);color:var(--muted);margin-top:var(--s2)}
-.evidence__verdict{grid-column:1/-1;border-top:1px solid var(--rule);padding:var(--s4) 20px;display:flex;gap:var(--s2);align-items:center;font-weight:600}
+/* the clipping (signature) */
+.clip{background:var(--color-white);border-radius:var(--radius-input);box-shadow:var(--shadow-card);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.clip .line{font-family:var(--font-mono);font-size:var(--text-sm);line-height:1.45;color:var(--color-ink);display:flex;justify-content:space-between;gap:12px}
+.clip .src{font-size:var(--text-sm);color:var(--color-muted)}
+.hl{background:var(--color-accent-soft);padding:0 4px;border-radius:3px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.evidence{display:flex;flex-direction:column;gap:10px}
 
-/* alerts: sheet, full border, icon + word, no left bar */
-.alert{background:var(--sheet);border:2px solid var(--rule-strong);border-radius:var(--r-card);padding:var(--s4) 20px;display:flex;gap:var(--s3);align-items:flex-start;color:var(--ink)}
-.alert .icon{color:var(--signal);margin-top:2px}
-.alert__title{font-weight:600}
-.alert__body{font-size:var(--fs-body)}
-.alert--warn{border-color:var(--warn)}
-.alert--warn .icon,.alert--warn .alert__title{color:var(--warn)}
+/* money */
+.money{display:flex;flex-direction:column;gap:4px}
+.money .amount{font-family:var(--font-mono);font-size:var(--text-2xl);font-weight:500;letter-spacing:-0.01em}
+.money--actual{background:var(--color-ink);color:var(--color-paper);border-radius:var(--radius-card);padding:16px 20px}
+.money--actual .amount{color:var(--color-accent-soft)}
+
+/* badges, chips, alerts */
+.badge{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 10px;border-radius:var(--radius-pill);font-size:var(--text-sm);font-weight:500;width:max-content}
+.badge--demo{background:var(--color-paper-3);color:var(--color-ink)}
+.badge--synthetic{background:transparent;box-shadow:inset 0 0 0 1px var(--color-rule);color:var(--color-ink-2)}
+.badge--estimated{background:transparent;border:1px dashed var(--color-ink-2);color:var(--color-ink-2)}
+.badge--confirmed{background:var(--color-accent);color:var(--color-accent-ink)}
+.badge--review{background:var(--color-white);box-shadow:inset 0 0 0 1px var(--color-ink);color:var(--color-ink)}
+.chip{display:inline-flex;align-items:center;min-height:48px;padding:0 14px;border-radius:var(--radius-pill);background:var(--color-white);box-shadow:inset 0 0 0 1px var(--color-rule);font-size:var(--text-sm);font-weight:500}
+.alert{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:var(--radius-card);background:var(--color-paper-2);color:var(--color-ink)}
+.alert--warn{background:var(--color-paper-3)}
+.alert .icon{flex:0 0 24px;width:24px;height:24px;color:var(--color-ink)}
 
 /* forms */
-.field{display:flex;flex-direction:column;gap:var(--s2)}
-.label{font-size:var(--fs-meta);font-weight:600;line-height:1.4;color:var(--ink)}
-.helper{font-size:var(--fs-meta);line-height:1.4;color:var(--muted)}
-.input{font:inherit;font-size:var(--fs-body);color:var(--ink);background:var(--sheet);border:2px solid var(--rule-strong);border-radius:var(--r-ctl);min-height:var(--ctl);padding:0 var(--s4);width:100%}
-.input:focus{border-color:var(--signal);outline:none;box-shadow:0 0 0 3px var(--mark)}
-.input[aria-invalid="true"]{border-color:var(--bad)}
-.error{font-size:var(--fs-meta);color:var(--bad);font-weight:600}
+.field{display:flex;flex-direction:column;gap:8px}
+.label{font-weight:500;font-size:var(--text-md)}
+.helper{font-size:var(--text-sm);color:var(--color-muted)}
+.input{min-height:56px;padding:0 16px;border-radius:var(--radius-input);border:1px solid var(--color-muted);background:var(--color-white);font-size:var(--text-md);width:100%}
+.input:focus{border-color:var(--color-accent);outline:3px solid var(--color-focus);outline-offset:2px}
+.tile{display:flex;align-items:center;gap:14px;min-height:96px;padding:18px;border-radius:var(--radius-card);background:var(--color-white);box-shadow:inset 0 0 0 1px var(--color-rule);cursor:pointer;text-align:left;width:100%;border:0}
+.tile--selected{background:var(--color-accent-soft);box-shadow:inset 0 0 0 2px var(--color-accent)}
+.tile .icon{width:32px;height:32px;flex:0 0 32px;color:var(--color-ink)}
+.check{display:inline-flex;align-items:center;gap:12px;min-height:48px;cursor:pointer}
+.check input{width:28px;height:28px;accent-color:var(--color-accent);margin:0}
 
-/* badges: outline, coloured word, 15px, never colour alone */
-.badge{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;border-radius:var(--r-pill);border:1.5px solid currentColor;font-size:var(--fs-meta);font-weight:600;line-height:1;color:var(--muted);background:var(--sheet);white-space:nowrap}
-.badge .icon{width:18px;height:18px;flex-basis:18px}
-.badge--demo{color:var(--muted)}
-.badge--synthetic{color:var(--muted);border-style:dashed}
-.badge--estimated{color:var(--warn)}
-.badge--confirmed{color:var(--ok)}
-.badge--actual{color:var(--ink)}
-.badge--dropped{color:var(--bad)}
-.badge--asking{color:var(--signal)}
+/* staff shell */
+.page{min-height:900px;background:var(--color-paper);display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 32px;background:var(--color-paper-2);border-bottom:1px solid var(--color-rule);flex-wrap:wrap}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{display:inline-flex;align-items:center;min-height:48px;padding:0 14px;border-radius:var(--radius-input);text-decoration:none;color:var(--color-ink-2);font-weight:500}
+.tab--current{background:var(--color-white);color:var(--color-ink);box-shadow:inset 0 0 0 1px var(--color-rule)}
+.content{max-width:1280px;width:100%;margin:0 auto;padding:24px 32px 48px;display:flex;flex-direction:column;gap:24px}
+.panel{background:var(--color-white);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:20px 24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.panel h2{font-size:var(--text-lg)}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.table-wrap{overflow-x:auto}
+.table{width:100%;border-collapse:collapse;font-size:var(--text-sm)}
+.table th{text-align:left;font-weight:500;background:var(--color-paper-3);padding:10px 12px;color:var(--color-ink)}
+.table td{padding:10px 12px;border-bottom:1px solid var(--color-rule);vertical-align:top}
+.table td.num,.table th.num{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.field-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--color-rule);font-size:var(--text-sm)}
+.conf{display:inline-flex;align-items:center;min-height:26px;padding:0 8px;border-radius:var(--radius-pill);background:var(--color-paper-3);font-family:var(--font-mono);font-size:var(--text-sm)}
+.edited{color:var(--color-muted);font-size:var(--text-sm)}
+.audit{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--color-rule);font-size:var(--text-sm)}
+.audit time{font-family:var(--font-mono);color:var(--color-muted);flex:0 0 150px}
+.stat{display:flex;flex-direction:column;gap:2px}
+.stat .figure{font-family:var(--font-mono);font-size:var(--text-xl);font-variant-numeric:tabular-nums}
+.stat .label{font-size:var(--text-sm);color:var(--color-muted);font-weight:400}
+/* charts: ink, accent, mint, paper-3 only; bars carry a direct label */
+.bar{height:28px;border-radius:6px;background:var(--color-accent)}
+.bar--soft{background:var(--color-accent-soft)}
+.bar--ink{background:var(--color-ink)}
+.bar--paper{background:var(--color-paper-3)}
 
-/* chips: 48px toggles */
-.chip{font:inherit;font-size:var(--fs-meta);font-weight:600;min-height:var(--touch);padding:0 var(--s4);border-radius:var(--r-pill);border:2px solid var(--rule-strong);background:var(--sheet);color:var(--ink);cursor:pointer;transition:border-color var(--t) var(--ease),background-color var(--t) var(--ease)}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.chips{display:flex;flex-wrap:wrap;gap:var(--s2)}
-
-/* choice tiles */
-.tiles{display:grid;grid-template-columns:1fr;gap:var(--s3)}
-@media (min-width:600px){.tiles{grid-template-columns:1fr 1fr}}
-.tile{font:inherit;text-align:left;background:var(--sheet);color:var(--ink);border:2px solid var(--rule-strong);border-radius:var(--r-card);padding:20px;min-height:96px;display:flex;flex-direction:column;gap:var(--s1);cursor:pointer;transition:border-color var(--t) var(--ease);width:100%}
-.tile:hover,.tile[aria-pressed="true"]{border-color:var(--ink)}
-.tile__title{font-size:var(--fs-h3);font-weight:600;line-height:1.3}
-.tile__sub{font-size:var(--fs-meta);color:var(--muted)}
-
-/* status headline + money */
-.headline{display:flex;flex-direction:column;gap:var(--s2)}
-.headline__state{display:inline-flex;align-items:center;gap:var(--s2);font-weight:600;font-size:var(--fs-body)}
-.headline__state--ok{color:var(--ok)}.headline__state--warn{color:var(--warn)}.headline__state--bad{color:var(--bad)}.headline__state--signal{color:var(--signal)}
-.money{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r-card);padding:0 20px}
-.money__row{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);padding:var(--s4) 0;border-top:1px solid var(--rule);min-height:var(--ctl)}
-.money__row:first-child{border-top:0}
-.money__label{font-size:var(--fs-meta);font-weight:600;color:var(--ink)}
-.money__value{font-size:var(--fs-value);font-weight:600;line-height:1.2;font-variant-numeric:tabular-nums}
-.money__value--pending{color:var(--muted);font-weight:400}
-
-/* phone artboard */
-.phone{width:390px;height:844px;background:var(--paper);border:1px solid var(--rule-strong);border-radius:var(--r-card);display:flex;flex-direction:column;overflow:hidden;color:var(--ink);font-family:var(--font)}
-.phone__header{padding:24px 24px 0;flex:0 0 auto}
-.phone__body{flex:1 1 auto;overflow-y:auto;padding:24px}
-.phone__body>*+*{margin-top:var(--s5)}
-.phone__bar{flex:0 0 auto;padding:16px 24px calc(16px + env(safe-area-inset-bottom));background:var(--sheet);border-top:1px solid var(--rule);display:flex;flex-direction:column;gap:var(--s2)}
-.phone__bar .btn-text{min-height:var(--touch)}
-.standing{font-size:var(--fs-meta);color:var(--muted);line-height:1.4}
-
-/* staff shell: 1280 fluid */
-.staff{max-width:1280px;margin:0 auto;padding:0 max(24px,env(safe-area-inset-left)) var(--s7);color:var(--ink);font-family:var(--font)}
-.staff__top{display:flex;align-items:center;justify-content:space-between;gap:var(--s4);min-height:72px;border-bottom:1px solid var(--rule);flex-wrap:wrap;padding:var(--s3) 0}
-.staff__grid{display:grid;grid-template-columns:1fr;gap:var(--s6);padding-top:var(--s6)}
-@media (min-width:900px){.staff__grid{grid-template-columns:240px 1fr}}
-.staff__nav{display:flex;flex-wrap:wrap;gap:var(--s2);align-content:flex-start}
-@media (min-width:900px){.staff__nav{flex-direction:column}}
-.staff__nav a{display:flex;align-items:center;min-height:var(--touch);padding:0 var(--s4);border-radius:var(--r-ctl);color:var(--ink);text-decoration:none;font-weight:500}
-.staff__nav a:hover{background:var(--sheet)}
-.staff__nav a[aria-current="page"]{background:var(--sheet);border:1px solid var(--rule);font-weight:600}
-.staff__main>*+*{margin-top:var(--s6)}
-
-/* table */
-.table-box{overflow-x:auto;background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r-card)}
-.table{width:100%;border-collapse:collapse;font-size:var(--fs-body);min-width:640px}
-.table th{text-align:left;font-size:var(--fs-meta);font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:var(--s4) 20px;border-bottom:1px solid var(--rule-strong)}
-.table td{padding:var(--s4) 20px;border-bottom:1px solid var(--rule);vertical-align:top}
-.table tr:last-child td{border-bottom:0}
-.table .num{text-align:right}
-
-/* field row (staff) */
-.field-row{display:grid;grid-template-columns:1fr;gap:var(--s2);padding:var(--s4) 0;border-top:1px solid var(--rule)}
-@media (min-width:900px){.field-row{grid-template-columns:200px 1fr auto;align-items:start;gap:var(--s4)}}
-.field-row__label{font-size:var(--fs-meta);font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding-top:3px}
-.field-row__value{font-size:var(--fs-value);font-weight:600;line-height:1.2;font-variant-numeric:tabular-nums}
-.field-row__source{font-size:var(--fs-meta);color:var(--muted);margin-top:var(--s1)}
-.field-row__edited{font-size:var(--fs-meta);color:var(--warn);font-weight:600;margin-top:var(--s1)}
-
-/* audit list */
-.audit-row{display:grid;grid-template-columns:auto 1fr auto;gap:var(--s3);align-items:baseline;padding:var(--s3) 0;border-top:1px solid var(--rule);min-height:var(--touch)}
-.audit-row:first-child{border-top:0}
-.audit-row__time{font-size:var(--fs-meta);color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
-.audit-row__what{font-size:var(--fs-body);color:var(--ink)}
-.audit-row__who{font-size:var(--fs-meta);color:var(--muted);white-space:nowrap}
-
-/* footer: the four rules */
-.footer{border-top:1px solid var(--rule);padding-top:var(--s5);font-size:var(--fs-meta);color:var(--muted);line-height:1.5}
-.footer ol{padding-left:20px;margin:var(--s2) 0 0}
-
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0s!important;transition-duration:0s!important}}
-
-/* artboard layout helpers (layout only; colours and type stay in the kit classes) */
-.tabs{display:flex;flex-wrap:wrap;gap:var(--s2);border-bottom:1px solid var(--rule)}
-.tabs a{display:flex;align-items:center;min-height:var(--touch);padding:0 var(--s4);color:var(--ink);text-decoration:none;font-weight:500;border-bottom:3px solid transparent;margin-bottom:-1px}
-.tabs a[aria-current="page"]{border-bottom-color:var(--signal);color:var(--signal);font-weight:600}
-.cols{display:grid;grid-template-columns:1fr;gap:var(--s6);align-items:start}
-@media (min-width:900px){.cols{grid-template-columns:1fr 1fr}.cols--65{grid-template-columns:13fr 7fr}.cols--60{grid-template-columns:3fr 2fr}}
-.btns{display:flex;flex-wrap:wrap;gap:var(--s3);align-items:center}
-.btns>.btn-primary,.btns>.btn-secondary,.btns>.btn-text{width:auto}
-.narrow .field-row{grid-template-columns:150px 1fr auto}
-.log>*+*{border-top:1px solid var(--rule);padding-top:var(--s4);margin-top:var(--s4)}
-.list{list-style:none;padding:0 20px}
-.pane>*+*{margin-top:var(--s5)}
-</style>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&family=Atkinson+Hyperlegible:wght@400;700&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
-</helmet>
-<div style="display:flex;flex-direction:column;min-height:100%">
-<div class="staff">
-  <header class="staff__top">
-    <a class="wordmark" href="S01-staff-queue.dc.html"><span class="wordmark__dot" aria-hidden="true"></span>Kindred Snap</a>
-    <div class="row"><span class="badge badge--demo">Demo partner · synthetic data</span><span class="meta">Signed in as j.park@partner.example · staff · nothing stored beyond counts</span></div>
-  </header>
-  <div class="staff__grid">
-    <nav class="staff__nav" aria-label="Staff">
-      <a href="S01-staff-queue.dc.html">Queue</a>
-      <a href="S02-case-documents.dc.html">Documents &amp; fields</a>
-      <a href="S03-case-findings.dc.html">Findings</a>
-      <a href="S04-case-actions.dc.html" aria-current="page">Actions</a>
-      <a href="S05-case-resolution-history.dc.html">Resolution &amp; history</a>
+/* artboard layout helpers for the staff pages; colours and type stay in the kit tokens */
+html,body{overflow-x:clip}
+.skip{position:absolute;left:-999px;top:8px;background:var(--color-paper-2);padding:8px 12px;border-radius:var(--radius-input)}
+.skip:focus{left:8px}
+a.wordmark{text-decoration:none}
+select{font:inherit;color:inherit}
+.stack{display:flex;flex-direction:column;gap:8px;min-width:0}
+.stack--16{gap:16px}
+.stack--24{gap:24px}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+.btns{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.btns .btn-primary,.btns .btn-secondary,.btns .btn-text{width:auto}
+.btn-primary:disabled,.btn-secondary:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary:disabled:active,.btn-secondary:disabled:active{transform:none}
+.input:disabled{background:var(--color-paper-2);color:var(--color-muted)}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.lead{font-size:var(--text-lg)}
+.vis-hidden{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+svg.ic{width:20px;height:20px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.badge svg.ic,.conf svg.ic,.chip svg.ic{width:16px;height:16px}
+.alert svg.icon{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.conf{gap:6px}
+.field-row--3{grid-template-columns:minmax(0,1fr) minmax(0,2fr) auto}
+.field-row--2{grid-template-columns:minmax(0,1fr) minmax(0,2fr)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{gap:8px}
+.chip[aria-pressed="true"]{background:var(--color-accent-soft);box-shadow:inset 0 0 0 2px var(--color-accent)}
+.item{display:flex;flex-direction:column;gap:14px;min-width:0;padding-bottom:24px;border-bottom:1px solid var(--color-rule)}
+.audit>div{min-width:0;flex:1}
+.audit:last-child{border-bottom:0}
+.footer{width:100%;max-width:1280px;margin:0 auto;padding:24px 32px 48px;border-top:1px solid var(--color-rule);color:var(--color-muted);font-size:var(--text-sm)}
+.footer ol{display:flex;flex-wrap:wrap;gap:4px 20px;margin:8px 0 0;padding-left:20px}
+.footer-links{list-style:none;display:flex;flex-wrap:wrap;gap:4px 20px;margin:12px 0 0;padding:0}
+</style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;700;800&family=Atkinson+Hyperlegible+Mono:wght@400;500&display=swap"></helmet>
+<div class="page">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="topbar">
+    <a class="wordmark" href="S00-Dashboard.dc.html">Kindred Snap</a>
+    <nav class="tabs" aria-label="Staff workspace">
+      <a class="tab" href="S00-Dashboard.dc.html">Dashboard</a>
+      <a class="tab" href="S01-staff-queue.dc.html">Queue</a>
+      <a class="tab tab--current" href="S02-case-documents.dc.html" aria-current="page">Cases</a>
+      <a class="tab" href="S05-case-resolution-history.dc.html">Audit</a>
     </nav>
-    <main class="staff__main">
-      <div class="card">
-        <div class="row" style="flex-wrap:wrap"><span class="eyebrow">Case KS-0412</span><span class="badge badge--asking">Stage · Awaiting hospital</span><span class="badge badge--demo">Riverbend Community Hospital · Demo partner · synthetic</span></div>
-        <h1>Dorothy H., 74 · Original Medicare, Part A and Part B.</h1>
-        <p class="lead num">$466.00 due Nov 30, 2026 · in 9 days. Our work does not pause this.</p>
-        <p class="meta">Authorized by Dorothy H. (patient) on Nov 2, 2026 · helper Jenna H. (daughter) may view and approve · today Nov 21, 2026</p>
-      </div>
-      <nav class="tabs" aria-label="Case">
-        <a href="S02-case-documents.dc.html">Documents &amp; fields</a>
-        <a href="S03-case-findings.dc.html">Findings</a>
-        <a href="S04-case-actions.dc.html" aria-current="page">Actions</a>
-        <a href="S05-case-resolution-history.dc.html">Resolution &amp; history</a>
-      </nav>
-      <div class="alert alert--warn" role="status">
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4L2.5 20h19L12 4z"/><path d="M12 10v4M12 17v.5"/></svg>
-        <div><div class="alert__title">Simulated. Sends go to the Demo partner adapter, not a real hospital.</div><div class="alert__body">Sent: 2 · each with the helper’s OK. Staff and admin cannot approve on the patient’s behalf; there is no such button.</div></div>
-      </div>
-      <div class="headline">
-        <h2>2 actions · 2 approved by Jenna H. · 2 sent (simulated) · 1 response received.</h2>
-        <p class="meta">Approved Nov 9 11:02 and 11:03 · sent Nov 9 11:05 · response Nov 21 09:14 · payment is due in 9 days, so the 7-day guard is not shown</p>
-      </div>
-      <div class="cols cols--60">
-        <section class="pane" aria-labelledby="actions-h">
-          <h2 id="actions-h" class="vis-hidden">Actions</h2>
-          <article class="card" aria-labelledby="a1-h">
-            <div class="row" style="flex-wrap:wrap"><span class="eyebrow">A-1 · Correction request</span><a class="badge badge--asking" href="S03-case-findings.dc.html">Based on: F-1</a><span class="badge badge--demo">Simulated</span></div>
-            <h3 id="a1-h">Ask Patient Financial Services to remove the $240.00 contrast charge.</h3>
-            <p class="meta">To: Riverbend Community Hospital · Patient Financial Services (synthetic) · draft version 2 of 2 · <a href="#a1-versions">View previous versions</a></p>
-            <div style="border:1px solid var(--rule);border-radius:var(--r-ctl);padding:16px">
-              <p>Re: account ending <a href="S02-case-documents.dc.html">4821</a>, statement dated <a href="S02-case-documents.dc.html">October 20, 2026</a>, service date <a href="S02-case-documents.dc.html">September 14, 2026</a>, patient Dorothy Hale. The statement asks for <a href="S02-case-documents.dc.html">$466.00</a>. Medicare’s Summary Notice for the same visit says the most I may be billed is <a href="S02-case-documents.dc.html">$226.00</a>. The <a href="S03-case-findings.dc.html">$240.00</a> difference is line 3 on the statement (<a href="S02-case-documents.dc.html">Q9967</a>, contrast material). The Medicare notice shows this item as included in the payment for the CT scan, with <a href="S02-case-documents.dc.html">$0.00</a> patient responsibility. Please review the account, remove the $240.00 if it was billed to me in error, send a corrected statement, and place the account on hold until this is resolved. If you believe the charge is correct, please explain why in writing. — Jenna Hale, authorized representative for Dorothy Hale (authorization attached).</p>
-            </div>
-            <p class="meta"><span style="color:var(--ok);font-weight:600">All amounts trace to a document</span> · validator passed Nov 9 10:52 · every amount and date above links to the field it came from.</p>
-            <ol class="list" style="padding:0">
-              <li class="step step--done">
-                <span class="step__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-                <div><div class="step__title">Approved by Jenna H. (helper, may approve)</div><div class="step__state">Done</div><div class="step__note">Nov 9 11:02 · in-app tap · sent to the app for approval Nov 9 10:55 · scope: view and approve requests</div></div>
-              </li>
-              <li class="step step--done">
-                <span class="step__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-                <div><div class="step__title">Sent (simulated)</div><div class="step__state">Done</div><div class="step__note">Nov 9 11:05 · adapter ref DP-SIM-0091 · response expected by Dec 9, 2026 · 30 days, estimated</div></div>
-              </li>
-              <li class="step step--done">
-                <span class="step__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-                <div><div class="step__title">Response received (simulated)</div><div class="step__state">Done</div><div class="step__note">Nov 21 09:14 · line Q9967 removed · see the correspondence log</div></div>
-              </li>
-            </ol>
-            <div class="btns">
-              <button class="btn-secondary" type="button">Download PDF</button>
-              <button class="btn-secondary" type="button">Add staff note</button>
-              <button class="btn-text" type="button">Withdraw action</button>
-            </div>
-          </article>
-          <article class="card" aria-labelledby="a2-h">
-            <div class="row" style="flex-wrap:wrap"><span class="eyebrow">A-2 · Financial assistance application</span><a class="badge badge--asking" href="S03-case-findings.dc.html">Based on: F-2</a><span class="badge badge--demo">Simulated</span></div>
-            <h3 id="a2-h">Apply for the hospital’s financial assistance program.</h3>
-            <p class="meta">To: Riverbend Community Hospital · Patient Financial Services (synthetic) · pre-filled from the income typed at setup · draft version 1 of 1</p>
-            <div style="border:1px solid var(--rule);border-radius:var(--r-ctl);padding:16px">
-              <p>I am applying for financial assistance for Dorothy Hale, account ending <a href="S02-case-documents.dc.html">4821</a>. Household size: <a href="S03-case-findings.dc.html">1</a>. Annual income: <a href="S03-case-findings.dc.html">$37,560</a> (Social Security and a pension). That is about <a href="S03-case-findings.dc.html">240%</a> of the federal poverty guideline. Under your published Financial Assistance Policy this appears to fall in the <a href="S03-case-findings.dc.html">75%</a> discount tier. Please apply the discount to the balance after the correction requested separately is processed. I can provide income documents on request. I understand the hospital decides eligibility. — Jenna Hale, authorized representative.</p>
-            </div>
-            <p class="meta"><span style="color:var(--ok);font-weight:600">All amounts trace to a document or a typed field</span> · validator passed Nov 9 10:53 · the income figure is marked as typed, not read from a document.</p>
-            <ol class="list" style="padding:0">
-              <li class="step step--done">
-                <span class="step__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-                <div><div class="step__title">Approved by Jenna H. (helper, may approve)</div><div class="step__state">Done</div><div class="step__note">Nov 9 11:03 · in-app tap · income figure confirmed on the same screen</div></div>
-              </li>
-              <li class="step step--done">
-                <span class="step__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-                <div><div class="step__title">Sent (simulated)</div><div class="step__state">Done</div><div class="step__note">Nov 9 11:05 · adapter ref DP-SIM-0092 · response expected by Dec 9, 2026 · 30 days, estimated</div></div>
-              </li>
-              <li class="step step--done">
-                <span class="step__icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-                <div><div class="step__title">Response received (simulated)</div><div class="step__state">Done</div><div class="step__note">Nov 21 09:14 · approved at the 75% tier · see the correspondence log</div></div>
-              </li>
-            </ol>
-            <div class="btns">
-              <button class="btn-secondary" type="button">Download PDF</button>
-              <button class="btn-secondary" type="button">Add staff note</button>
-              <button class="btn-text" type="button">Withdraw action</button>
-            </div>
-          </article>
+    <div class="row"><span class="badge badge--demo">Demo partner · synthetic data</span><span class="small muted">Signed in as J. Park, staff</span></div>
+  </header>
+  <main class="content" id="main">
+    <header class="stack">
+      <h1>Dorothy H., 74. Original Medicare, Part A and Part B.</h1>
+      <div class="row"><span class="small muted">Case KS-0412, account ending 4821</span><span class="badge badge--review">Stage: Response received</span><span class="small muted">Riverbend Community Hospital, Tacoma, WA</span><span class="badge badge--demo">Demo partner · synthetic data</span></div>
+      <p class="lead"><span class="num">$466.00</span> due Nov 30, 2026 (in 9 days). Our work does not pause this.</p>
+      <p class="small muted">Authorized by Dorothy H. (patient) on Nov 2, 2026. Helper Jenna H. (daughter) may view and approve. Today is Nov 21, 2026.</p>
+    </header>
+    <nav class="tabs" aria-label="Case">
+      <a class="tab" href="S02-case-documents.dc.html">Documents &amp; fields</a>
+      <a class="tab" href="S03-case-findings.dc.html">Findings</a>
+      <a class="tab tab--current" href="S04-case-actions.dc.html" aria-current="page">Actions</a>
+      <a class="tab" href="S05-case-resolution-history.dc.html">Resolution &amp; history</a>
+    </nav>
+    <div class="alert alert--warn" role="status">
+      <svg class="icon ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4L2.5 20h19L12 4z"/><path d="M12 10v4M12 17v.5"/></svg>
+      <div><p class="label">Simulated. Sends go to the demo partner adapter, not a real hospital.</p><p>2 sent, each with the helper’s OK. Staff cannot approve on the patient’s behalf.</p></div>
+    </div>
+    <div class="stack">
+      <h2>2 Actions: Both Approved by Jenna H., Both Sent (Simulated), 1 Response Received.</h2>
+      <!-- The 7-day payment guard shows only when a send would land inside 7 days of the due date; here it is 9 days. -->
+      <p class="small muted">Approved Nov 9 at 11:02 and 11:03; sent Nov 9 at 11:05; response received Nov 21 at 09:14.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:24px;align-items:start">
+      <section aria-labelledby="actions-h" class="stack stack--24">
+        <h2 id="actions-h" class="vis-hidden">Actions</h2>
+        <article class="item" aria-labelledby="a1-h">
+          <h3 id="a1-h">Ask Patient Financial Services to Remove the $240.00 Contrast Charge.</h3>
+          <div class="row"><span class="small muted">A-1, correction request</span><a class="badge badge--review" href="S03-case-findings.dc.html">Based on F-1</a><span class="badge badge--synthetic">Simulated</span></div>
+          <p class="small muted">To: Riverbend Community Hospital, Patient Financial Services (synthetic). Draft version 2 of 2. <a href="#a1-versions">View previous versions</a></p>
+          <div class="tray">
+            <p>Re: account ending <a href="S02-case-documents.dc.html">4821</a>, statement dated <a href="S02-case-documents.dc.html">October 20, 2026</a>, service date <a href="S02-case-documents.dc.html">September 14, 2026</a>, patient Dorothy Hale. The statement asks for <a href="S02-case-documents.dc.html">$466.00</a>. Medicare’s Summary Notice for the same visit says the most I may be billed is <a href="S02-case-documents.dc.html">$226.00</a>. The <a href="S03-case-findings.dc.html">$240.00</a> difference is line 3 on the statement (<a href="S02-case-documents.dc.html">Q9967</a>, contrast material). The Medicare notice shows this item as included in the payment for the CT scan, with <a href="S02-case-documents.dc.html">$0.00</a> patient responsibility. Please review the account, remove the $240.00 if it was billed to me in error, send a corrected statement, and place the account on hold until this is resolved. If you believe the charge is correct, please explain why in writing. — Jenna Hale, authorized representative for Dorothy Hale (authorization attached).</p>
+          </div>
+          <p class="small muted"><span class="badge badge--confirmed"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>All amounts trace to a document</span> Validator passed Nov 9, 10:52. Every amount and date above links to the field it came from.</p>
+          <ol class="list">
+            <li class="step step--done">
+              <span class="icon" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+              <div><div class="title">Approved by Jenna H. (helper, may approve)</div><div class="sub">Done</div><div class="sub">Nov 9, 11:02, in-app tap. Sent to the app for approval Nov 9, 10:55. Scope: view and approve requests.</div></div>
+            </li>
+            <li class="step step--done">
+              <span class="icon" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+              <div><div class="title">Sent (simulated)</div><div class="sub">Done</div><div class="sub">Nov 9, 11:05. Adapter ref DP-SIM-0091. Response expected by Dec 9, 2026 (30 days, estimated).</div></div>
+            </li>
+            <li class="step step--done">
+              <span class="icon" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+              <div><div class="title">Response received (simulated)</div><div class="sub">Done</div><div class="sub">Nov 21, 09:14. Line Q9967 removed; see the correspondence log.</div></div>
+            </li>
+          </ol>
           <div class="btns">
-            <a class="btn-primary" href="S05-case-resolution-history.dc.html">Use the response as the basis for resolution</a>
-            <button class="btn-secondary" type="button">Log a phone call</button>
+            <button class="btn-secondary" type="button">Download PDF</button>
+            <button class="btn-secondary" type="button">Add staff note</button>
+            <button class="btn-text" type="button">Withdraw action</button>
           </div>
-          <p class="meta">Regenerate needs a reason (validator failed, patient asked for a change). An edit after approval resets approval and disables Send until the helper taps again.</p>
-        </section>
-        <aside class="pane" aria-labelledby="log-h">
-          <h2 id="log-h">Correspondence · 7 entries.</h2>
-          <div class="card log">
-            <div>
-              <div class="row" style="flex-wrap:wrap"><span class="eyebrow num">Nov 21 09:14</span><span class="badge badge--asking">Inbound</span><span class="badge badge--demo">Simulated response</span></div>
-              <p style="margin-top:8px"><strong>Riverbend Community Hospital · Patient Financial Services (synthetic)</strong></p>
-              <p style="margin-top:8px">“Re: account ending 4821. We reviewed your request of November 9. Line Q9967 (contrast material, $240.00) is packaged with the CT scan under Medicare outpatient payment rules and should not have been billed to the patient. We have removed it; the corrected patient balance is $226.00. Your financial assistance application was approved at the 75% tier (household income at 240% of the federal poverty guideline). A discount of $169.50 has been applied. Your new balance is $56.50, due December 21, 2026. No collection activity occurred during review.”</p>
-              <p class="meta" style="margin-top:8px">Attached: adjustment letter, 1 page (synthetic) · answers DP-SIM-0091 and DP-SIM-0092</p>
-              <div class="btns" style="margin-top:12px"><a class="btn-secondary" href="S05-case-resolution-history.dc.html">Use as basis for resolution</a></div>
-            </div>
-            <div>
-              <div class="row" style="flex-wrap:wrap"><span class="eyebrow num">Nov 9 11:05</span><span class="badge badge--actual">Outbound</span><span class="badge badge--demo">Simulated</span></div>
-              <p style="margin-top:8px">A-2 Financial assistance application · adapter ref DP-SIM-0092 · <a href="#pdf-a2">PDF</a></p>
-            </div>
-            <div>
-              <div class="row" style="flex-wrap:wrap"><span class="eyebrow num">Nov 9 11:05</span><span class="badge badge--actual">Outbound</span><span class="badge badge--demo">Simulated</span></div>
-              <p style="margin-top:8px">A-1 Correction request · adapter ref DP-SIM-0091 · <a href="#pdf-a1">PDF</a></p>
-            </div>
-            <div>
-              <div class="row" style="flex-wrap:wrap"><span class="eyebrow num">Nov 9 11:03</span><span class="badge badge--confirmed"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Patient app</span></div>
-              <p style="margin-top:8px">Jenna H. (helper) approved A-1 at 11:02 and A-2 at 11:03 · in-app tap.</p>
-            </div>
-            <div>
-              <div class="row" style="flex-wrap:wrap"><span class="eyebrow num">Nov 9 10:58</span><span class="badge badge--actual">Phone call</span></div>
-              <p style="margin-top:8px">J. Park called Riverbend billing (synthetic) to ask for a hold while the review is open. Hold noted through Dec 9.</p>
-            </div>
-            <div>
-              <div class="row" style="flex-wrap:wrap"><span class="eyebrow num">Nov 9 10:55</span><span class="badge badge--actual">Sent for approval</span></div>
-              <p style="margin-top:8px">A-1 and A-2 sent to the app for Dorothy H. (patient) or Jenna H. (helper, may approve).</p>
-            </div>
-            <div>
-              <div class="row" style="flex-wrap:wrap"><span class="eyebrow num">Nov 9 10:52</span><span class="badge badge--actual">Staff note</span></div>
-              <p style="margin-top:8px">J. Park: “Draft asks for a hold and a written reason if they keep the charge. No accusation.”</p>
+        </article>
+        <article class="item" aria-labelledby="a2-h">
+          <h3 id="a2-h">Apply for the Hospital’s Financial Assistance Program.</h3>
+          <div class="row"><span class="small muted">A-2, financial assistance application</span><a class="badge badge--review" href="S03-case-findings.dc.html">Based on F-2</a><span class="badge badge--synthetic">Simulated</span></div>
+          <p class="small muted">To: Riverbend Community Hospital, Patient Financial Services (synthetic). Pre-filled from the income typed at setup. Draft version 1 of 1.</p>
+          <div class="tray">
+            <p>I am applying for financial assistance for Dorothy Hale, account ending <a href="S02-case-documents.dc.html">4821</a>. Household size: <a href="S03-case-findings.dc.html">1</a>. Annual income: <a href="S03-case-findings.dc.html">$37,560</a> (Social Security and a pension). That is about <a href="S03-case-findings.dc.html">240%</a> of the federal poverty guideline. Under your published Financial Assistance Policy this appears to fall in the <a href="S03-case-findings.dc.html">75%</a> discount tier. Please apply the discount to the balance after the correction requested separately is processed. I can provide income documents on request. I understand the hospital decides eligibility. — Jenna Hale, authorized representative.</p>
+          </div>
+          <p class="small muted"><span class="badge badge--confirmed"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>All amounts trace to a document or a typed field</span> Validator passed Nov 9, 10:53. The income figure is marked as typed, not read from a document.</p>
+          <ol class="list">
+            <li class="step step--done">
+              <span class="icon" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+              <div><div class="title">Approved by Jenna H. (helper, may approve)</div><div class="sub">Done</div><div class="sub">Nov 9, 11:03, in-app tap. The income figure was confirmed on the same screen.</div></div>
+            </li>
+            <li class="step step--done">
+              <span class="icon" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+              <div><div class="title">Sent (simulated)</div><div class="sub">Done</div><div class="sub">Nov 9, 11:05. Adapter ref DP-SIM-0092. Response expected by Dec 9, 2026 (30 days, estimated).</div></div>
+            </li>
+            <li class="step step--done">
+              <span class="icon" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+              <div><div class="title">Response received (simulated)</div><div class="sub">Done</div><div class="sub">Nov 21, 09:14. Approved at the 75% tier; see the correspondence log.</div></div>
+            </li>
+          </ol>
+          <div class="btns">
+            <button class="btn-secondary" type="button">Download PDF</button>
+            <button class="btn-secondary" type="button">Add staff note</button>
+            <button class="btn-text" type="button">Withdraw action</button>
+          </div>
+        </article>
+        <div class="btns">
+          <a class="btn-primary" href="S05-case-resolution-history.dc.html">Use the response as the basis for resolution</a>
+          <button class="btn-secondary" type="button">Log a phone call</button>
+        </div>
+        <p class="small muted">An edit after approval resets the approval. Nothing is sent until the helper taps again.</p>
+      </section>
+      <aside aria-labelledby="log-h" class="stack stack--16">
+        <h2 id="log-h">Correspondence: 7 Entries</h2>
+        <div class="panel" style="gap:0">
+          <div class="audit">
+            <time datetime="2026-11-21T09:14">Nov 21 09:14</time>
+            <div class="stack">
+              <div class="row"><span class="badge badge--review">Inbound</span><span class="badge badge--synthetic">Simulated response</span></div>
+              <p><strong>Riverbend Community Hospital, Patient Financial Services (synthetic)</strong></p>
+              <p>“Re: account ending 4821. We reviewed your request of November 9. Line Q9967 (contrast material, $240.00) is packaged with the CT scan under Medicare outpatient payment rules and should not have been billed to the patient. We have removed it; the corrected patient balance is $226.00. Your financial assistance application was approved at the 75% tier (household income at 240% of the federal poverty guideline). A discount of $169.50 has been applied. Your new balance is $56.50, due December 21, 2026. No collection activity occurred during review.”</p>
+              <p class="small muted">Attached: adjustment letter, 1 page (synthetic). Answers DP-SIM-0091 and DP-SIM-0092.</p>
+              <div class="btns"><a class="btn-secondary" href="S05-case-resolution-history.dc.html">Use as basis for resolution</a></div>
             </div>
           </div>
-        </aside>
-      </div>
-    </main>
-  </div>
-  <footer class="footer">The Kindred standard, four rules.<ol><li>Primary sources only.</li><li>Every value carries its source line.</li><li>People decide. Snap sends nothing.</li><li>Collect as little as possible.</li></ol><p style="margin-top:12px"><a href="#talk">Talk to a person</a> · <a href="#tender">Open Tender</a> · <a href="#waive">Open Waive</a></p></footer>
-</div>
+          <div class="audit">
+            <time datetime="2026-11-09T11:05">Nov 9 11:05</time>
+            <div class="stack"><div class="row"><span class="badge badge--review">Outbound</span><span class="badge badge--synthetic">Simulated</span></div><p>A-2 Financial assistance application, adapter ref DP-SIM-0092. <a href="#pdf-a2">PDF</a></p></div>
+          </div>
+          <div class="audit">
+            <time datetime="2026-11-09T11:05">Nov 9 11:05</time>
+            <div class="stack"><div class="row"><span class="badge badge--review">Outbound</span><span class="badge badge--synthetic">Simulated</span></div><p>A-1 Correction request, adapter ref DP-SIM-0091. <a href="#pdf-a1">PDF</a></p></div>
+          </div>
+          <div class="audit">
+            <time datetime="2026-11-09T11:03">Nov 9 11:03</time>
+            <div class="stack"><div class="row"><span class="badge badge--confirmed"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Patient app</span></div><p>Jenna H. (helper) approved A-1 at 11:02 and A-2 at 11:03 by in-app tap.</p></div>
+          </div>
+          <div class="audit">
+            <time datetime="2026-11-09T10:58">Nov 9 10:58</time>
+            <div class="stack"><div class="row"><span class="badge badge--review">Phone call</span></div><p>J. Park called Riverbend billing (synthetic) to ask for a hold while the review is open. Hold noted through Dec 9.</p></div>
+          </div>
+          <div class="audit">
+            <time datetime="2026-11-09T10:55">Nov 9 10:55</time>
+            <div class="stack"><div class="row"><span class="badge badge--review">Sent for approval</span></div><p>A-1 and A-2 sent to the app for Dorothy H. (patient) or Jenna H. (helper, may approve).</p></div>
+          </div>
+          <div class="audit">
+            <time datetime="2026-11-09T10:52">Nov 9 10:52</time>
+            <div class="stack"><div class="row"><span class="badge badge--review">Staff note</span></div><p>J. Park: “Draft asks for a hold and a written reason if they keep the charge. No accusation.”</p></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+  <footer class="footer">The Kindred standard, four rules.<ol><li>Primary sources only.</li><li>Every value carries its source line.</li><li>People decide. Snap sends nothing.</li><li>Collect as little as possible.</li></ol><ul class="footer-links"><li><a href="#talk">Talk to a person</a></li><li><a href="#tender">Open Tender</a></li><li><a href="#waive">Open Waive</a></li></ul></footer>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>

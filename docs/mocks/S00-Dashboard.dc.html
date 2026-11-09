@@ -1,0 +1,279 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Staff Dashboard</title><script src="./support.js"></script></head><body>
+<x-dc>
+<helmet><style>
+/* Kindred Snap mock kit — the DESIGN.md tokens and components as plain CSS for the Design-canvas artboards.
+   Paste whole into each artboard's <helmet><style>. The app uses src/app/tokens.css (same values) instead. */
+:root{
+  --color-paper:#FAF7EF;--color-paper-2:#E9F8EF;--color-paper-3:#D4F0E0;--color-ink:#0C1C16;--color-ink-2:#26342F;--color-muted:#54655D;--color-rule:#CBD6C9;
+  --color-accent:#007948;--color-accent-deep:#005F3A;--color-accent-soft:#A9E8C6;--color-accent-ink:#F8FDFA;--color-focus:#006B38;--color-night:#040807;--color-green-ground:#006B40;
+  --glint:#FFFFFF;--color-white:#FFFFFF;
+  --font-body:"Atkinson Hyperlegible Next",ui-sans-serif,system-ui,sans-serif;--font-mono:"Atkinson Hyperlegible Mono",ui-monospace,monospace;
+  --text-sm:16px;--text-md:18px;--text-lg:22px;--text-xl:26px;--text-2xl:32px;--text-3xl:38px;--text-display:46px;
+  --radius-input:10px;--radius-card:14px;--radius-pill:999px;--radius-phone:28px;
+  --shadow-card:0 1px 2px rgb(12 28 22 / .08),0 24px 48px -24px rgb(12 28 22 / .35);
+  --shadow-glint:inset 0 1px 0 rgb(255 255 255 / .25);--shadow-tray:inset 0 1.5px 0 var(--glint),inset 0 -24px 36px -28px rgb(12 28 22 / .10);
+}
+body{margin:0;background:var(--color-paper);color:var(--color-ink);font-family:var(--font-body);font-size:var(--text-md);line-height:1.5;-webkit-font-smoothing:antialiased}
+*,*::before,*::after{box-sizing:border-box}
+h1,h2,h3{margin:0;font-weight:700;line-height:1.15;letter-spacing:-0.01em;overflow-wrap:break-word;min-width:0}
+h1{font-size:var(--text-2xl)}h2{font-size:var(--text-xl)}h3{font-size:var(--text-lg)}
+p{margin:0}
+a{color:var(--color-ink);text-decoration-thickness:1px;text-underline-offset:.16em}a:hover{color:var(--color-accent)}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--color-focus);outline-offset:2px}
+.mono,.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--color-muted)}.small{font-size:var(--text-sm)}
+svg{display:block}
+
+/* phone shell */
+.phone{width:390px;height:844px;background:var(--color-paper);display:flex;flex-direction:column;overflow:hidden}
+.appbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 24px 8px}
+.wordmark{font-weight:800;font-size:var(--text-lg);letter-spacing:-0.02em}
+.screen{flex:1;min-height:0;overflow:hidden;padding:8px 24px 16px;display:flex;flex-direction:column;gap:16px}
+.actionbar{padding:12px 24px 28px;display:flex;flex-direction:column;gap:8px;background:var(--color-paper);border-top:1px solid var(--color-rule)}
+
+/* controls */
+.btn-primary,.btn-secondary{display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 20px;border-radius:var(--radius-input);font-weight:500;font-size:var(--text-md);text-decoration:none;cursor:pointer;border:0;width:100%;transition:transform 120ms cubic-bezier(.16,1,.3,1)}
+.btn-primary{background:var(--color-accent);color:var(--color-accent-ink);box-shadow:var(--shadow-glint),0 0 0 1px var(--color-accent-deep),0 3px 0 var(--color-accent-deep)}
+.btn-primary:hover{background:var(--color-accent-deep)}
+.btn-primary:active{transform:translateY(3px);box-shadow:var(--shadow-glint),0 0 0 1px var(--color-accent-deep)}
+.btn-secondary{background:var(--color-white);color:var(--color-ink);box-shadow:inset 0 1px 0 var(--glint),0 0 0 1px var(--color-rule),0 3px 0 var(--color-rule)}
+.btn-secondary:active{transform:translateY(3px);box-shadow:inset 0 1px 0 var(--glint),0 0 0 1px var(--color-rule)}
+.btn-text{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 8px;background:none;border:0;color:var(--color-ink);font-weight:500;text-decoration:underline;text-underline-offset:.16em;text-decoration-thickness:1px;cursor:pointer;width:100%}
+.btn-text:hover{color:var(--color-accent)}
+
+/* surfaces */
+.card{background:var(--color-white);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:20px;display:flex;flex-direction:column;gap:12px}
+.tray{background:var(--color-paper-2);border-radius:var(--radius-card);padding:16px;box-shadow:var(--shadow-tray)}
+.tray--sunken{background:var(--color-paper-3)}
+.rule{height:1px;background:var(--color-rule);border:0;margin:0}
+
+/* progress feed */
+.step{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:var(--radius-card);background:var(--color-paper-2)}
+.step .icon{width:28px;height:28px;flex:0 0 28px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:var(--color-white);color:var(--color-ink);box-shadow:0 0 0 1px var(--color-rule)}
+.step .title{font-weight:500}
+.step .sub{color:var(--color-muted);font-size:var(--text-sm)}
+.step--done{background:var(--color-accent-soft)}
+.step--done .icon{background:var(--color-accent);color:var(--color-accent-ink);box-shadow:none}
+.step--active{background:var(--color-white);box-shadow:0 0 0 2px var(--color-accent),var(--shadow-card)}
+.step--active .icon{color:var(--color-accent);box-shadow:0 0 0 1px var(--color-accent)}
+.step--waiting{background:var(--color-paper-2);color:var(--color-ink-2)}
+.step--waiting .icon{color:var(--color-muted)}
+.step--needs-you{background:var(--color-white);box-shadow:0 0 0 1px var(--color-rule),var(--shadow-card)}
+
+/* the clipping (signature) */
+.clip{background:var(--color-white);border-radius:var(--radius-input);box-shadow:var(--shadow-card);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.clip .line{font-family:var(--font-mono);font-size:var(--text-sm);line-height:1.45;color:var(--color-ink);display:flex;justify-content:space-between;gap:12px}
+.clip .src{font-size:var(--text-sm);color:var(--color-muted)}
+.hl{background:var(--color-accent-soft);padding:0 4px;border-radius:3px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.evidence{display:flex;flex-direction:column;gap:10px}
+
+/* money */
+.money{display:flex;flex-direction:column;gap:4px}
+.money .amount{font-family:var(--font-mono);font-size:var(--text-2xl);font-weight:500;letter-spacing:-0.01em}
+.money--actual{background:var(--color-ink);color:var(--color-paper);border-radius:var(--radius-card);padding:16px 20px}
+.money--actual .amount{color:var(--color-accent-soft)}
+
+/* badges, chips, alerts */
+.badge{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 10px;border-radius:var(--radius-pill);font-size:var(--text-sm);font-weight:500;width:max-content}
+.badge--demo{background:var(--color-paper-3);color:var(--color-ink)}
+.badge--synthetic{background:transparent;box-shadow:inset 0 0 0 1px var(--color-rule);color:var(--color-ink-2)}
+.badge--estimated{background:transparent;border:1px dashed var(--color-ink-2);color:var(--color-ink-2)}
+.badge--confirmed{background:var(--color-accent);color:var(--color-accent-ink)}
+.badge--review{background:var(--color-white);box-shadow:inset 0 0 0 1px var(--color-ink);color:var(--color-ink)}
+.chip{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:var(--radius-pill);background:var(--color-white);box-shadow:inset 0 0 0 1px var(--color-rule);font-size:var(--text-sm);font-weight:500}
+.alert{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:var(--radius-card);background:var(--color-paper-2);color:var(--color-ink)}
+.alert--warn{background:var(--color-paper-3)}
+.alert .icon{flex:0 0 24px;width:24px;height:24px;color:var(--color-ink)}
+
+/* forms */
+.field{display:flex;flex-direction:column;gap:8px}
+.label{font-weight:500;font-size:var(--text-md)}
+.helper{font-size:var(--text-sm);color:var(--color-muted)}
+.input{min-height:56px;padding:0 16px;border-radius:var(--radius-input);border:1px solid var(--color-muted);background:var(--color-white);font-size:var(--text-md);width:100%}
+.input:focus{border-color:var(--color-accent);outline:3px solid var(--color-focus);outline-offset:2px}
+.tile{display:flex;align-items:center;gap:14px;min-height:96px;padding:18px;border-radius:var(--radius-card);background:var(--color-white);box-shadow:inset 0 0 0 1px var(--color-rule);cursor:pointer;text-align:left;width:100%;border:0}
+.tile--selected{background:var(--color-accent-soft);box-shadow:inset 0 0 0 2px var(--color-accent)}
+.tile .icon{width:32px;height:32px;flex:0 0 32px;color:var(--color-ink)}
+.check{display:inline-flex;align-items:center;gap:12px;min-height:48px;cursor:pointer}
+.check input{width:28px;height:28px;accent-color:var(--color-accent);margin:0}
+
+/* staff shell */
+.page{min-height:900px;background:var(--color-paper);display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 32px;background:var(--color-paper-2);border-bottom:1px solid var(--color-rule);flex-wrap:wrap}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:var(--radius-input);text-decoration:none;color:var(--color-ink-2);font-weight:500}
+.tab--current{background:var(--color-white);color:var(--color-ink);box-shadow:inset 0 0 0 1px var(--color-rule)}
+.content{max-width:1280px;width:100%;margin:0 auto;padding:24px 32px 48px;display:flex;flex-direction:column;gap:24px}
+.panel{background:var(--color-white);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:20px 24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.panel h2{font-size:var(--text-lg)}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.table-wrap{overflow-x:auto}
+.table{width:100%;border-collapse:collapse;font-size:var(--text-sm)}
+.table th{text-align:left;font-weight:500;background:var(--color-paper-3);padding:10px 12px;color:var(--color-ink)}
+.table td{padding:10px 12px;border-bottom:1px solid var(--color-rule);vertical-align:top}
+.table td.num,.table th.num{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.field-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--color-rule);font-size:var(--text-sm)}
+.conf{display:inline-flex;align-items:center;min-height:26px;padding:0 8px;border-radius:var(--radius-pill);background:var(--color-paper-3);font-family:var(--font-mono);font-size:var(--text-sm)}
+.edited{color:var(--color-muted);font-size:var(--text-sm)}
+.audit{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--color-rule);font-size:var(--text-sm)}
+.audit time{font-family:var(--font-mono);color:var(--color-muted);flex:0 0 150px}
+.stat{display:flex;flex-direction:column;gap:2px}
+.stat .figure{font-family:var(--font-mono);font-size:var(--text-xl);font-variant-numeric:tabular-nums}
+.stat .label{font-size:var(--text-sm);color:var(--color-muted);font-weight:400}
+/* charts: ink, accent, mint, paper-3 only; bars carry a direct label */
+.bar{height:28px;border-radius:6px;background:var(--color-accent)}
+.bar--soft{background:var(--color-accent-soft)}
+.bar--ink{background:var(--color-ink)}
+.bar--paper{background:var(--color-paper-3)}
+/* artboard-local layout only; colours and type stay in the kit tokens */
+html,body{overflow-x:clip}
+.skip{position:absolute;left:-999px;top:8px;background:var(--color-paper-2);padding:8px 12px;border-radius:var(--radius-input)}
+.skip:focus{left:8px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+.panel .note{font-size:var(--text-sm);color:var(--color-muted)}
+.bars{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;font-size:var(--text-sm)}
+.bars li{display:grid;grid-template-columns:minmax(0,10rem) minmax(0,1fr) auto;gap:12px;align-items:center}
+.bars .num{text-align:right}
+.legend{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px 20px;font-size:var(--text-sm);color:var(--color-ink-2)}
+.legend li{display:inline-flex;align-items:center;gap:8px}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.wordmark span{font-weight:500;color:var(--color-muted);margin-left:4px}
+.sw{width:16px;height:16px;border-radius:4px;flex:0 0 16px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.table th:nth-child(5),.table td:nth-child(5){white-space:nowrap}
+</style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;700;800&family=Atkinson+Hyperlegible+Mono:wght@400;500&display=swap"></helmet>
+<div class="page">
+  <a class="skip" href="#main">Skip to the content</a>
+  <header class="topbar">
+    <div class="wordmark">Kindred Snap <span>Staff</span></div>
+    <nav class="tabs" aria-label="Staff workspace">
+      <a class="tab tab--current" href="S00-Dashboard.dc.html" aria-current="page">Dashboard</a>
+      <a class="tab" href="S01-staff-queue.dc.html">Queue</a>
+      <a class="tab" href="S02-case-documents.dc.html">Cases</a>
+      <a class="tab" href="S05-case-resolution-history.dc.html">Audit</a>
+    </nav>
+    <span class="badge badge--synthetic">Synthetic data</span>
+  </header>
+
+  <main class="content" id="main">
+    <h1>Dashboard</h1>
+
+    <!-- Region: counts. States: loading = four stats with a muted "Counting" figure; empty = "No open cases" in each figure; error = "Counts could not load. Reload the page." in ink; full = the figures below. -->
+    <section class="panel" aria-labelledby="counts-h">
+      <h2 id="counts-h">Today</h2>
+      <div class="stats">
+        <div class="stat"><span class="figure">6</span><span class="label">Cases in the queue</span></div>
+        <div class="stat"><span class="figure">1</span><span class="label">Cases awaiting a caregiver's approval</span></div>
+        <div class="stat"><span class="figure">1</span><span class="label">Cases that need a specialist's review</span></div>
+        <div class="stat"><span class="figure">1</span><span class="label">Adjustments confirmed by a hospital</span></div>
+      </div>
+      <p class="note">Synthetic demo counts</p>
+    </section>
+
+    <div class="grid-2">
+      <!-- Region: cases by state. States: loading = six label rows with paper-3 bars and no counts; empty = "No cases yet. New cases appear here as caregivers add them."; error = "The state counts could not load. Reload the page."; full = the bars below. -->
+      <section class="panel" aria-labelledby="states-h">
+        <h2 id="states-h">Cases by State</h2>
+        <ul class="bars">
+          <li><span>Reading</span><div class="bar" style="width:100%" aria-hidden="true"></div><span class="num">1</span></li>
+          <li><span>Comparing</span><div class="bar" style="width:100%" aria-hidden="true"></div><span class="num">1</span></li>
+          <li><span>Needs info</span><div class="bar" style="width:100%" aria-hidden="true"></div><span class="num">1</span></li>
+          <li><span>Needs review</span><div class="bar" style="width:100%" aria-hidden="true"></div><span class="num">1</span></li>
+          <li><span>Awaiting approval</span><div class="bar" style="width:100%" aria-hidden="true"></div><span class="num">1</span></li>
+          <li><span>Resolved</span><div class="bar" style="width:100%" aria-hidden="true"></div><span class="num">1</span></li>
+        </ul>
+        <p class="note">One case in each state. Bars are proportional to the count.</p>
+      </section>
+
+      <!-- Region: savings on the demo case. States: loading = three label rows with paper-3 bars and no amounts; empty = "No savings to show until a case has an estimate."; error = "The amounts could not load. Reload the page."; full = the bars below. -->
+      <section class="panel" aria-labelledby="savings-h">
+        <div class="panel-head">
+          <h2 id="savings-h">Savings on the Demo Case</h2>
+          <div class="badges"><span class="badge badge--demo">Demo partner · synthetic data</span><span class="badge badge--synthetic">Simulated response</span></div>
+        </div>
+        <ul class="bars">
+          <li><span>Estimated opportunity</span><div class="bar bar--soft" style="width:100%" aria-hidden="true"></div><span class="num">$409.50</span></li>
+          <li><span>Confirmed adjustment</span><div class="bar" style="width:100%" aria-hidden="true"></div><span class="num">$409.50</span></li>
+          <li><span>Actual patient savings</span><div class="bar bar--ink" style="width:100%" aria-hidden="true"></div><span class="num">$409.50</span></li>
+        </ul>
+        <ul class="legend" aria-label="Legend">
+          <li><i class="sw bar bar--soft" aria-hidden="true"></i>Estimated, before any hospital response</li>
+          <li><i class="sw bar" aria-hidden="true"></i>Confirmed, from the hospital's simulated letter of 2026-11-21</li>
+          <li><i class="sw bar bar--ink" aria-hidden="true"></i>Actual, billed $466.00 minus new balance $56.50</li>
+        </ul>
+        <p class="note">Confirmed requires a basis document. The three amounts happen to match in this demo; the app tracks them separately.</p>
+      </section>
+    </div>
+
+    <!-- Region: queue. States: loading = six rows of paper-3 placeholder cells; empty = "No open cases. New cases appear here as caregivers add them."; error = "The queue could not load. Reload the page."; full = the table below. -->
+    <section class="panel" aria-labelledby="queue-h">
+      <div class="panel-head">
+        <h2 id="queue-h">Queue</h2>
+        <div class="badges"><span class="badge badge--demo">Demo partner · synthetic data</span><span class="badge badge--synthetic">Simulated response</span></div>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr><th scope="col">Case</th><th scope="col">Patient</th><th scope="col">Hospital</th><th scope="col">State</th><th scope="col">Due</th><th scope="col">Next action</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="S02-case-documents.dc.html">Account ending 4821</a></td>
+              <td>Dorothy M. Hale (synthetic)</td>
+              <td>Riverbend Community Hospital, Tacoma, WA</td>
+              <td>Resolved</td>
+              <td class="mono">2026-12-21</td>
+              <td>Confirmed adjustment $409.50 (simulated letter, 2026-11-21); new balance $56.50. Close the case.</td>
+            </tr>
+            <tr>
+              <td>Unreadable upload</td>
+              <td>Walter (synthetic)</td>
+              <td>Riverbend Community Hospital, Tacoma, WA</td>
+              <td>Reading</td>
+              <td>Not read yet</td>
+              <td>Waiting for a new photo or the PDF from the caregiver.</td>
+            </tr>
+            <tr>
+              <td>Missing insurance info</td>
+              <td>Ruth (synthetic)</td>
+              <td>Riverbend Community Hospital, Tacoma, WA</td>
+              <td>Needs info</td>
+              <td class="mono">2026-11-30</td>
+              <td>Waiting for the Medicare Summary Notice from the caregiver.</td>
+            </tr>
+            <tr>
+              <td>No discrepancy found</td>
+              <td>Case B (synthetic)</td>
+              <td>Riverbend Community Hospital, Tacoma, WA</td>
+              <td>Awaiting approval</td>
+              <td class="mono">2026-12-01</td>
+              <td>Caregiver to approve the financial assistance application.</td>
+            </tr>
+            <tr>
+              <td>Possible duplicate EKG</td>
+              <td>Harold (synthetic)</td>
+              <td>Riverbend Community Hospital, Tacoma, WA</td>
+              <td>Needs review</td>
+              <td>Not on file</td>
+              <td>Review the two 93005 lines and the MSN units; ask the hospital for the time of each tracing.</td>
+            </tr>
+            <tr>
+              <td>Integration unavailable</td>
+              <td>Eleanor (synthetic)</td>
+              <td>Riverbend Community Hospital, Tacoma, WA</td>
+              <td>Comparing</td>
+              <td>Not on file</td>
+              <td>Retrying the Medicare connection; unavailable since 10:42.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Patient names in the mini-cases are synthetic placeholders. Due dates shown only where the bill was read.</p>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script></body></html>

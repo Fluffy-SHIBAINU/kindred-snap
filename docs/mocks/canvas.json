@@ -1,0 +1,259 @@
+{
+ "v": 3,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-11-09T03:14:54Z"
+ },
+ "title": "Kindred Snap Mocks",
+ "launch": {
+  "view": "canvas"
+ },
+ "pages": [],
+ "boards": {
+  "L01-Landing.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 2600,
+   "title": "Landing",
+   "expand": "fill",
+   "is_interactive": true
+  },
+  "M01-photo.dc.html": {
+   "x": 0,
+   "y": 2960,
+   "w": 390,
+   "h": 844,
+   "title": "Take a Photo of the Bill",
+   "is_interactive": true
+  },
+  "M02-income.dc.html": {
+   "x": 470,
+   "y": 2960,
+   "w": 390,
+   "h": 844,
+   "title": "Your Income",
+   "is_interactive": true
+  },
+  "M03-working.dc.html": {
+   "x": 940,
+   "y": 2960,
+   "w": 390,
+   "h": 844,
+   "title": "We're On It",
+   "is_interactive": true
+  },
+  "M04-result.dc.html": {
+   "x": 1410,
+   "y": 2960,
+   "w": 390,
+   "h": 844,
+   "title": "Dorothy May Get 75% Off",
+   "is_interactive": true
+  },
+  "M05-done.dc.html": {
+   "x": 1880,
+   "y": 2960,
+   "w": 390,
+   "h": 844,
+   "title": "Done! You Will Hear Back in 2 to 4 Weeks",
+   "is_interactive": true
+  },
+  "M06-resolved.dc.html": {
+   "x": 2350,
+   "y": 2960,
+   "w": 390,
+   "h": 844,
+   "title": "Riverbend Fixed the Bill",
+   "is_interactive": true
+  },
+  "E01-e1_unreadable.dc.html": {
+   "x": 0,
+   "y": 4164,
+   "w": 390,
+   "h": 844,
+   "title": "Unreadable Photo",
+   "is_interactive": true
+  },
+  "E02-e2_missing_insurance.dc.html": {
+   "x": 470,
+   "y": 4164,
+   "w": 390,
+   "h": 844,
+   "title": "Missing Medicare Notice",
+   "is_interactive": true
+  },
+  "E03-e3_no_discrepancy.dc.html": {
+   "x": 940,
+   "y": 4164,
+   "w": 390,
+   "h": 844,
+   "title": "No Discrepancy",
+   "is_interactive": true
+  },
+  "E04-e4_needs_staff_review.dc.html": {
+   "x": 1410,
+   "y": 4164,
+   "w": 390,
+   "h": 844,
+   "title": "Needs Staff Review",
+   "is_interactive": true
+  },
+  "E05-e5_integration_unavailable.dc.html": {
+   "x": 1880,
+   "y": 4164,
+   "w": 390,
+   "h": 844,
+   "title": "Medicare Unavailable",
+   "is_interactive": true
+  },
+  "X00-start.dc.html": {
+   "x": 0,
+   "y": 5368,
+   "w": 390,
+   "h": 844,
+   "title": "Start (Not in V1)",
+   "is_interactive": true
+  },
+  "X01-review-what-we-read.dc.html": {
+   "x": 470,
+   "y": 5368,
+   "w": 390,
+   "h": 844,
+   "title": "Review What We Read",
+   "is_interactive": true
+  },
+  "X02-permission.dc.html": {
+   "x": 940,
+   "y": 5368,
+   "w": 390,
+   "h": 844,
+   "title": "Your Permission",
+   "is_interactive": true
+  },
+  "S00-Dashboard.dc.html": {
+   "x": 0,
+   "y": 6572,
+   "w": 1280,
+   "h": 900,
+   "title": "Staff Dashboard",
+   "expand": "fill"
+  },
+  "S01-staff-queue.dc.html": {
+   "x": 1360,
+   "y": 6572,
+   "w": 1280,
+   "h": 900,
+   "title": "Case Queue",
+   "expand": "fill"
+  },
+  "S02-case-documents.dc.html": {
+   "x": 2720,
+   "y": 6572,
+   "w": 1280,
+   "h": 900,
+   "title": "Case Documents and Fields",
+   "expand": "fill"
+  },
+  "S03-case-findings.dc.html": {
+   "x": 4080,
+   "y": 6572,
+   "w": 1280,
+   "h": 900,
+   "title": "Case Findings",
+   "expand": "fill"
+  },
+  "S04-case-actions.dc.html": {
+   "x": 5440,
+   "y": 6572,
+   "w": 1280,
+   "h": 900,
+   "title": "Case Actions",
+   "expand": "fill"
+  },
+  "S05-case-resolution-history.dc.html": {
+   "x": 6800,
+   "y": 6572,
+   "w": 1280,
+   "h": 900,
+   "title": "Case Resolution and History",
+   "expand": "fill"
+  },
+  "P01-Poster.dc.html": {
+   "x": 0,
+   "y": 7832,
+   "w": 600,
+   "h": 840,
+   "title": "Poster"
+  }
+ },
+ "order": [
+  "L01-Landing.dc.html",
+  "M01-photo.dc.html",
+  "M02-income.dc.html",
+  "M03-working.dc.html",
+  "M04-result.dc.html",
+  "M05-done.dc.html",
+  "M06-resolved.dc.html",
+  "E01-e1_unreadable.dc.html",
+  "E02-e2_missing_insurance.dc.html",
+  "E03-e3_no_discrepancy.dc.html",
+  "E04-e4_needs_staff_review.dc.html",
+  "E05-e5_integration_unavailable.dc.html",
+  "X00-start.dc.html",
+  "X01-review-what-we-read.dc.html",
+  "X02-permission.dc.html",
+  "S00-Dashboard.dc.html",
+  "S01-staff-queue.dc.html",
+  "S02-case-documents.dc.html",
+  "S03-case-findings.dc.html",
+  "S04-case-actions.dc.html",
+  "S05-case-resolution-history.dc.html",
+  "P01-Poster.dc.html"
+ ],
+ "notes": {
+  "row-L": {
+   "x": 0,
+   "y": -240,
+   "text": "Landing \u2014 hero, editorial, theme card (Taste \u00b7 Frontend Design \u00b7 Theme Factory \u00b7 Algorithmic Art)",
+   "kind": "title1",
+   "maxW": 1440
+  },
+  "row-M": {
+   "x": 0,
+   "y": 2720,
+   "text": "Caregiver flow V1 \u2014 full auto: photo, income, working, send, done, resolved",
+   "kind": "title1",
+   "maxW": 2740
+  },
+  "row-E": {
+   "x": 0,
+   "y": 3924,
+   "text": "Edge states \u2014 need human attention (not the V1 auto path)",
+   "kind": "title1",
+   "maxW": 2270
+  },
+  "row-X": {
+   "x": 0,
+   "y": 5128,
+   "text": "Not in V1 \u2014 start, review what we read (staff view), permission (future)",
+   "kind": "title1",
+   "maxW": 1330
+  },
+  "row-S": {
+   "x": 0,
+   "y": 6332,
+   "text": "Staff workspace \u2014 Impeccable operate, UI/UX Pro Max charts",
+   "kind": "title1",
+   "maxW": 8080
+  },
+  "row-P": {
+   "x": 0,
+   "y": 7592,
+   "text": "Poster \u2014 Quiet Ledger (Canvas Design)",
+   "kind": "title1",
+   "maxW": 800
+  }
+ },
+ "designSystems": []
+}
