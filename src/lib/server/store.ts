@@ -23,9 +23,21 @@ export async function getServerStore() {
 async function prepareDemoCase(store: Store) {
   const c = await store.cases.get("demo");
   if (!c || (c.income && c.state !== "created")) return;
-  const now = new Date().toISOString();
-  const consent = { caseId: c.id, grantedAt: now, grantedBy: c.ownerId, role: "helper" as const, scope: "investigate_and_prepare" };
-  await store.consents.put(consent);
-  await store.cases.put({ ...c, state: "created", steps: [], eligibility: undefined, income: { annualCents: 3756000, householdSize: 1, source: "typed" }, consent, updatedAt: now });
-  await runInvestigation(store, c.id, { claims: new SyntheticBlueButton(), policyFor: defaultPolicyFor, now: () => new Date().toISOString() });
+  // Several serverless instances can cold-start together on one database; the last writer of this key prepares, the others leave it alone.
+  const token = crypto.randomUUID();
+  await store.meta.set("demo_prepare_lock", token);
+  await new Promise((r) => setTimeout(r, 200));
+  if ((await store.meta.get("demo_prepare_lock")) !== token) return;
+  try {
+    const fresh = await store.cases.get("demo");
+    if (!fresh || (fresh.income && fresh.state !== "created")) return;
+    const now = new Date().toISOString();
+    const consent = { caseId: fresh.id, grantedAt: now, grantedBy: fresh.ownerId, role: "helper" as const, scope: "investigate_and_prepare" };
+    await store.consents.put(consent);
+    await store.cases.put({ ...fresh, state: "created", steps: [], eligibility: undefined, income: { annualCents: 3756000, householdSize: 1, source: "typed" }, consent, updatedAt: now });
+    await runInvestigation(store, fresh.id, { claims: new SyntheticBlueButton(), policyFor: defaultPolicyFor, now: () => new Date().toISOString() });
+  } catch (e) {
+    // Another instance finished first, or the database hiccuped: the demo case is served as it is.
+    console.error("demo case preparation skipped:", (e as Error).message);
+  }
 }
