@@ -5,7 +5,7 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 | Phase | State | Notes |
 |---|---|---|
 | 0 Handoff scaffolding | done | runbook, tracker, `/build-next`, three pilot hospitals (2026-11-09 13:05 KST) |
-| 1 Domain core | not started | |
+| 1 Domain core | in progress | tooling, money, types, state machine + route done |
 | 2 Adapters and guards | not started | |
 | 3 Caregiver flow | not started | |
 | 4 Staff workspace (lite) | not started | |
@@ -19,6 +19,8 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 
 - 2026-11-09 12:55 KST — Phase 0 started: runbook and tracker written (Fable).
 - 2026-11-09 13:05 KST — Phase 0 done: fixtures/hospitals.json (Cedars-Sinai CA, Alexian Brothers IL, NYU Langone NY) with 2026 FPL $15,960 verified at ASPE (Fable).
+
+- 2026-11-09 13:25 KST — Phase 1: vitest + scripts + env example; money; types; state machine, screenFor, assertSimulated (Fable). Tests green.
 
 ## Blockers
 
