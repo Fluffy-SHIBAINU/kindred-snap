@@ -3,12 +3,22 @@
 import { redirect } from "next/navigation";
 import { runInvestigation } from "@/lib/pipeline";
 import { extractDocument, getCase, HELPER, hrefFor, incomeCentsFrom, now, parseIncome, pipelineDeps, storeDocument, uploadFrom } from "@/lib/server/cases";
+import { ensureWalkCase, isWalkId, walkQuery } from "@/lib/server/walk";
 import type { Consent } from "@/lib/types";
 
 /** Records income, household size and the consent sentence, then runs the whole investigation before showing /working. */
 export async function setIncomeAndStart(formData: FormData): Promise<void> {
   const id = String(formData.get("caseId") ?? "");
+  const walk = isWalkId(id);
   const { store, c } = await getCase(id);
+  if (walk) {
+    // a walk case may be missing on this instance; the hints rebuild it here and on every later page
+    const incomeCents = parseIncome(String(formData.get("income") ?? "")) ?? 3756000;
+    const hh = Number(formData.get("household"));
+    const hints = { incomeCents, householdSize: Number.isInteger(hh) && hh >= 1 && hh <= 20 ? hh : 1 };
+    await ensureWalkCase(store, id, hints);
+    redirect(`/case/${id}/working${walkQuery(hints)}`);
+  }
   if (!c) redirect("/snap");
   if (c.state !== "created") redirect(hrefFor(c));
 
@@ -31,7 +41,8 @@ export async function setIncomeAndStart(formData: FormData): Promise<void> {
 /** "Snap a document instead": reads an income document and fills the income field from it. */
 export async function addIncomeDocument(formData: FormData): Promise<void> {
   const id = String(formData.get("caseId") ?? "");
-  const { store, c } = await getCase(id);
+  const { store } = await getCase(id);
+  const c = await ensureWalkCase(store, id, {});
   if (!c) redirect("/snap");
   const up = await uploadFrom(formData);
   const r = up && (await extractDocument(id, "income", up));

@@ -16,6 +16,8 @@ import { WORKING_STATES } from "@/lib/case/state";
 import { formatUsd } from "@/lib/money";
 import { buildSteps } from "@/lib/progress";
 import { daysLeft, daysLeftText, getCase, hrefFor, shortDate } from "@/lib/server/cases";
+import { getServerStore } from "@/lib/server/store";
+import { ensureWalkCase, parseWalkHints, walkSuffix } from "@/lib/server/walk";
 import type { Case, Finding } from "@/lib/types";
 import { addNoticeAndResume, retryMedicare } from "./actions";
 
@@ -24,13 +26,17 @@ export const maxDuration = 60;
 /** Reads the store per request; nothing here can be prerendered. */
 export const instant = false;
 
-type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ error?: string }> };
+type Props = { params: Promise<{ id: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
 
 /** Mock M03 with the E02 / E04 / E05 variants by state. No primary button while the app works on its own. */
 export default async function WorkingPage({ params, searchParams }: Props) {
   const { id } = await params;
   await connection(); // the due-date and demo-clock reads below are request-time values
-  const { error } = await searchParams;
+  const sp = await searchParams;
+  const error = typeof sp.error === "string" ? sp.error : undefined;
+  const hints = parseWalkHints(sp);
+  const q = walkSuffix(id, hints);
+  await ensureWalkCase(await getServerStore(), id, hints);
   const { store, c } = await getCase(id);
   if (!c) notFound();
 
@@ -46,12 +52,12 @@ export default async function WorkingPage({ params, searchParams }: Props) {
       {error}
     </p>
   );
-  const next = screenFor(c.state) === "/working" ? null : hrefFor(c);
+  const next = screenFor(c.state) === "/working" ? null : hrefFor(c, hints);
 
   let body: ReactNode;
   if (c.state === "needs_notice") body = <NeedsNotice c={c} feed={feed} notice={notice} />;
   else if (c.state === "connector_unavailable") body = <ConnectorUnavailable c={c} feed={feed} notice={notice} />;
-  else if (c.state === "needs_review") body = <NeedsReview c={c} findings={await store.findingsFor(id)} />;
+  else if (c.state === "needs_review") body = <NeedsReview c={c} findings={await store.findingsFor(id)} q={q} />;
   else {
     body = (
       <>
@@ -68,7 +74,7 @@ export default async function WorkingPage({ params, searchParams }: Props) {
         </div>
         <ActionBar>
           <TalkToPerson code={c.code} />
-          {c.state === "ready_to_send" && <TextAction href={`/case/${id}/result`}>Preview the result</TextAction>}
+          {c.state === "ready_to_send" && <TextAction href={`/case/${id}/result${q}`}>Preview the result</TextAction>}
         </ActionBar>
       </>
     );
@@ -161,7 +167,7 @@ function ConnectorUnavailable({ c, feed, notice }: VariantProps) {
 }
 
 /** Mock E04: a finding needs a billing specialist; the evidence is shown, nothing is asked of the hospital. */
-function NeedsReview({ c, findings }: { c: Case; findings: Finding[] }) {
+function NeedsReview({ c, findings, q }: { c: Case; findings: Finding[]; q: string }) {
   const open = findings.filter((f) => f.requiresReview && !f.staffStatus);
   return (
     <>
@@ -180,7 +186,7 @@ function NeedsReview({ c, findings }: { c: Case; findings: Finding[] }) {
         <p className="text-sm text-muted">Nothing has been sent. We&rsquo;ll tell you what they find, usually within 2 business days.</p>
       </div>
       <ActionBar>
-        <PrimaryAction href={`/case/${c.id}`}>Back to my case</PrimaryAction>
+        <PrimaryAction href={`/case/${c.id}${q}`}>Back to my case</PrimaryAction>
         <TalkToPerson code={c.code} />
       </ActionBar>
     </>

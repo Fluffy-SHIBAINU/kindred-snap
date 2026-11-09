@@ -6,6 +6,8 @@ import { PrimaryAction } from "@/components/snap/PrimaryAction";
 import { TalkToPerson } from "@/components/snap/TalkToPerson";
 import { TILE_CLASS, UploadForm } from "@/components/snap/UploadForm";
 import { firstName, getCase, hrefFor } from "@/lib/server/cases";
+import { getServerStore } from "@/lib/server/store";
+import { ensureWalkCase, parseWalkHints } from "@/lib/server/walk";
 import { addIncomeDocument, setIncomeAndStart } from "./actions";
 
 /** The server action runs the whole investigation (four 400ms pauses plus work) inside the request. */
@@ -13,7 +15,7 @@ export const maxDuration = 60;
 /** Reads the store per request; nothing here can be prerendered. */
 export const instant = false;
 
-type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ error?: string }> };
+type Props = { params: Promise<{ id: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
 
 const ERRORS: Record<string, string> = {
   income: "Enter the yearly income as a number, like 37,560.",
@@ -24,10 +26,13 @@ const ERRORS: Record<string, string> = {
 /** Mock M02: income once, household size, the consent sentence, "Start the case". */
 export default async function IncomePage({ params, searchParams }: Props) {
   const { id } = await params;
-  const { error } = await searchParams;
+  const sp = await searchParams;
+  const error = typeof sp.error === "string" ? sp.error : undefined;
+  const hints = parseWalkHints(sp);
+  await ensureWalkCase(await getServerStore(), id, hints);
   const { c } = await getCase(id);
   if (!c) notFound();
-  if (c.state !== "created") redirect(hrefFor(c));
+  if (c.state !== "created") redirect(hrefFor(c, hints));
 
   const first = firstName(c.patientName);
   // the demo fixture arrives prefilled so the video never types a number; a document fills it too

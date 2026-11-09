@@ -6,10 +6,15 @@ import { extractDocument, fieldValue, fixtureKeyOf, HELPER, newCaseCode, now, st
 import { getServerStore } from "@/lib/server/store";
 import type { Case } from "@/lib/types";
 
-const unreadableHref = (reason: string) => "/snap?unreadable=" + encodeURIComponent(reason);
+const WALK_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const newWalkId = () => "walk-" + Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => WALK_ALPHABET[b % 32]).join("");
+
+const unreadableHref =(reason: string) => "/snap?unreadable=" + encodeURIComponent(reason);
 
 /** The bill photo (or the demo bill) becomes a new case in `created`; an unreadable photo re-shows /snap with the reason. */
 export async function createCaseFromUpload(formData: FormData): Promise<void> {
+  // the demo bill is a walk case: it materialises from fixtures on whichever instance serves the next page
+  if (formData.get("demo") === "main") redirect(`/case/${newWalkId()}/income`);
   const up = await uploadFrom(formData);
   if (!up) redirect(unreadableHref("No photo or file was chosen."));
   const id = crypto.randomUUID();

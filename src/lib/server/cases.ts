@@ -9,6 +9,7 @@ import type { CaseState } from "@/lib/case/state";
 import { toCents } from "@/lib/money";
 import { defaultPolicyFor, type PipelineDeps } from "@/lib/pipeline";
 import { getServerStore } from "@/lib/server/store";
+import { walkSuffix, type WalkHints } from "@/lib/server/walk";
 import { formatDate } from "@/lib/templates/facts";
 import type { Case, Document, ExtractedField } from "@/lib/types";
 
@@ -43,10 +44,11 @@ export async function getCase(id: string): Promise<{ store: Store; c: Case | nul
 }
 
 /** The caregiver screen a case resumes at. `created` already holds its bill and waits for income, so it goes to /income rather than screenFor's /snap. */
-export function hrefFor(c: { id: string; state: CaseState }): string {
+export function hrefFor(c: { id: string; state: CaseState }, hints: WalkHints = {}): string {
   const screen = screenFor(c.state);
-  if (screen !== "/snap") return `/case/${c.id}${screen}`;
-  return c.state === "created" ? `/case/${c.id}/income` : "/snap";
+  const q = walkSuffix(c.id, hints);
+  if (screen !== "/snap") return `/case/${c.id}${screen}${q}`;
+  return c.state === "created" ? `/case/${c.id}/income${q}` : "/snap";
 }
 
 export type Upload = { bytes: Uint8Array; mime: string; fileName: string };

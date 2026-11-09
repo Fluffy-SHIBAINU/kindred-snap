@@ -12,19 +12,26 @@ import { deliverResponse, demoClockFor } from "@/lib/caseFlow";
 import { formatUsd } from "@/lib/money";
 import { estimateOpportunity } from "@/lib/savings";
 import { getCase, hrefFor, shortDate } from "@/lib/server/cases";
+import { getServerStore } from "@/lib/server/store";
+import { ensureWalkCase, parseWalkHints, walkSuffix } from "@/lib/server/walk";
 import { formatDate } from "@/lib/templates/facts";
 
 export const instant = false;
 
 /** Mock M05: what was sent (simulated), the case code, the estimate and the hold that was asked for. Each visit checks whether the hospital's simulated reply is due. */
-export default async function DonePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function DonePage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const { id } = await params;
   await connection(); // the due-date and demo-clock reads below are request-time values
+  const hints = parseWalkHints(await searchParams);
+  await ensureWalkCase(await getServerStore(), id, hints);
   const { store, c: before } = await getCase(id);
   if (!before) notFound();
   const letter = (await deliverResponse(store, id, (await demoClockFor(store)).now())) ?? (await store.responses.list({ caseId: id }))[0] ?? null;
   const c = letter ? ((await store.cases.get(id)) ?? before) : before;
-  if (c.state !== "sent" && c.state !== "responded") redirect(hrefFor(c));
+  // once the reply exists, every link carries "responded" so a cold instance rebuilds the case with it
+  const linkHints = c.state === "responded" ? { ...hints, sent: true, responded: true } : hints;
+  if (c.state !== "sent" && c.state !== "responded") redirect(hrefFor(c, linkHints));
+  const q = walkSuffix(id, linkHints);
 
   const [actions, findings] = await Promise.all([store.actionsFor(id), store.findingsFor(id)]);
   const sent = actions.filter((a) => a.sentAt);
@@ -59,8 +66,8 @@ export default async function DonePage({ params }: { params: Promise<{ id: strin
         )}
       </div>
       <ActionBar>
-        {answered ? <PrimaryAction href={`/case/${id}/resolved`}>See what they said</PrimaryAction> : <PrimaryAction href={`/case/${id}`}>Back to my case</PrimaryAction>}
-        {answered && <TextAction href={`/case/${id}`}>Back to my case</TextAction>}
+        {answered ? <PrimaryAction href={`/case/${id}/resolved${q}`}>See what they said</PrimaryAction> : <PrimaryAction href={`/case/${id}${q}`}>Back to my case</PrimaryAction>}
+        {answered && <TextAction href={`/case/${id}${q}`}>Back to my case</TextAction>}
         <TalkToPerson code={c.code} />
       </ActionBar>
     </>

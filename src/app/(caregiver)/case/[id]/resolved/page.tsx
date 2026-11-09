@@ -8,6 +8,8 @@ import { TalkToPerson } from "@/components/snap/TalkToPerson";
 import { TEXT_CLASS } from "@/components/snap/TextAction";
 import { formatUsd } from "@/lib/money";
 import { firstName, getCase, hrefFor, shortDate } from "@/lib/server/cases";
+import { getServerStore } from "@/lib/server/store";
+import { ensureWalkCase, parseWalkHints } from "@/lib/server/walk";
 import { deleteCaseAction } from "./actions";
 
 export const instant = false;
@@ -15,11 +17,13 @@ export const instant = false;
 const SUMMARY = TEXT_CLASS + " cursor-pointer list-none [&::-webkit-details-marker]:hidden";
 
 /** Mock M06: the hospital's (simulated) letter, the three money labels that never merge, and the delete control. */
-export default async function ResolvedPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ResolvedPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const { id } = await params;
+  const hints = parseWalkHints(await searchParams);
+  await ensureWalkCase(await getServerStore(), id, hints);
   const { store, c } = await getCase(id);
   if (!c) notFound();
-  if (c.state !== "responded" && c.state !== "resolved" && c.state !== "closed") redirect(hrefFor(c));
+  if (c.state !== "responded" && c.state !== "resolved" && c.state !== "closed") redirect(hrefFor(c, hints));
 
   const letter = (await store.responses.list({ caseId: id }))[0];
   const res = await store.resolutions.get(id);

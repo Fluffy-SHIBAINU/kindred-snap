@@ -12,6 +12,8 @@ import { matchLines } from "@/lib/compare";
 import { formatUsd } from "@/lib/money";
 import { estimateOpportunity } from "@/lib/savings";
 import { firstName, getCase, hrefFor, shortDate } from "@/lib/server/cases";
+import { getServerStore } from "@/lib/server/store";
+import { ensureWalkCase, parseWalkHints } from "@/lib/server/walk";
 import type { Action, Case, Document } from "@/lib/types";
 import { approveAndSendAction, closeCaseAction } from "./actions";
 
@@ -20,11 +22,13 @@ export const instant = false;
 const SUMMARY = TEXT_CLASS + " cursor-pointer list-none [&::-webkit-details-marker]:hidden";
 
 /** Mock M04 (a discrepancy) and E03 (the bill matches the notice): what the app found and the one tap that sends the letters. */
-export default async function ResultPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ResultPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const { id } = await params;
+  const hints = parseWalkHints(await searchParams);
+  await ensureWalkCase(await getServerStore(), id, hints);
   const { store, c } = await getCase(id);
   if (!c) notFound();
-  if (c.state !== "ready_to_send") redirect(hrefFor(c));
+  if (c.state !== "ready_to_send") redirect(hrefFor(c, hints));
 
   const [docs, findings, actions] = await Promise.all([store.documentsFor(id), store.findingsFor(id), store.actionsFor(id)]);
   const bill = docs.find((d) => d.kind === "bill");
@@ -40,7 +44,7 @@ export default async function ResultPage({ params }: { params: Promise<{ id: str
   const corrected = Math.max(0, (c.balanceCents ?? 0) - gap);
   const estimateNote = [gap > 0 ? `${formatUsd(gap)} removed` : "", reduction > 0 ? `${formatUsd(reduction)} off ${formatUsd(corrected)}` : ""].filter(Boolean).join(" + ");
 
-  const approve = approveAndSendAction.bind(null, id);
+  const approve = approveAndSendAction.bind(null, id, hints);
   const close = closeCaseAction.bind(null, id);
 
   const body = gap > 0 && billLine && msnLine ? (

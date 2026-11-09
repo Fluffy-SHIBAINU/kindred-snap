@@ -3,10 +3,17 @@
 import { notFound, redirect } from "next/navigation";
 import { approveAndSend, closeCase, demoClockFor } from "@/lib/caseFlow";
 import { getServerStore } from "@/lib/server/store";
+import { ensureWalkCase, isWalkId, walkQuery, type WalkHints } from "@/lib/server/walk";
 
 /** "Draft the letters and send": the one approval, then every draft is sent (simulated) and the case is `sent`. */
-export async function approveAndSendAction(id: string): Promise<void> {
+export async function approveAndSendAction(id: string, hints: WalkHints = {}): Promise<void> {
   const store = await getServerStore();
+  if (isWalkId(id)) {
+    // the walk case is rebuilt (on a cold instance) and sent in one go; the hint carries "sent" to every later page
+    const sent = { ...hints, sent: true };
+    await ensureWalkCase(store, id, sent);
+    redirect(`/case/${id}/done${walkQuery(sent)}`);
+  }
   const c = await store.cases.get(id);
   if (!c) notFound();
   // shortcut: the helper is whoever owns the case until Phase 6 adds sign-in
