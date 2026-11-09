@@ -1,0 +1,28 @@
+{
+  "basis": "synthetic_policy",
+  "hospitalCcn": null,
+  "hospitalName": "Riverbend Community Hospital",
+  "freeCareMaxFpl": {
+    "value": 200,
+    "quote": "Households with income at or below 200% of the federal poverty guideline receive a 100% discount on hospital charges.",
+    "sourceUrl": null,
+    "checkedOn": null
+  },
+  "tiers": {
+    "value": [
+      { "maxFplInclusive": 300, "discountPercent": 75 },
+      { "maxFplInclusive": 400, "discountPercent": 50 }
+    ],
+    "quote": "Households with income between 201% and 300% of the federal poverty guideline receive a 75% discount; households between 301% and 400% receive a 50% discount.",
+    "sourceUrl": null,
+    "checkedOn": null
+  },
+  "windowDays": {
+    "value": 240,
+    "quote": "Applications are accepted up to 240 days after the date of the first billing statement following discharge.",
+    "sourceUrl": null,
+    "checkedOn": null
+  },
+  "phone": { "value": null, "quote": null, "sourceUrl": null, "checkedOn": null },
+  "formUrl": { "value": null, "quote": null, "sourceUrl": null, "checkedOn": null }
+}
