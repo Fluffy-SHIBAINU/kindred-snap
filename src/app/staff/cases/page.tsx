@@ -15,7 +15,7 @@ export default async function StaffCases() {
   return (
     <>
       <h1 className="text-2xl">Cases</h1>
-      <Panel id="cases" title={`All Cases: ${rows.length}`} badges={<><Badge tone="demo">Demo partner · synthetic data</Badge><Badge tone="synthetic">Simulated</Badge></>}>
+      <Panel id="cases" title={`All Cases: ${rows.length}`} badges={<><Badge tone="synthetic">Simulated</Badge></>}>
         {rows.length === 0 ? <p>No cases yet. New cases appear here as caregivers add them.</p> : <QueueTable rows={rows} />}
         <Note>Every patient is synthetic. Closed cases stay listed; a deleted case keeps only its code.</Note>
       </Panel>

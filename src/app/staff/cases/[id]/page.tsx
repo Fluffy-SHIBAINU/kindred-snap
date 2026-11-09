@@ -44,7 +44,6 @@ const confidence = (n: number) => `${n >= 0.9 ? "High" : n >= 0.7 ? "Medium" : "
 function Badges() {
   return (
     <>
-      <Badge tone="demo">Demo partner · synthetic data</Badge>
       <Badge tone="synthetic">Simulated</Badge>
     </>
   );

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DemoBadge, SimulatedBadge } from "@/components/snap/Badges";
+import { SimulatedBadge } from "@/components/snap/Badges";
 import { Clipping } from "@/components/snap/Clipping";
 import { MoneyBlock } from "@/components/snap/MoneyBlock";
 import GroundCard from "@/components/landing/GroundCard";
@@ -50,8 +50,7 @@ export default function Landing() {
                 <a href="/snap" className={primary}>Snap a bill</a>
                 <a href="/case/demo/result" className={secondary}>See a case</a>
               </div>
-              <DemoBadge />
-            </div>
+              </div>
             <div className="h-[844px] w-full max-w-[390px] justify-self-center overflow-hidden rounded-[28px] bg-paper shadow-card ring-1 ring-rule">
               <ResultPreview />
             </div>
@@ -61,7 +60,6 @@ export default function Landing() {
         <section aria-labelledby="how-h" className="py-24">
           <div className={`${wrap} flex flex-col gap-4`}>
             <h2 id="how-h" className="text-3xl">How a Case Moves</h2>
-            <DemoBadge />
             <div className="mt-8 grid gap-8 lg:grid-cols-3">
               <div className="flex min-w-0 flex-col gap-4">
                 <h3>Read It</h3>
@@ -74,7 +72,7 @@ export default function Landing() {
                 <Clipping
                   line={`${r.msnLine.n} ${r.msnLine.service.replace(/ \(\d{4}-\d{2}-\d{2}\)$/, "")}`}
                   amount={formatUsd(r.msnLine.youMayBeBilledCents)}
-                  source={`Medicare Summary Notice, line ${r.msnLine.n}, you may be billed`}
+                  source={<><SimulatedBadge /><span>Medicare Summary Notice, line {r.msnLine.n}, you may be billed</span></>}
                 />
                 <p className="text-sm text-ink-2">
                   The bill asks for <span className={mono}>{formatUsd(r.owesCents)}</span> where Medicare allows{" "}
@@ -95,7 +93,6 @@ export default function Landing() {
           <div className={wrap}>
             <GroundCard>
               <div className="flex flex-col gap-4">
-                <DemoBadge />
                 <h3 className="text-xl text-inherit">
                   A <span className={mono}>{lineAmount}</span> Line Medicare Says the Patient Does Not Owe
                 </h3>
@@ -115,7 +112,6 @@ export default function Landing() {
       <footer className="border-t border-rule py-8">
         <div className={`${wrap} flex flex-wrap items-center gap-6`}>
           <span className="text-lg font-extrabold tracking-[-0.02em]">Kindred Snap</span>
-          <DemoBadge />
           <span className="grow" />
           <a href="/staff" className={`inline-flex min-h-12 items-center font-medium underline hover:text-accent ${focus}`}>Staff workspace</a>
           <span className="text-sm text-muted">Policy data: Waive atlas, CC BY 4.0.</span>

@@ -13,7 +13,6 @@ const pct = (n: number, max: number) => (max > 0 ? (n / max) * 100 : 0);
 function DemoBadges() {
   return (
     <>
-      <Badge tone="demo">Demo partner · synthetic data</Badge>
       <Badge tone="synthetic">Simulated</Badge>
     </>
   );

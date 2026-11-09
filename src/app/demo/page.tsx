@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
-import { DemoBadge, SimulatedBadge } from "@/components/snap/Badges";
+import { SimulatedBadge } from "@/components/snap/Badges";
 import { DEMO_CASE_ID, demoClockFor } from "@/lib/caseFlow";
 import { demoControlsEnabled } from "@/lib/server/flags";
 import { getServerStore } from "@/lib/server/store";
@@ -26,7 +26,6 @@ export default async function DemoPage() {
     <main className="mx-auto flex min-h-dvh w-full max-w-[640px] flex-col gap-6 px-6 py-10 text-ink">
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="text-2xl">Demo Controls</h1>
-        <DemoBadge />
         <SimulatedBadge />
       </div>
       <p>For the demo video. Everything here moves the in-process demo store; nothing leaves this server.</p>

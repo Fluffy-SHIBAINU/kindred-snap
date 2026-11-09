@@ -15,7 +15,7 @@ const str = (fd: FormData, key: string) => String(fd.get(key) ?? "");
 /** Known failures come back to the tab as a message; anything else is a bug and surfaces as one. */
 function message(e: unknown): string {
   if (e instanceof ReasonRequired || e instanceof BasisRequired || e instanceof NotFoundInCase || e instanceof WrongState) return e.message;
-  if (e instanceof Error && /New balance must be|not a number|Not a dollar amount/i.test(e.message)) return e.message;
+  if (e instanceof Error && /New balance must be|not a number|not an amount|Not a dollar amount/i.test(e.message)) return e.message;
   throw e;
 }
 
