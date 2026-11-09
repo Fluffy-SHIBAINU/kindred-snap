@@ -17,14 +17,14 @@ export default function GroundCard({ children }: { children: React.ReactNode }) 
   const [i, setI] = useState(0);
   const g = GROUNDS[i];
   return (
-    <div className="grid gap-6 md:grid-cols-2 md:items-center">
+    <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
       <div className="flex flex-col gap-4">
-        <h2 className="text-xl font-bold">One system, three grounds</h2>
+        <h2 id="ground-h" className="text-3xl">One System, Three Grounds</h2>
         <p>The same screen on white paper, the green ground and night. Press to change.</p>
         <button
           type="button"
           onClick={() => setI((i + 1) % GROUNDS.length)}
-          className="h-14 w-fit min-w-52 rounded-input bg-white px-5 font-medium shadow-[inset_0_1px_0_#fff,0_0_0_1px_var(--color-rule),0_3px_0_var(--color-rule)] transition-transform duration-[120ms] active:translate-y-[3px]"
+          className="h-14 w-fit min-w-52 rounded-input focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-focus bg-white px-5 font-medium shadow-[inset_0_1px_0_#fff,0_0_0_1px_var(--color-rule),0_3px_0_var(--color-rule)] transition-transform duration-[120ms] active:translate-y-[3px]"
         >
           Change the ground
         </button>

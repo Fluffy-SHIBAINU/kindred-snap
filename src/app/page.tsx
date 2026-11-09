@@ -1,69 +1,126 @@
-import Image from "next/image";
+import type { Metadata } from "next";
+import { DemoBadge, SimulatedBadge } from "@/components/snap/Badges";
+import { Clipping } from "@/components/snap/Clipping";
+import { MoneyBlock } from "@/components/snap/MoneyBlock";
+import GroundCard from "@/components/landing/GroundCard";
+import ResultPreview, { demoResult } from "@/components/landing/ResultPreview";
+import WindowDust from "@/components/landing/WindowDust";
+import { formatUsd } from "@/lib/money";
 
-export default function Home() {
+export const metadata: Metadata = { title: "Kindred Snap" };
+
+const focus = "focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-focus";
+const btnShape = "inline-flex min-h-14 min-w-[220px] items-center justify-center rounded-input px-5 font-medium no-underline transition-transform duration-150 ease-out hover:-translate-y-px active:translate-y-[3px]";
+const btn = `${btnShape} ${focus}`;
+const primary = `${btn} bg-accent text-accent-ink shadow-[0_0_0_1px_var(--color-accent-deep),0_3px_0_var(--color-accent-deep)] hover:bg-accent-deep`;
+const secondary = `${btn} bg-white text-ink shadow-[0_0_0_1px_var(--color-rule),0_3px_0_var(--color-rule)] hover:text-accent`;
+const wrap = "mx-auto w-full max-w-[1280px] px-4 sm:px-8";
+const mono = "font-mono [font-variant-numeric:tabular-nums]";
+
+export default function Landing() {
+  const r = demoResult();
+  const lineAmount = formatUsd(r.billLine.chargeCents);
+  const billClip = (
+    <Clipping
+      line={`${r.billLine.n} ${r.billLine.code} ${r.billLine.description}`}
+      amount={lineAmount}
+      source={`Bill, line ${r.billLine.n}, statement dated ${r.statementDate}`}
+    />
+  );
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <div className="flex min-h-dvh flex-col bg-paper text-ink">
+      <a href="#main" className={`sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-input focus:bg-white focus:px-4 focus:py-3 focus:font-medium ${focus}`}>
+        Skip to content
+      </a>
+
+      <main id="main" className="flex flex-col">
+        <section aria-labelledby="hero-h" className="relative flex items-center overflow-hidden lg:min-h-[900px]">
+          <WindowDust />
+          <div className={`${wrap} relative grid items-center gap-16 py-12 lg:grid-cols-[minmax(0,1fr)_390px] lg:py-7`}>
+            <div className="flex min-w-0 flex-col gap-6 motion-safe:animate-in motion-safe:fade-in motion-safe:duration-[250ms]">
+              <h1 id="hero-h" className="max-w-[15ch] text-3xl leading-[1.15] tracking-[-0.02em] lg:text-display">
+                Hospital Bills, Handled for Your Parent.
+              </h1>
+              <p className="max-w-[36ch] text-lg">Photograph the bill and Medicare notice; it finds the gap and drafts the letter.</p>
+              <p className="max-w-[48ch] text-ink-2">
+                Every finding shows the bill line it rests on, and the hospital&apos;s own assistance policy is quoted, not summarised.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <a href="/snap" className={primary}>Snap a bill</a>
+                <a href="/case/demo/result" className={secondary}>See a case</a>
+              </div>
+              <DemoBadge />
+            </div>
+            <div className="h-[844px] w-full max-w-[390px] justify-self-center overflow-hidden rounded-[28px] bg-paper shadow-card ring-1 ring-rule">
+              <ResultPreview />
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="how-h" className="py-24">
+          <div className={`${wrap} flex flex-col gap-4`}>
+            <h2 id="how-h" className="text-3xl">How a Case Moves</h2>
+            <DemoBadge />
+            <div className="mt-8 grid gap-8 lg:grid-cols-3">
+              <div className="flex min-w-0 flex-col gap-4">
+                <h3>Read It</h3>
+                <p className="max-w-[40ch]">Snap reads every line of the hospital bill and keeps the exact text it rests on.</p>
+                {billClip}
+              </div>
+              <div className="flex min-w-0 flex-col gap-4">
+                <h3>Compare It</h3>
+                <p className="max-w-[40ch]">Medicare&apos;s notice for the same visit says this item is included in the CT scan payment.</p>
+                <Clipping
+                  line={`${r.msnLine.n} ${r.msnLine.service.replace(/ \(\d{4}-\d{2}-\d{2}\)$/, "")}`}
+                  amount={formatUsd(r.msnLine.youMayBeBilledCents)}
+                  source={`Medicare Summary Notice, line ${r.msnLine.n}, you may be billed`}
+                />
+                <p className="text-sm text-ink-2">
+                  The bill asks for <span className={mono}>{formatUsd(r.owesCents)}</span> where Medicare allows{" "}
+                  <span className={mono}>{formatUsd(r.allowedCents)}</span>, a gap of <span className={mono}>{lineAmount}</span>: this one line.
+                </p>
+              </div>
+              <div className="flex min-w-0 flex-col gap-4">
+                <h3>Resolve It</h3>
+                <p className="max-w-[40ch]">You approve the letter before anything is sent, and the hospital&apos;s answer updates the case.</p>
+                <MoneyBlock amountCents={r.estimate.cents} kind="confirmed" note="Confirmed adjustment, letter dated 2026-11-21" />
+                <SimulatedBadge />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="ground-h" className="bg-paper-2 py-24">
+          <div className={wrap}>
+            <GroundCard>
+              <div className="flex flex-col gap-4">
+                <DemoBadge />
+                <h3 className="text-xl text-inherit">
+                  A <span className={mono}>{lineAmount}</span> Line Medicare Says the Patient Does Not Owe
+                </h3>
+                {billClip}
+                <a
+                  href="/case/demo/result"
+                  className={`${btnShape} w-full bg-(--card-btn-bg) text-[color:var(--card-btn-ink)] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-current`}
+                >
+                  Read the letter
+                </a>
+              </div>
+            </GroundCard>
+          </div>
+        </section>
       </main>
+
+      <footer className="border-t border-rule py-8">
+        <div className={`${wrap} flex flex-wrap items-center gap-6`}>
+          <span className="text-lg font-extrabold tracking-[-0.02em]">Kindred Snap</span>
+          <DemoBadge />
+          <span className="grow" />
+          <a href="/staff" className={`inline-flex min-h-12 items-center font-medium underline hover:text-accent ${focus}`}>Staff workspace</a>
+          <span className="text-sm text-muted">Policy data: Waive atlas, CC BY 4.0.</span>
+        </div>
+      </footer>
     </div>
   );
 }
