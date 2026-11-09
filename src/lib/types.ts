@@ -148,8 +148,12 @@ export type Case = {
   income: { annualCents: number; householdSize: number; source: "typed" | "document" } | null;
   dueDate?: string;
   balanceCents?: number;
+  /** the hospital's tier for this household as the pipeline computed it (an estimate); absent until the help-program step runs */
+  eligibility?: Eligibility;
   steps: Step[];
   sentAt?: string;
   createdAt: string;
   updatedAt: string;
+  /** set on the tombstone `deleteCaseData` leaves behind; personal fields are blank from then on */
+  deletedAt?: string;
 };
