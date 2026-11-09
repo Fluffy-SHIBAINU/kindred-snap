@@ -36,7 +36,7 @@ npm run typecheck                 # tsc --noEmit
 npm run build
 ```
 
-`ATLAS_DIR=/path/to/waive-data/data/atlas` points the atlas loader at the full nine-state export on this machine; without it only `fixtures/atlas/ma.json` (committed) is loaded.
+The Waive atlas is a source, never a copy: `git submodule update --init` checks out the private `waive-data` repository at `vendor/waive-data` and the loader reads `vendor/waive-data/data/atlas/*.json` (all states). `ATLAS_DIR` points at another checkout. Nothing from the atlas is committed here except `fixtures/hospitals.json`, a derived record of the three pilot hospitals with quotes and sources.
 
 ## Layout
 
@@ -52,7 +52,8 @@ src/lib/atlas.ts         Waive atlas loader (fixtures/atlas or ATLAS_DIR)
 src/lib/savings.ts       estimated / confirmed / actual rules
 src/lib/adapters/        extract (gemini, fixture), claims (synthetic Blue Button), hospital (demo partner), store (memory, supabase)
 src/lib/audit.ts         append-only audit events
-fixtures/                synthetic case, edge cases, atlas exports, hospitals.json (the three pilot hospitals)
+fixtures/                synthetic case, edge cases, hospitals.json (the three pilot hospitals); no atlas copies
+vendor/waive-data/       git submodule: the private Waive atlas source (data/atlas/*.json)
 supabase/migrations/     SQL (additive only)
 tests/                   vitest specs mirror src/lib
 docs/BUILD.md            the phased build runbook; docs/build/STATUS.md the tracker
