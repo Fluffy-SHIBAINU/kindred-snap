@@ -10,9 +10,9 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 | 3 Caregiver flow | next | shell first, then the six screens |
 | 4 Staff workspace (lite) | not started | |
 | 5 Demo video | not started | |
-| 6 Persistence and auth | not started | |
+| 6 Persistence and auth | in progress | project + schema done via MCP; store and auth code next; service-role key needed |
 | 7 Landing and polish | not started | |
-| 8 Deploy | not started | |
+| 8 Deploy | in progress | Vercel project linked, env set; first deploy after Phase 3 |
 | 9 Docs and honest report | not started | |
 
 ## Log
@@ -29,5 +29,6 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 
 ## Blockers
 
-- Phase 6: Supabase project creation via the MCP was refused by the permission classifier (shared resource). A human creates the free project `kindred-snap` in the Fluffy-SHIBAINU org (or allows `create_project`), then sets the three Supabase values in `.env.local`.
+- Phase 6: Supabase project `kindred-snap` exists (ref `kdbqjygxyykdwpjmxyjh`, us-west-1, https://kdbqjygxyykdwpjmxyjh.supabase.co); the schema migration `kindred_snap_init` is applied with RLS. Still needed from a human: the service-role key in `.env.local` and in Vercel (`SUPABASE_SERVICE_ROLE_KEY`), which the MCP does not expose; until then `STORE=memory`.
+- Phase 8: Vercel project `kindred-snap` is linked (team org); production env has EXTERNAL_ACTIONS, EXTRACTOR=fixture, STORE=memory and the public Supabase URL/anon key. No bypass flags in production (the classifier refused them; staff pages stay not-available on the deployed site until Phase 6 auth).
 
