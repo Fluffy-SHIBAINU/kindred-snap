@@ -15,6 +15,8 @@ const hyperlegibleMono = Atkinson_Hyperlegible_Mono({
   weight: ["400", "500"],
   variable: "--font-mono",
   display: "swap",
+  // next/font has no fallback metrics for this family yet; skip the synthetic fallback instead of warning.
+  adjustFontFallback: false,
 });
 
 export const metadata: Metadata = {
