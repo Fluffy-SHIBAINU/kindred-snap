@@ -1,0 +1,208 @@
+{
+ "patient": {
+  "name": "Dorothy M. Hale (synthetic)",
+  "age": 74,
+  "coverage": "Original Medicare, Part A and Part B; no Medigap, no Medicaid; Part B deductible met earlier in 2026 (synthetic)",
+  "medicare_id_masked": "1EG4-***-**72"
+ },
+ "caregiver": {
+  "name": "Jenna Hale (synthetic)",
+  "relation": "Daughter; authorized representative (signed authorization at setup, stored with the case)"
+ },
+ "hospital": {
+  "name": "Riverbend Community Hospital",
+  "label": "Demo partner \u2014 synthetic",
+  "city_state": "Tacoma, WA"
+ },
+ "bill": {
+  "statement_date": "2026-10-20",
+  "due_date": "2026-11-30",
+  "account_masked": "****4821",
+  "service_date": "2026-09-14",
+  "lines": [
+   {
+    "n": 1,
+    "code": "99284",
+    "description": "Emergency department visit, moderate complexity",
+    "charge": 1480
+   },
+   {
+    "n": 2,
+    "code": "74177",
+    "description": "CT scan, abdomen and pelvis, with contrast",
+    "charge": 2950
+   },
+   {
+    "n": 3,
+    "code": "Q9967",
+    "description": "Contrast material for CT (low osmolar), 100 mL",
+    "charge": 240
+   },
+   {
+    "n": 4,
+    "code": "96374",
+    "description": "Intravenous push, medication (anti-nausea)",
+    "charge": 310
+   },
+   {
+    "n": 5,
+    "code": "71046",
+    "description": "Chest X-ray, 2 views",
+    "charge": 380
+   }
+  ],
+  "total_charges": 5360,
+  "adjustments": 3990,
+  "insurance_paid": 904,
+  "patient_owes": 466
+ },
+ "msn": {
+  "period": "Part B Medicare Summary Notice for claims processed 07/01/2026 \u2013 09/30/2026; this claim processed 2026-10-02 (synthetic)",
+  "lines": [
+   {
+    "n": 1,
+    "service": "99284 Emergency department visit, moderate complexity (2026-09-14)",
+    "billed": 1480,
+    "approved": 420,
+    "medicare_paid": 336,
+    "you_may_be_billed": 84,
+    "note": "Approved. 20% coinsurance; deductible already met."
+   },
+   {
+    "n": 2,
+    "service": "74177 CT abdomen and pelvis with contrast (2026-09-14)",
+    "billed": 2950,
+    "approved": 465,
+    "medicare_paid": 372,
+    "you_may_be_billed": 93,
+    "note": "Approved. 20% coinsurance."
+   },
+   {
+    "n": 3,
+    "service": "Q9967 Contrast material, low osmolar, 100 mL (2026-09-14)",
+    "billed": 240,
+    "approved": 0,
+    "medicare_paid": 0,
+    "you_may_be_billed": 0,
+    "note": "Payment for this item is included in the payment for another service on this claim (the CT scan). The facility may not bill you separately for it."
+   },
+   {
+    "n": 4,
+    "service": "96374 Intravenous push, medication (2026-09-14)",
+    "billed": 310,
+    "approved": 150,
+    "medicare_paid": 120,
+    "you_may_be_billed": 30,
+    "note": "Approved. 20% coinsurance."
+   },
+   {
+    "n": 5,
+    "service": "71046 Chest X-ray, 2 views (2026-09-14)",
+    "billed": 380,
+    "approved": 95,
+    "medicare_paid": 76,
+    "you_may_be_billed": 19,
+    "note": "Approved. 20% coinsurance."
+   }
+  ],
+  "max_you_may_be_billed": 226
+ },
+ "discrepancy": {
+  "amount": 240,
+  "plain_explanation": "The hospital bill asks for $466.00. Medicare's own notice for the same visit says the most the hospital may bill you is $226.00. The difference is exactly $240.00, which is line 3 on the bill: the contrast dye used for the CT scan. Medicare treats that dye as part of the CT scan payment, so it shows $0.00 as your share. It looks like the hospital's billing system passed that $240.00 on to you instead of writing it off. This is worth asking the hospital to correct before the Nov 30 due date.",
+  "evidence": [
+   "Bill line 3 (Q9967, contrast material, charge $240.00) \u2194 MSN line 3 (Q9967): approved $0.00, Medicare paid $0.00, 'you may be billed' $0.00, note: payment included in another service.",
+   "Bill 'patient owes' $466.00 (statement 2026-10-20, account ****4821) \u2194 MSN 'Maximum you may be billed' $226.00 for the same date of service 2026-09-14.",
+   "Bill lines 1, 2, 4, 5 \u2194 MSN lines 1, 2, 4, 5: each bill charge matches the MSN 'amount facility charged' to the cent, and 20% of each approved amount ($84 + $93 + $30 + $19) sums to the MSN total $226.00.",
+   "$466.00 \u2212 $226.00 = $240.00 = bill line 3 charge (no other line can explain the gap)."
+  ],
+  "uncertainty": "This is a strong match, not proof. The MSN reflects the claim as processed on 2026-10-02; if the hospital later submitted a corrected claim, Medicare's figures could change. The bill is a summary statement, so the $240.00 is inferred from the totals gap matching line 3 exactly rather than from a per-line patient-responsibility column. The hospital may also have a reason we cannot see (for example a non-covered-item notice signed at the visit). The app therefore asks the hospital to review and explain, rather than asserting an overcharge.",
+  "rule_basis": "Under Medicare's hospital outpatient prospective payment system, contrast agents such as Q9967 are packaged (payment status indicator N): their payment is included in the payment for the primary procedure, so there is no separate Medicare-approved amount and no separate patient coinsurance. A participating hospital accepting Medicare assignment may collect only the deductible and coinsurance Medicare calculates on approved amounts, which the MSN states as 'Maximum you may be billed'. Billing the beneficiary for a packaged item on top of that is not permitted. Synthetic demo: verify the current status indicator for Q9967 in the CMS Addendum B at build time."
+ },
+ "income": {
+  "annual": 37560,
+  "household_size": 1,
+  "source": "Typed by caregiver Jenna Hale at setup (no document uploaded): Social Security $2,050/month + pension $1,080/month = $3,130/month \u00d7 12 = $37,560/year. Unverified self-report; the hospital may ask for proof."
+ },
+ "fap_policy": {
+  "tiers": [
+   {
+    "max_fpl_percent": 200,
+    "discount_percent": 100
+   },
+   {
+    "max_fpl_percent": 300,
+    "discount_percent": 75
+   },
+   {
+    "max_fpl_percent": 400,
+    "discount_percent": 50
+   }
+  ],
+  "fpl_basis_note": "Uses the 2025 HHS poverty guideline for a 1-person household in the 48 contiguous states: $15,650 (published January 2025). The 2026 guideline is normally published in January 2026 and MUST be verified and swapped in at build time (one constant, FPL_1_PERSON). The FAP tiers are the synthetic demo partner's policy, not any real hospital's."
+ },
+ "assistance": {
+  "fpl_percent": 240,
+  "tier_discount_percent": 75,
+  "estimated_reduction": 169.5,
+  "status_label": "Estimated \u2014 appears to fall in the 75% discount tier (240% of FPL). Not confirmed by the hospital; applied to the corrected balance of $226.00, not to the $466.00 billed."
+ },
+ "proposed_actions": [
+  {
+   "kind": "correction_request",
+   "title": "Ask Patient Financial Services to remove the $240.00 contrast charge",
+   "summary": "Points the hospital to MSN line 3, asks for a corrected statement and a hold on the account while they review. Caregiver reads, can edit, then taps Approve to send. Nothing is sent before the tap.",
+   "draft_excerpt": "To: Patient Financial Services, Riverbend Community Hospital. Re: account ending 4821, statement dated October 20, 2026, service date September 14, 2026, patient Dorothy Hale. The statement asks for $466.00. Medicare's Summary Notice for the same visit says the most I may be billed is $226.00. The $240.00 difference is line 3 on the statement (Q9967, contrast material). The Medicare notice shows this item as included in the payment for the CT scan, with $0.00 patient responsibility. Please review the account, remove the $240.00 if it was billed to me in error, send a corrected statement, and place the account on hold until this is resolved. If you believe the charge is correct, please explain why in writing. \u2014 Jenna Hale, authorized representative for Dorothy Hale (authorization attached)."
+  },
+  {
+   "kind": "financial_assistance_application",
+   "title": "Apply for the hospital's financial assistance program",
+   "summary": "Pre-fills the demo partner's FAP form from the income typed at setup. Asks the hospital to apply its 75% tier to the corrected balance. Caregiver confirms the income figure and taps Approve. Eligibility is the hospital's decision.",
+   "draft_excerpt": "I am applying for financial assistance for Dorothy Hale, account ending 4821. Household size: 1. Annual income: $37,560 (Social Security and a pension). That is about 240% of the federal poverty guideline. Under your published Financial Assistance Policy this appears to fall in the 75% discount tier. Please apply the discount to the balance after the correction requested separately is processed. I can provide income documents on request. I understand the hospital decides eligibility. \u2014 Jenna Hale, authorized representative."
+  }
+ ],
+ "simulated_response": {
+  "days_later": 12,
+  "text": "SYNTHETIC \u2014 simulated letter from Riverbend Community Hospital Patient Financial Services, dated 2026-11-21. 'Re: account ending 4821. We reviewed your request of November 9. Line Q9967 (contrast material, $240.00) is packaged with the CT scan under Medicare outpatient payment rules and should not have been billed to the patient. We have removed it; the corrected patient balance is $226.00. Your financial assistance application was approved at the 75% tier (household income at 240% of the federal poverty guideline). A discount of $169.50 has been applied. Your new balance is $56.50, due December 21, 2026. No collection activity occurred during review.'",
+  "new_balance": 56.5
+ },
+ "outcome": {
+  "estimated_opportunity": 409.5,
+  "confirmed_adjustment": 409.5,
+  "patient_savings": 409.5,
+  "basis": "SYNTHETIC. Estimated opportunity ($240.00 discrepancy + $169.50 estimated FAP reduction = $409.50) was computed by the app before any response. Confirmed adjustment ($240.00 removed + $169.50 discount = $409.50) comes from the simulated hospital letter dated 2026-11-21. Patient savings equals the confirmed adjustment because the patient had been asked to pay $466.00 and had paid nothing: $466.00 \u2212 $56.50 = $409.50. The three numbers happen to match in this demo; the app still tracks them separately because the hospital's answer often differs from the estimate."
+ },
+ "edge_cases": [
+  {
+   "name": "Unreadable upload",
+   "fixture": "fixtures/bill-blurry.jpg: the same Oct 20 statement photographed in a dim room with motion blur; roughly 40% of characters unresolvable. Gemini extraction returns patient_owes = null and confidence < 0.5 on every total, with source boxes only for the hospital name and account number.",
+   "app_behaviour": "Does not guess or fill gaps. Keeps the two fields it did read, shows the photo back with the problem, and offers one next action (retake) plus a secondary path (upload the PDF from the hospital portal). Progress is saved; returning later resumes here.",
+   "screen_copy": "We couldn't read this photo. The numbers are too blurry to trust, so we won't use them. Please take another photo in good light, with the whole page flat. [Take another photo] [Upload a PDF instead] Nothing you've done is lost."
+  },
+  {
+   "name": "Missing insurance info (no MSN)",
+   "fixture": "Bill fixture only; no MSN uploaded; the synthetic Blue Button adapter state is 'not connected'.",
+   "app_behaviour": "Extracts the bill and shows the due date and total. Explains that checking the bill needs Medicare's record of the same visit. Offers to connect Medicare (consent screen first) or snap the paper MSN. Does not call anything a discrepancy or estimate savings until the MSN exists.",
+   "screen_copy": "This bill is for $466.00, due Nov 30. To check it, we need Medicare's record of the same visit (the Medicare Summary Notice). You can connect Medicare, or take a photo of the paper notice. Until then we can't tell whether the amount is right. [Connect Medicare] [Photo of the notice]"
+  },
+  {
+   "name": "No discrepancy found",
+   "fixture": "Case B (same demo partner, synthetic patient 'Case B'): bill with 2 lines \u2014 99283 ED visit $1,120.00 and 71046 chest X-ray $380.00; total charges $1,500.00; adjustments $1,120.00; Medicare paid $304.00; patient owes $76.00; due 2026-12-01. MSN: approved $285.00 and $95.00; Medicare paid $228.00 + $76.00 = $304.00; you may be billed $57.00 + $19.00 = $76.00.",
+   "app_behaviour": "Compares line by line, finds every line consistent, says so plainly with the evidence, and does not invent a dispute. Surfaces the due date. Still offers the financial assistance check as a separate, optional step.",
+   "screen_copy": "Good news: this bill matches Medicare's record. Medicare says you may be billed $76.00 and that is what the hospital asks for. We found nothing to dispute. It is due Dec 1. You may still qualify for the hospital's financial assistance; we can prepare that application if you want. [Check assistance] [Done for now]"
+  },
+  {
+   "name": "Potential issue needing staff review",
+   "fixture": "Bill with two identical lines on 2026-09-14: 93005 EKG tracing, $165.00 each. MSN shows 93005 with 2 units, both approved. Same-day ED chest-pain evaluation.",
+   "app_behaviour": "Flags 'possible duplicate' but does not draft a dispute: a repeat EKG the same day is often legitimate. Routes the case to the staff workspace with the two lines, the MSN units, and a suggested information request (times of each tracing). Patient side shows a waiting state; nothing is sent to the hospital.",
+   "screen_copy": "We noticed two identical EKG charges on the same day ($165.00 each). This can be correct \u2014 doctors often repeat an EKG. A billing specialist will look before we ask the hospital anything. Nothing has been sent. We'll tell you what they find, usually within 2 business days."
+  },
+  {
+   "name": "Integration unavailable",
+   "fixture": "Synthetic Blue Button adapter returns 503 / timeout on 'Fetch MSN'. Connection state: 'unavailable since 10:42, last success never'.",
+   "app_behaviour": "Shows the honest connection state, never fabricates MSN data, retries automatically in the background, and offers the manual path (snap the paper MSN). Progress is saved; the case resumes at this step.",
+   "screen_copy": "Medicare's connection isn't responding right now. We'll keep trying and let you know when it works. If you have the paper Medicare Summary Notice, you can take a photo of it instead and we'll continue now. [Photo of the notice] [Wait and try later]"
+  }
+ ],
+ "arithmetic_check": "BILL total charges: 1480.00 + 2950.00 + 240.00 + 310.00 + 380.00 = 5360.00 \u2713. MSN approved: 420 + 465 + 0 + 150 + 95 = 1130.00 \u2713. MSN Medicare paid (80% of approved per line): 336 + 372 + 0 + 120 + 76 = 904.00; check 0.8 \u00d7 1130 = 904.00 \u2713. MSN max you may be billed (20% per line): 84 + 93 + 0 + 30 + 19 = 226.00; check 0.2 \u00d7 1130 = 226.00 \u2713. Per-line 80/20 checks: 420 = 336 + 84; 465 = 372 + 93; 150 = 120 + 30; 95 = 76 + 19 \u2713. BILL contractual adjustments as the hospital posted them (line 3 NOT written off): (1480 \u2212 420) + (2950 \u2212 465) + 0 + (310 \u2212 150) + (380 \u2212 95) = 1060 + 2485 + 0 + 160 + 285 = 3990.00 \u2713. BILL patient owes: 5360.00 \u2212 3990.00 \u2212 904.00 = 466.00 \u2713. Bill insurance paid 904.00 = MSN Medicare paid 904.00 \u2713. DISCREPANCY: 466.00 \u2212 226.00 = 240.00 = bill line 3 charge \u2713. CORRECTED bill: adjustments 3990.00 + 240.00 = 4230.00; patient owes 5360.00 \u2212 4230.00 \u2212 904.00 = 226.00 = MSN max \u2713. INCOME: (2050 + 1080) \u00d7 12 = 3130 \u00d7 12 = 37,560.00; FPL% = 37,560 / 15,650 = 2.40 = 240% (between 200% and 300% \u2192 75% tier) \u2713. ESTIMATED reduction on corrected balance: 0.75 \u00d7 226.00 = 169.50; remaining 226.00 \u2212 169.50 = 56.50 \u2713. ESTIMATED opportunity: 240.00 + 169.50 = 409.50 \u2713. SIMULATED letter: 466.00 \u2212 240.00 = 226.00; 226.00 \u2212 169.50 = 56.50 = new_balance \u2713. CONFIRMED adjustment 240.00 + 169.50 = 409.50; patient savings 466.00 \u2212 56.50 = 409.50 \u2713. CASE B (no discrepancy): charges 1120 + 380 = 1500.00; approved 285 + 95 = 380.00; paid 228 + 76 = 304.00 (0.8 \u00d7 380); max billed 57 + 19 = 76.00 (0.2 \u00d7 380); adjustments 1500 \u2212 380 = 1120.00; owes 1500 \u2212 1120 \u2212 304 = 76.00 = MSN max \u2713. All columns re-added in Node and balance."
+}

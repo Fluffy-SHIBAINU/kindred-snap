@@ -1,0 +1,371 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>
+Case resolution and history</title><script src="./support.js"></script></head><body>
+<x-dc>
+<helmet><style>
+body{margin:0}
+:root{
+  --paper:#F2F4F6;--sheet:#FFFFFF;--ink:#0B1220;--ink-2:#364152;--muted:#4B5668;
+  --rule:#D6DCE4;--rule-strong:#B6C0CD;--signal:#0B5E75;--brand:#06B6D4;--mark:rgba(6,182,212,.22);
+  --btn:#0B1220;--btn-ink:#F4F7FA;--ok:#036444;--warn:#8A3F05;--bad:#9E1E14;
+  --night:#080D18;--night-rule:#1F2A3D;--night-ink:#E7EDF6;--night-muted:#97A3B6;--night-signal:#22D3EE;
+  --font:'Atkinson Hyperlegible Next','Atkinson Hyperlegible',system-ui,sans-serif;
+  --font-wordmark:'Libre Caslon Display',Georgia,serif;
+  --fs-body:18px;--fs-lead:20px;--fs-h1:30px;--fs-h2:24px;--fs-h3:20px;--fs-value:24px;--fs-meta:15px;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;
+  --r-card:16px;--r-ctl:12px;--r-plate:12px;--r-pill:999px;
+  --ctl:56px;--touch:48px;--ease:cubic-bezier(.2,0,0,1);--t:150ms;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#070B13;--sheet:#0D1421;--ink:#E8EDF5;--ink-2:#B3BECD;--muted:#8C98AA;--rule:#1E2838;--rule-strong:#2E3C52;
+  --signal:#22D3EE;--brand:#22D3EE;--mark:rgba(34,211,238,.22);--btn:#E8EDF5;--btn-ink:#0B1220;
+  --ok:#34D399;--warn:#FBBF24;--bad:#F87171;--night:#0B1322;}}
+:root[data-theme="dark"]{
+  --paper:#070B13;--sheet:#0D1421;--ink:#E8EDF5;--ink-2:#B3BECD;--muted:#8C98AA;--rule:#1E2838;--rule-strong:#2E3C52;
+  --signal:#22D3EE;--brand:#22D3EE;--mark:rgba(34,211,238,.22);--btn:#E8EDF5;--btn-ink:#0B1220;
+  --ok:#34D399;--warn:#FBBF24;--bad:#F87171;--night:#0B1322;}
+@media (min-width:768px){:root{--fs-h1:36px;}}
+
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:var(--fs-body);line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,ul,ol,figure{margin:0}
+h1{font-size:var(--fs-h1);line-height:1.2;font-weight:600;letter-spacing:-.01em}
+h2{font-size:var(--fs-h2);line-height:1.25;font-weight:600}
+h3{font-size:var(--fs-h3);line-height:1.3;font-weight:600}
+.lead{font-size:var(--fs-lead);line-height:1.5;color:var(--ink-2)}
+.meta{font-size:var(--fs-meta);line-height:1.4;color:var(--muted)}
+.eyebrow{font-size:var(--fs-meta);line-height:1.4;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+a{color:var(--signal);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:2px}
+a:hover{color:var(--ink)}
+:focus-visible{outline:3px solid var(--signal);outline-offset:3px;border-radius:var(--r-ctl)}
+.icon{width:24px;height:24px;flex:0 0 24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+hr,.rule{border:0;border-top:1px solid var(--rule);margin:0}
+.stack>*+*{margin-top:var(--s3)}
+.section>*+*{margin-top:var(--s6)}
+.row{display:flex;align-items:center;gap:var(--s3)}
+.vis-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* wordmark + header */
+.wordmark{font-family:var(--font-wordmark);font-size:26px;line-height:1;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;gap:var(--s2)}
+.wordmark__dot{width:10px;height:10px;border-radius:50%;background:var(--brand);flex:0 0 10px}
+.app-header{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);min-height:var(--ctl);padding-bottom:var(--s4);border-bottom:1px solid var(--rule)}
+
+/* buttons: 56px tall, 12px radius */
+.btn-primary,.btn-secondary,.btn-text{font:inherit;font-weight:600;font-size:var(--fs-body);line-height:1.2;min-height:var(--ctl);padding:0 var(--s5);border-radius:var(--r-ctl);display:inline-flex;align-items:center;justify-content:center;gap:var(--s2);cursor:pointer;text-decoration:none;transition:background-color var(--t) var(--ease),color var(--t) var(--ease),border-color var(--t) var(--ease);width:100%}
+.btn-primary{background:var(--btn);color:var(--btn-ink);border:2px solid var(--btn)}
+.btn-primary:hover{background:var(--ink-2);border-color:var(--ink-2)}
+.btn-secondary{background:var(--sheet);color:var(--ink);border:2px solid var(--rule-strong)}
+.btn-secondary:hover{border-color:var(--ink)}
+.btn-text{background:transparent;color:var(--signal);border:2px solid transparent;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:2px}
+.btn-text:hover{color:var(--ink)}
+.btn-danger{background:var(--sheet);color:var(--bad);border:2px solid var(--bad)}
+.btn-danger:hover{background:var(--bad);color:var(--sheet)}
+.btn-primary[disabled],.btn-secondary[disabled]{opacity:.55;cursor:not-allowed}
+
+/* surfaces */
+.card{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r-card);padding:20px}
+.card>*+*{margin-top:var(--s3)}
+.plate{background:var(--night);color:var(--night-ink);border-radius:var(--r-plate);padding:20px;box-shadow:0 8px 24px rgba(8,13,24,.18)}
+.plate .meta,.plate .eyebrow{color:var(--night-muted)}
+.plate a{color:var(--night-signal)}
+.mark{background:linear-gradient(var(--mark),var(--mark)) no-repeat 0 0/100% 100%;border-radius:2px;padding:0 2px;animation:sweep 1.3s var(--ease) 1}
+@keyframes sweep{from{background-size:0 100%}to{background-size:100% 100%}}
+
+/* steps */
+.step{display:flex;align-items:flex-start;gap:var(--s3);padding:var(--s4) 0;border-top:1px solid var(--rule);min-height:var(--ctl)}
+.step:first-child{border-top:0}
+.step__icon{width:40px;height:40px;flex:0 0 40px;border-radius:50%;border:2px solid currentColor;display:grid;place-items:center}
+.step__title{font-weight:600;color:var(--ink)}
+.step__state{font-size:var(--fs-meta);font-weight:600;line-height:1.4}
+.step__note{font-size:var(--fs-meta);color:var(--muted);line-height:1.4}
+.step--done .step__icon,.step--done .step__state{color:var(--ok)}
+.step--active .step__icon,.step--active .step__state{color:var(--signal)}
+.step--active .step__icon{background:var(--signal);color:var(--sheet)}
+.step--waiting .step__icon,.step--waiting .step__state{color:var(--muted);border-style:dashed}
+.step--needs-you .step__icon,.step--needs-you .step__state{color:var(--warn)}
+
+/* evidence pair */
+.evidence{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r-card);display:grid;grid-template-columns:1fr;overflow:hidden}
+.evidence__side{padding:20px}
+.evidence__side+.evidence__side{border-top:1px solid var(--rule)}
+@media (min-width:600px){.evidence{grid-template-columns:1fr 1fr}.evidence__side+.evidence__side{border-top:0;border-left:1px solid var(--rule)}}
+.evidence__line{font-size:var(--fs-body);color:var(--ink);margin-top:var(--s2)}
+.evidence__amount{font-size:var(--fs-value);line-height:1.2;font-weight:600;font-variant-numeric:tabular-nums;margin-top:var(--s2)}
+.evidence__source{font-size:var(--fs-meta);color:var(--muted);margin-top:var(--s2)}
+.evidence__verdict{grid-column:1/-1;border-top:1px solid var(--rule);padding:var(--s4) 20px;display:flex;gap:var(--s2);align-items:center;font-weight:600}
+
+/* alerts: sheet, full border, icon + word, no left bar */
+.alert{background:var(--sheet);border:2px solid var(--rule-strong);border-radius:var(--r-card);padding:var(--s4) 20px;display:flex;gap:var(--s3);align-items:flex-start;color:var(--ink)}
+.alert .icon{color:var(--signal);margin-top:2px}
+.alert__title{font-weight:600}
+.alert__body{font-size:var(--fs-body)}
+.alert--warn{border-color:var(--warn)}
+.alert--warn .icon,.alert--warn .alert__title{color:var(--warn)}
+
+/* forms */
+.field{display:flex;flex-direction:column;gap:var(--s2)}
+.label{font-size:var(--fs-meta);font-weight:600;line-height:1.4;color:var(--ink)}
+.helper{font-size:var(--fs-meta);line-height:1.4;color:var(--muted)}
+.input{font:inherit;font-size:var(--fs-body);color:var(--ink);background:var(--sheet);border:2px solid var(--rule-strong);border-radius:var(--r-ctl);min-height:var(--ctl);padding:0 var(--s4);width:100%}
+.input:focus{border-color:var(--signal);outline:none;box-shadow:0 0 0 3px var(--mark)}
+.input[aria-invalid="true"]{border-color:var(--bad)}
+.error{font-size:var(--fs-meta);color:var(--bad);font-weight:600}
+
+/* badges: outline, coloured word, 15px, never colour alone */
+.badge{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;border-radius:var(--r-pill);border:1.5px solid currentColor;font-size:var(--fs-meta);font-weight:600;line-height:1;color:var(--muted);background:var(--sheet);white-space:nowrap}
+.badge .icon{width:18px;height:18px;flex-basis:18px}
+.badge--demo{color:var(--muted)}
+.badge--synthetic{color:var(--muted);border-style:dashed}
+.badge--estimated{color:var(--warn)}
+.badge--confirmed{color:var(--ok)}
+.badge--actual{color:var(--ink)}
+.badge--dropped{color:var(--bad)}
+.badge--asking{color:var(--signal)}
+
+/* chips: 48px toggles */
+.chip{font:inherit;font-size:var(--fs-meta);font-weight:600;min-height:var(--touch);padding:0 var(--s4);border-radius:var(--r-pill);border:2px solid var(--rule-strong);background:var(--sheet);color:var(--ink);cursor:pointer;transition:border-color var(--t) var(--ease),background-color var(--t) var(--ease)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:var(--s2)}
+
+/* choice tiles */
+.tiles{display:grid;grid-template-columns:1fr;gap:var(--s3)}
+@media (min-width:600px){.tiles{grid-template-columns:1fr 1fr}}
+.tile{font:inherit;text-align:left;background:var(--sheet);color:var(--ink);border:2px solid var(--rule-strong);border-radius:var(--r-card);padding:20px;min-height:96px;display:flex;flex-direction:column;gap:var(--s1);cursor:pointer;transition:border-color var(--t) var(--ease);width:100%}
+.tile:hover,.tile[aria-pressed="true"]{border-color:var(--ink)}
+.tile__title{font-size:var(--fs-h3);font-weight:600;line-height:1.3}
+.tile__sub{font-size:var(--fs-meta);color:var(--muted)}
+
+/* status headline + money */
+.headline{display:flex;flex-direction:column;gap:var(--s2)}
+.headline__state{display:inline-flex;align-items:center;gap:var(--s2);font-weight:600;font-size:var(--fs-body)}
+.headline__state--ok{color:var(--ok)}.headline__state--warn{color:var(--warn)}.headline__state--bad{color:var(--bad)}.headline__state--signal{color:var(--signal)}
+.money{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r-card);padding:0 20px}
+.money__row{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);padding:var(--s4) 0;border-top:1px solid var(--rule);min-height:var(--ctl)}
+.money__row:first-child{border-top:0}
+.money__label{font-size:var(--fs-meta);font-weight:600;color:var(--ink)}
+.money__value{font-size:var(--fs-value);font-weight:600;line-height:1.2;font-variant-numeric:tabular-nums}
+.money__value--pending{color:var(--muted);font-weight:400}
+
+/* phone artboard */
+.phone{width:390px;height:844px;background:var(--paper);border:1px solid var(--rule-strong);border-radius:var(--r-card);display:flex;flex-direction:column;overflow:hidden;color:var(--ink);font-family:var(--font)}
+.phone__header{padding:24px 24px 0;flex:0 0 auto}
+.phone__body{flex:1 1 auto;overflow-y:auto;padding:24px}
+.phone__body>*+*{margin-top:var(--s5)}
+.phone__bar{flex:0 0 auto;padding:16px 24px calc(16px + env(safe-area-inset-bottom));background:var(--sheet);border-top:1px solid var(--rule);display:flex;flex-direction:column;gap:var(--s2)}
+.phone__bar .btn-text{min-height:var(--touch)}
+.standing{font-size:var(--fs-meta);color:var(--muted);line-height:1.4}
+
+/* staff shell: 1280 fluid */
+.staff{max-width:1280px;margin:0 auto;padding:0 max(24px,env(safe-area-inset-left)) var(--s7);color:var(--ink);font-family:var(--font)}
+.staff__top{display:flex;align-items:center;justify-content:space-between;gap:var(--s4);min-height:72px;border-bottom:1px solid var(--rule);flex-wrap:wrap;padding:var(--s3) 0}
+.staff__grid{display:grid;grid-template-columns:1fr;gap:var(--s6);padding-top:var(--s6)}
+@media (min-width:900px){.staff__grid{grid-template-columns:240px 1fr}}
+.staff__nav{display:flex;flex-wrap:wrap;gap:var(--s2);align-content:flex-start}
+@media (min-width:900px){.staff__nav{flex-direction:column}}
+.staff__nav a{display:flex;align-items:center;min-height:var(--touch);padding:0 var(--s4);border-radius:var(--r-ctl);color:var(--ink);text-decoration:none;font-weight:500}
+.staff__nav a:hover{background:var(--sheet)}
+.staff__nav a[aria-current="page"]{background:var(--sheet);border:1px solid var(--rule);font-weight:600}
+.staff__main>*+*{margin-top:var(--s6)}
+
+/* table */
+.table-box{overflow-x:auto;background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r-card)}
+.table{width:100%;border-collapse:collapse;font-size:var(--fs-body);min-width:640px}
+.table th{text-align:left;font-size:var(--fs-meta);font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:var(--s4) 20px;border-bottom:1px solid var(--rule-strong)}
+.table td{padding:var(--s4) 20px;border-bottom:1px solid var(--rule);vertical-align:top}
+.table tr:last-child td{border-bottom:0}
+.table .num{text-align:right}
+
+/* field row (staff) */
+.field-row{display:grid;grid-template-columns:1fr;gap:var(--s2);padding:var(--s4) 0;border-top:1px solid var(--rule)}
+@media (min-width:900px){.field-row{grid-template-columns:200px 1fr auto;align-items:start;gap:var(--s4)}}
+.field-row__label{font-size:var(--fs-meta);font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding-top:3px}
+.field-row__value{font-size:var(--fs-value);font-weight:600;line-height:1.2;font-variant-numeric:tabular-nums}
+.field-row__source{font-size:var(--fs-meta);color:var(--muted);margin-top:var(--s1)}
+.field-row__edited{font-size:var(--fs-meta);color:var(--warn);font-weight:600;margin-top:var(--s1)}
+
+/* audit list */
+.audit-row{display:grid;grid-template-columns:auto 1fr auto;gap:var(--s3);align-items:baseline;padding:var(--s3) 0;border-top:1px solid var(--rule);min-height:var(--touch)}
+.audit-row:first-child{border-top:0}
+.audit-row__time{font-size:var(--fs-meta);color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.audit-row__what{font-size:var(--fs-body);color:var(--ink)}
+.audit-row__who{font-size:var(--fs-meta);color:var(--muted);white-space:nowrap}
+
+/* footer: the four rules */
+.footer{border-top:1px solid var(--rule);padding-top:var(--s5);font-size:var(--fs-meta);color:var(--muted);line-height:1.5}
+.footer ol{padding-left:20px;margin:var(--s2) 0 0}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0s!important;transition-duration:0s!important}}
+
+/* artboard layout helpers (layout only; colours and type stay in the kit classes) */
+.tabs{display:flex;flex-wrap:wrap;gap:var(--s2);border-bottom:1px solid var(--rule)}
+.tabs a{display:flex;align-items:center;min-height:var(--touch);padding:0 var(--s4);color:var(--ink);text-decoration:none;font-weight:500;border-bottom:3px solid transparent;margin-bottom:-1px}
+.tabs a[aria-current="page"]{border-bottom-color:var(--signal);color:var(--signal);font-weight:600}
+.cols{display:grid;grid-template-columns:1fr;gap:var(--s6);align-items:start}
+@media (min-width:900px){.cols{grid-template-columns:1fr 1fr}.cols--65{grid-template-columns:13fr 7fr}.cols--60{grid-template-columns:3fr 2fr}}
+.btns{display:flex;flex-wrap:wrap;gap:var(--s3);align-items:center}
+.btns>.btn-primary,.btns>.btn-secondary,.btns>.btn-text{width:auto}
+.narrow .field-row{grid-template-columns:150px 1fr auto}
+.log>*+*{border-top:1px solid var(--rule);padding-top:var(--s4);margin-top:var(--s4)}
+.list{list-style:none;padding:0 20px}
+.pane>*+*{margin-top:var(--s5)}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&family=Atkinson+Hyperlegible:wght@400;700&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
+</helmet>
+<div style="display:flex;flex-direction:column;min-height:100%">
+<div class="staff">
+  <header class="staff__top">
+    <a class="wordmark" href="S01-staff-queue.dc.html"><span class="wordmark__dot" aria-hidden="true"></span>Kindred Snap</a>
+    <div class="row"><span class="badge badge--demo">Demo partner · synthetic data</span><span class="meta">Signed in as j.park@partner.example · staff · nothing stored beyond counts</span></div>
+  </header>
+  <div class="staff__grid">
+    <nav class="staff__nav" aria-label="Staff">
+      <a href="S01-staff-queue.dc.html">Queue</a>
+      <a href="S02-case-documents.dc.html">Documents &amp; fields</a>
+      <a href="S03-case-findings.dc.html">Findings</a>
+      <a href="S04-case-actions.dc.html">Actions</a>
+      <a href="S05-case-resolution-history.dc.html" aria-current="page">Resolution &amp; history</a>
+    </nav>
+    <main class="staff__main">
+      <div class="card">
+        <div class="row" style="flex-wrap:wrap"><span class="eyebrow">Case KS-0412</span><span class="badge badge--asking">Stage · Partially resolved</span><span class="badge badge--demo">Riverbend Community Hospital · Demo partner · synthetic</span></div>
+        <h1>Dorothy H., 74 · Original Medicare, Part A and Part B.</h1>
+        <p class="lead num">$56.50 due Dec 21, 2026 · in 30 days · was $466.00 due Nov 30. Our work does not pause this.</p>
+        <p class="meta">Authorized by Dorothy H. (patient) on Nov 2, 2026 · helper Jenna H. (daughter) may view and approve · today Nov 21, 2026</p>
+      </div>
+      <nav class="tabs" aria-label="Case">
+        <a href="S02-case-documents.dc.html">Documents &amp; fields</a>
+        <a href="S03-case-findings.dc.html">Findings</a>
+        <a href="S04-case-actions.dc.html">Actions</a>
+        <a href="S05-case-resolution-history.dc.html" aria-current="page">Resolution &amp; history</a>
+      </nav>
+      <div class="headline">
+        <h2>Resolution · estimated $409.50 · confirmed by Riverbend $409.50 · actual patient savings not yet confirmed.</h2>
+        <p class="meta">Three rows, always all three · the patient and any marketing number may read only from the third row · the API refuses rows 1 and 2 under that label.</p>
+      </div>
+      <div class="money">
+        <div class="money__row">
+          <div><div class="money__label">1 · Estimated opportunity</div><span class="badge badge--estimated">Estimated</span><div class="meta" style="margin-top:8px">From confirmed findings, before the hospital replied · $240.00 (F-1) + $169.50 (F-2) · never shown to the patient as savings.</div></div>
+          <div class="money__value num">$409.50</div>
+        </div>
+        <div class="money__row">
+          <div><div class="money__label">2 · Provider-confirmed balance change</div><span class="badge badge--confirmed"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Confirmed</span><div class="meta" style="margin-top:8px">Basis: Riverbend adjustment letter, Nov 21, 2026 (synthetic), page 1: “We have removed it; the corrected patient balance is $226.00. … A discount of $169.50 has been applied. Your new balance is $56.50, due December 21, 2026.” · previous balance $466.00 · new balance $56.50 · recorded by J. Park Nov 21 09:40 · <a href="S04-case-actions.dc.html">Open letter</a></div></div>
+          <div class="money__value num">$409.50</div>
+        </div>
+        <div class="money__row">
+          <div><div class="money__label">3 · Actual patient savings</div><span class="badge badge--demo">Not confirmed</span><div class="meta" style="margin-top:8px">Needs a revised statement or payment record showing what the patient now owes or paid. The word “saved” is not written before this row fills.</div></div>
+          <div class="money__value num money__value--pending">—</div>
+        </div>
+      </div>
+      <div class="cols cols--60">
+        <section class="pane" aria-labelledby="record-h">
+          <h2 id="record-h">Record actual patient savings · row 3.</h2>
+          <form class="card" action="#record" method="post">
+            <div class="field">
+              <label class="label" for="basis">Basis document</label>
+              <select class="input" id="basis" name="basis" aria-describedby="basis-help">
+                <option value="" selected>Choose a document</option>
+                <option value="letter">Adjustment letter · Nov 21, 2026 · Riverbend (synthetic) · already used for row 2</option>
+                <option value="statement">Revised statement · not yet received</option>
+                <option value="payment">Payment record · not yet received</option>
+              </select>
+              <p class="helper" id="basis-help">Attach the hospital letter or statement that shows the new balance. We cannot record a confirmed change without it.</p>
+            </div>
+            <div class="cols" style="gap:16px">
+              <div class="field">
+                <label class="label" for="page">Page</label>
+                <input class="input num" id="page" name="page" type="text" inputmode="numeric" placeholder="—" disabled>
+              </div>
+              <div class="field">
+                <label class="label" for="quote">Quoted line · required</label>
+                <input class="input" id="quote" name="quote" type="text" placeholder="The exact line that states the balance" disabled>
+              </div>
+            </div>
+            <div class="cols" style="gap:16px;grid-template-columns:1fr 1fr 1fr">
+              <div class="field">
+                <label class="label" for="prev">Previous balance</label>
+                <input class="input num" id="prev" name="prev" type="text" inputmode="decimal" value="$466.00" disabled>
+              </div>
+              <div class="field">
+                <label class="label" for="new">New balance</label>
+                <input class="input num" id="new" name="new" type="text" inputmode="decimal" placeholder="—" disabled>
+              </div>
+              <div class="field">
+                <label class="label" for="diff">Difference · computed</label>
+                <input class="input num" id="diff" name="diff" type="text" value="—" readonly aria-describedby="diff-help">
+                <p class="helper" id="diff-help">Previous minus new.</p>
+              </div>
+            </div>
+            <div class="btns">
+              <button class="btn-primary" type="submit" disabled>Record actual patient savings</button>
+              <button class="btn-secondary" type="button">Attach basis document</button>
+            </div>
+            <p class="meta">Disabled until a basis document and a quoted line are given. Recording creates a new version; nothing is overwritten.</p>
+          </form>
+          <div class="card">
+            <h3>Resolution status.</h3>
+            <div class="chips" role="group" aria-label="Resolution status">
+              <button class="chip" type="button" aria-pressed="false">Open</button>
+              <button class="chip" type="button" aria-pressed="true">Partially resolved</button>
+              <button class="chip" type="button" aria-pressed="false">Resolved</button>
+              <button class="chip" type="button" aria-pressed="false">Closed · no change needed</button>
+              <button class="chip" type="button" aria-pressed="false">Closed · withdrawn by patient</button>
+            </div>
+            <h3 style="margin-top:24px">Closing note · what the patient will see.</h3>
+            <div style="border:1px solid var(--rule);border-radius:var(--r-ctl);padding:16px">
+              <p>Riverbend removed the $240.00 contrast charge and approved 75% financial assistance. Your new balance is $56.50, due December 21, 2026. This result comes from the demo partner hospital and is synthetic.</p>
+            </div>
+            <div class="btns">
+              <button class="btn-secondary" type="button" disabled>Close case</button>
+              <button class="btn-secondary" type="button">Send closing summary to patient</button>
+              <a class="btn-text" href="S01-staff-queue.dc.html">Back to the queue</a>
+            </div>
+            <p class="meta">Close case is enabled once row 3 is recorded or the status is Closed · no change needed. A new hospital response after close reopens the case.</p>
+          </div>
+        </section>
+        <aside class="pane" aria-labelledby="audit-h">
+          <h2 id="audit-h">History · 15 events · append-only.</h2>
+          <div class="chips" role="group" aria-label="Filter history by actor">
+            <button class="chip" type="button" aria-pressed="true">All</button>
+            <button class="chip" type="button" aria-pressed="false">Staff</button>
+            <button class="chip" type="button" aria-pressed="false">Patient and helper</button>
+            <button class="chip" type="button" aria-pressed="false">Adapter</button>
+            <button class="chip" type="button" aria-pressed="false">System</button>
+          </div>
+          <div class="table-box">
+            <table class="table" style="min-width:0">
+              <thead><tr><th scope="col">When · 2026 · PST</th><th scope="col">Event · who · source</th></tr></thead>
+              <tbody>
+                <tr><td class="meta num" style="white-space:nowrap">Nov 21 09:40</td><td><a href="#ev-15">Recorded provider-confirmed change</a><div class="meta">J. Park · staff · staff web · $409.50 · basis: adjustment letter p.1</div></td></tr>
+                <tr><td class="meta num" style="white-space:nowrap">Nov 21 09:14</td><td><a href="S04-case-actions.dc.html">Response received (simulated)</a><div class="meta">Riverbend adapter · synthetic · adapter · answers DP-SIM-0091, DP-SIM-0092</div></td></tr>
+                <tr><td class="meta num" style="white-space:nowrap">Nov 9 11:05</td><td><a href="S04-case-actions.dc.html">Sent (simulated) A-1, A-2</a><div class="meta">System · system · DP-SIM-0091, DP-SIM-0092</div></td></tr>
+                <tr><td class="meta num" style="white-space:nowrap">Nov 9 11:03</td><td><a href="S04-case-actions.dc.html">Approved action A-2</a><div class="meta">Jenna H. · helper · app · in-app tap · income figure confirmed</div></td></tr>
+                <tr><td class="meta num" style="white-space:nowrap">Nov 9 11:02</td><td><a href="S04-case-actions.dc.html">Approved action A-1</a><div class="meta">Jenna H. · helper · app · in-app tap</div></td></tr>
+                <tr><td class="meta num" style="white-space:nowrap">Nov 9 10:58</td><td><a href="S04-case-actions.dc.html">Logged phone call</a><div class="meta">J. Park · staff · staff web · asked billing for a hold during review</div></td></tr>
+                <tr><td class="meta num" style="white-space:nowrap">Nov 9 10:55</td><td><a href="S04-case-actions.dc.html">Sent A-1, A-2 for approval</a><div class="meta">J. Park · staff · staff web · to Dorothy H. and Jenna H.</div></td></tr>
+                <tr><td class="meta num" style="white-space:nowrap">Nov 9 10:50</td><td><a href="S03-case-findings.dc.html">Confirmed finding F-2</a><div class="meta">J. Park · staff · staff web · assistance threshold · Possible 0.74</div></td></tr>
+                <tr><td class="meta num" style="white-space:nowrap">Nov 9 10:48</td><td><a href="S03-case-findings.dc.html">Confirmed finding F-1</a><div class="meta">J. Park · staff · staff web · $240.00 · Likely 0.91</div></td></tr>
+                <tr><td class="meta num" style="white-space:nowrap">Nov 9 10:40</td><td><a href="S02-case-documents.dc.html">Confirmed extraction</a><div class="meta">J. Park · staff · staff web · 22 fields · 1 corrected</div></td></tr>
+                <tr><td class="meta num" style="white-space:nowrap">Nov 9 10:31</td><td><a href="S02-case-documents.dc.html">Corrected field · line 3 description</a><div class="meta">J. Park · staff · staff web · “10O mL” → “100 mL” · original kept</div></td></tr>
+                <tr><td class="meta num" style="white-space:nowrap">Nov 9 10:12</td><td><a href="S02-case-documents.dc.html">Viewed case</a><div class="meta">J. Park · staff · staff web · Documents &amp; fields · views are logged</div></td></tr>
+                <tr><td class="meta num" style="white-space:nowrap">Nov 8 07:30</td><td><a href="S02-case-documents.dc.html">MSN imported</a><div class="meta">System · adapter · Blue Button 2.0 (synthetic) · 2 pages</div></td></tr>
+                <tr><td class="meta num" style="white-space:nowrap">Nov 7 18:04</td><td><a href="S02-case-documents.dc.html">Bill photo added · income typed</a><div class="meta">Jenna H. · helper · app · 1 page · $37,560 a year</div></td></tr>
+                <tr><td class="meta num" style="white-space:nowrap">Nov 2 14:11</td><td><a href="#ev-1">Case created · authorization signed</a><div class="meta">Dorothy H. · patient · app · Jenna H. may view and approve</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="btns">
+            <button class="btn-secondary" type="button">Export history · admin only</button>
+            <button class="btn-text" type="button">Reopen case</button>
+          </div>
+          <p class="meta">A correction is a new event, never an edit. If history fails to load the page says “History did not load. Retry.” and never shows an empty list; case creation is always the first row.</p>
+        </aside>
+      </div>
+    </main>
+  </div>
+  <footer class="footer">The Kindred standard, four rules.<ol><li>Primary sources only.</li><li>Every value carries its source line.</li><li>People decide. Snap sends nothing.</li><li>Collect as little as possible.</li></ol><p style="margin-top:12px"><a href="#talk">Talk to a person</a> · <a href="#tender">Open Tender</a> · <a href="#waive">Open Waive</a></p></footer>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script></body></html>
