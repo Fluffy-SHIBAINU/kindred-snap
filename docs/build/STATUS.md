@@ -12,7 +12,7 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 | 5 Demo video | skipped (founder, 15:25 KST) | script and voice-over beats exist in video/; no capture or assembly |
 | 6 Persistence and auth | in progress | project + schema done via MCP; store and auth code next; service-role key needed |
 | 7 Landing and polish | landing built | axe spec and design-floor pass pending |
-| 8 Deploy | live | https://kindred-snap.vercel.app — production env: EXTERNAL_ACTIONS=simulated, EXTRACTOR=fixture, STORE=memory (service-role key pending for STORE=supabase); staff pages show not-available without a staff session |
+| 8 Deploy | live | https://snap.kindred-ai.dev (alias) and https://kindred-snap.vercel.app — production env: EXTERNAL_ACTIONS=simulated, EXTRACTOR=fixture, STORE=memory (service-role key pending for STORE=supabase); staff pages show not-available without a staff session |
 | 9 Docs and honest report | skipped (founder, 15:25 KST) | README still the Phase 0 stub plus links |
 
 ## Log

@@ -6,7 +6,8 @@ A Kindred AI hackathon build. Fresh code; no application code copied from other 
 
 - **Project start:** 2026-11-09 10:40 KST (01:40 UTC)
 - **Deadline:** 2026-11-09 14:30 KST (MVP + 90-second demo video)
-- **Status:** planning and design done; build in progress (see `docs/PLAN.md`)
+- **Live:** https://snap.kindred-ai.dev (production, synthetic data; staff pages need a staff session)
+- **Status:** phases 0–4 and 6–8 of `docs/BUILD.md` built; video and docs phases skipped for the submission (see `docs/build/STATUS.md`)
 - **UI mocks:** public gallery at https://fluffy-shibainu.github.io/kindred-snap/mocks/ (PNG exports and standalone artboards); design canvas at https://claude.ai/artifact/XKVcy3AucQFU9QizihVyEm
 - **Design system:** `DESIGN.md`; product record `PRODUCT.md`
 
