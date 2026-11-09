@@ -4,7 +4,7 @@ This is the executable plan. Any session (Fable, Opus 5.5, Sonnet) continues it 
 
 Fixed facts every phase relies on: the product rules in `CLAUDE.md`; the design system in `DESIGN.md`; the six caregiver screens in `docs/mocks/M01…M06-*.dc.html`; the staff screens `S00…S05`; the synthetic case in `fixtures/case-synthetic.json` (Dorothy M. Hale, Riverbend Community Hospital, bill $466.00 due 2026-11-30, Medicare max $226.00, discrepancy $240.00 on line 3 Q9967, income $37,560 household 1 = 235% FPL on the 2026 guideline ($15,960; it was 240% on the 2025 figure used in the mocks), estimated $169.50 assistance on the corrected $226.00, estimated total $409.50, simulated response after 12 days, new balance $56.50). Money is integer cents everywhere. Dates are ISO strings. All code is TypeScript under `src/`, tests under `tests/` with vitest.
 
-Priority for the 14:30 KST demo: Phases 1 → 2 → 3 → 4 → 5. Phases 6 → 9 complete the acceptance criteria afterwards. If time is short, a phase's "lite" tasks come first; the rest stay unchecked for the next session.
+Priority (founder, 2026-11-09 14:50 KST, one hour left): Phases 1 → 2 → 3 → 6 (only if a Supabase project exists) → 7 → 8, then 4 → 5 → 9. A deployed caregiver flow comes before the staff workspace and the video. If time is short, a phase's "lite" tasks come first; the rest stay unchecked for the next session.
 
 Authority: where this runbook and `docs/PLAN.md` disagree (state names, finding kinds, routes), this runbook wins. The six caregiver screens are `M01…M06`; the `E*` screens are variants rendered by the same routes according to case state; `X00…X02` are not built. Phases marked **[needs human]** stop `/build-next` with a BLOCKED entry unless the named secret or account is already configured.
 

@@ -24,6 +24,7 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 
 - 2026-11-09 13:45 KST — Phase 1 done (Fable): compare, fpl/eligibility + pilots.ts, atlas, savings, demoClock, audit; 9 test files, 45 tests.
 
+- 2026-11-09 14:50 KST — Founder reordered: 3 → 6 (if Supabase exists) → 7 → 8, then 4 → 5 → 9.
 - 2026-11-09 14:35 KST — Phase 2 done (Fable + agents): 16 test files, 107 tests; npm run build green. Atlas is a submodule source (no copies).
 
 ## Blockers
