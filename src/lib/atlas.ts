@@ -14,13 +14,24 @@ export type AtlasSheet = {
   sources: Array<{ id: string; url: string | null; title?: string; fetched_on?: string }>;
 };
 
+/**
+ * The Waive atlas is a SOURCE, never copied into this repository. Directories searched, later wins per CCN:
+ *  1. vendor/waive-data/data/atlas — the private waive-data repository as a git submodule (run `git submodule update --init`)
+ *  2. ATLAS_DIR — any other checkout on this machine
+ *  3. fixtures/atlas — a place for small hand-made test sheets only (none committed)
+ */
+const SUBMODULE_DIR = join(process.cwd(), "vendor", "waive-data", "data", "atlas");
 const FIXTURE_DIR = join(process.cwd(), "fixtures", "atlas");
 
 let cache: AtlasSheet[] | null = null;
 
+export function atlasSources(atlasDir: string | undefined = process.env.ATLAS_DIR): string[] {
+  return [SUBMODULE_DIR, atlasDir, FIXTURE_DIR].filter((d): d is string => !!d && existsSync(d));
+}
+
 export function loadSheets(opts: { atlasDir?: string | undefined; force?: boolean } = {}): AtlasSheet[] {
   if (cache && !opts.force && opts.atlasDir === undefined) return cache;
-  const dirs = [FIXTURE_DIR, opts.atlasDir ?? process.env.ATLAS_DIR].filter((d): d is string => !!d && existsSync(d));
+  const dirs = atlasSources(opts.atlasDir);
   const byCcn = new Map<string, AtlasSheet>();
   for (const dir of dirs) {
     for (const f of readdirSync(dir).filter((f) => f.endsWith(".json"))) {

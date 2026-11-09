@@ -2,11 +2,15 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { findHospital, loadSheets, policyOf } from "@/lib/atlas";
+import { atlasSources, findHospital, loadSheets, policyOf } from "@/lib/atlas";
 
-describe("atlas loader", () => {
-  const sheets = loadSheets();
-  it("loads the committed Massachusetts export", () => {
+// The atlas is a source (vendor/waive-data submodule or ATLAS_DIR), not a committed copy. Without it these checks skip.
+const sheets = loadSheets();
+const hasAtlas = sheets.some((s) => s.hospital.ccn === "220101");
+
+describe.skipIf(!hasAtlas)("atlas loader", () => {
+  it("reads the Waive atlas from a source directory, not from a copy in this repo", () => {
+    expect(atlasSources().some((d) => d.includes("vendor/waive-data") || d === process.env.ATLAS_DIR)).toBe(true);
     expect(sheets.length).toBeGreaterThanOrEqual(30);
   });
   it("finds Newton-Wellesley by CCN and by name", () => {

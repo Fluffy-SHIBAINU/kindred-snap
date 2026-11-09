@@ -1,0 +1,3 @@
+[submodule "vendor/waive-data"]
+	path = vendor/waive-data
+	url = git@github.com:Fluffy-SHIBAINU/waive-data.git
