@@ -5,8 +5,8 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 | Phase | State | Notes |
 |---|---|---|
 | 0 Handoff scaffolding | done | runbook, tracker, `/build-next`, three pilot hospitals (2026-11-09 13:05 KST) |
-| 1 Domain core | in progress | tooling, money, types, state machine + route done |
-| 2 Adapters and guards | not started | |
+| 1 Domain core | done | 45 tests green: money, types, state machine, route, compare, FPL + tiers (three pilot hospitals), atlas loader, savings, demo clock, audit |
+| 2 Adapters and guards | next | start with fixtures/policies/riverbend.json, then fixtures/cases |
 | 3 Caregiver flow | not started | |
 | 4 Staff workspace (lite) | not started | |
 | 5 Demo video | not started | |
@@ -21,6 +21,8 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 - 2026-11-09 13:05 KST — Phase 0 done: fixtures/hospitals.json (Cedars-Sinai CA, Alexian Brothers IL, NYU Langone NY) with 2026 FPL $15,960 verified at ASPE (Fable).
 
 - 2026-11-09 13:25 KST — Phase 1: vitest + scripts + env example; money; types; state machine, screenFor, assertSimulated (Fable). Tests green.
+
+- 2026-11-09 13:45 KST — Phase 1 done (Fable): compare, fpl/eligibility + pilots.ts, atlas, savings, demoClock, audit; 9 test files, 45 tests.
 
 ## Blockers
 
