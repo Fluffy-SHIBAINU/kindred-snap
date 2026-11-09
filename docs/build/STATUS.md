@@ -6,8 +6,8 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 |---|---|---|
 | 0 Handoff scaffolding | done | runbook, tracker, `/build-next`, three pilot hospitals (2026-11-09 13:05 KST) |
 | 1 Domain core | done | 45 tests green: money, types, state machine, route, compare, FPL + tiers (three pilot hospitals), atlas loader, savings, demo clock, audit |
-| 2 Adapters and guards | next | start with fixtures/policies/riverbend.json, then fixtures/cases |
-| 3 Caregiver flow | not started | |
+| 2 Adapters and guards | done | fixtures (6 cases, 8 synthetic document images), extractor (fixture + Gemini with fake-client tests), synthetic Blue Button, demo-partner hospital connector, memory store + seed, templates with number validation, pipeline; atlas via vendor/waive-data submodule. 107 tests green, build green |
+| 3 Caregiver flow | next | shell first, then the six screens |
 | 4 Staff workspace (lite) | not started | |
 | 5 Demo video | not started | |
 | 6 Persistence and auth | not started | |
@@ -24,6 +24,9 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 
 - 2026-11-09 13:45 KST — Phase 1 done (Fable): compare, fpl/eligibility + pilots.ts, atlas, savings, demoClock, audit; 9 test files, 45 tests.
 
+- 2026-11-09 14:35 KST — Phase 2 done (Fable + agents): 16 test files, 107 tests; npm run build green. Atlas is a submodule source (no copies).
+
 ## Blockers
 
-None.
+- Phase 6: Supabase project creation via the MCP was refused by the permission classifier (shared resource). A human creates the free project `kindred-snap` in the Fluffy-SHIBAINU org (or allows `create_project`), then sets the three Supabase values in `.env.local`.
+
