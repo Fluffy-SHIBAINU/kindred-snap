@@ -10,9 +10,9 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 | 3 Caregiver flow | done | shell, six screens, edge variants, demo controls; tsc clean |
 | 4 Staff workspace (lite) | done (smoke-tested locally) | dashboard, case detail, actions, resolution, audit; needs the smoke pass |
 | 5 Demo video | skipped (founder, 15:25 KST) | script and voice-over beats exist in video/; no capture or assembly |
-| 6 Persistence and auth | in progress | project + schema done via MCP; store and auth code next; service-role key needed |
+| 6 Persistence and auth | store live | production runs STORE=supabase (service-role key set by the founder via the Supabase CLI); seed is idempotent and race-safe; sign-in scaffold exists, routes not yet gated by Supabase sessions |
 | 7 Landing and polish | landing built | axe spec and design-floor pass pending |
-| 8 Deploy | live | https://snap.kindred-ai.dev (alias) and https://kindred-snap.vercel.app — production env: EXTERNAL_ACTIONS=simulated, EXTRACTOR=fixture, STORE=memory (service-role key pending for STORE=supabase); staff pages show not-available without a staff session |
+| 8 Deploy | live | https://snap.kindred-ai.dev (alias) and https://kindred-snap.vercel.app — production env: EXTERNAL_ACTIONS=simulated, EXTRACTOR=fixture, STORE=supabase; staff pages show not-available without a staff session |
 | 9 Docs and honest report | skipped (founder, 15:25 KST) | README still the Phase 0 stub plus links |
 
 ## Log
@@ -31,8 +31,10 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 
 - 2026-11-09 15:45 KST — Smoke pass green (148 tests, build, route probes). Founder: demo-partner pill removed app-wide; Simulated badges kept. Demo case is investigated at seed so /case/demo lands on the result; "Download a demo bill" on the landing serves the fixture bill. Deployed to Vercel production.
 
+- 2026-11-09 16:50 KST — Demo-walk fix: the demo bill flow re-materialises on any serverless instance. Production switched to the Supabase store after the founder stored the service-role key; two cold-start races fixed (idempotent seed, locked preparation). Verified live: /case/demo/result renders the 75% result from Postgres (Fable).
+
 ## Blockers
 
-- Phase 6: Supabase project `kindred-snap` exists (ref `kdbqjygxyykdwpjmxyjh`, us-west-1, https://kdbqjygxyykdwpjmxyjh.supabase.co); the schema migration `kindred_snap_init` is applied with RLS. Still needed from a human: the service-role key in `.env.local` and in Vercel (`SUPABASE_SERVICE_ROLE_KEY`), which the MCP does not expose; until then `STORE=memory`.
+- Phase 6 (resolved 16:50 KST): Supabase project `kindred-snap` exists (ref `kdbqjygxyykdwpjmxyjh`, us-west-1, https://kdbqjygxyykdwpjmxyjh.supabase.co); the schema migration `kindred_snap_init` is applied with RLS. Still needed from a human: the service-role key in `.env.local` and in Vercel (`SUPABASE_SERVICE_ROLE_KEY`), which the MCP does not expose; until then `STORE=memory`.
 - Phase 8: Vercel project `kindred-snap` is linked (team org); production env has EXTERNAL_ACTIONS, EXTRACTOR=fixture, STORE=memory and the public Supabase URL/anon key. No bypass flags in production (the classifier refused them; staff pages stay not-available on the deployed site until Phase 6 auth).
 
