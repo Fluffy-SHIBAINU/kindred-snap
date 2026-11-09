@@ -49,6 +49,7 @@ export default function Landing() {
               <div className="flex flex-wrap gap-4">
                 <a href="/snap" className={primary}>Snap a bill</a>
                 <a href="/case/demo/result" className={secondary}>See a case</a>
+                <a href="/demo-bill" download className={secondary}>Download a demo bill</a>
               </div>
               </div>
             <div className="h-[844px] w-full max-w-[390px] justify-self-center overflow-hidden rounded-[28px] bg-paper shadow-card ring-1 ring-rule">
