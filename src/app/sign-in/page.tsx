@@ -11,6 +11,9 @@ const ERRORS: Record<string, string> = {
 const field = "min-h-14 w-full rounded-input border border-ink/30 bg-transparent px-4 text-ink";
 const button = "inline-flex min-h-14 w-full items-center justify-center rounded-input bg-accent px-5 font-medium text-accent-ink";
 
+/** searchParams are read per request. */
+export const instant = false;
+
 export default async function SignIn({ searchParams }: { searchParams: Promise<{ sent?: string; error?: string }> }) {
   const { sent, error } = await searchParams;
   const message = error ? ERRORS[error] : undefined;
