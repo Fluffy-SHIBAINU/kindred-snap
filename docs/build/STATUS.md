@@ -4,7 +4,7 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 
 | Phase | State | Notes |
 |---|---|---|
-| 0 Handoff scaffolding | in progress | CLAUDE.md, BUILD.md, STATUS.md, `/build-next` written 2026-11-09 12:55 KST |
+| 0 Handoff scaffolding | done | runbook, tracker, `/build-next`, three pilot hospitals (2026-11-09 13:05 KST) |
 | 1 Domain core | not started | |
 | 2 Adapters and guards | not started | |
 | 3 Caregiver flow | not started | |
@@ -18,6 +18,7 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 ## Log
 
 - 2026-11-09 12:55 KST — Phase 0 started: runbook and tracker written (Fable).
+- 2026-11-09 13:05 KST — Phase 0 done: fixtures/hospitals.json (Cedars-Sinai CA, Alexian Brothers IL, NYU Langone NY) with 2026 FPL $15,960 verified at ASPE (Fable).
 
 ## Blockers
 

@@ -1,0 +1,422 @@
+{
+ "_about": "Three pilot hospitals for Kindred Snap. Patients and bills in this repository are synthetic; the policy fields below are each hospital's own published financial-assistance policy as captured in the Waive atlas (CC BY 4.0, https://github.com/Fluffy-SHIBAINU/waive), quoted verbatim with the dated source. State transition notes come from a 2026-11-09 web check and carry their own confidence; verify statute text before quoting.",
+ "poverty_guidelines": {
+  "2026": {
+   "household_1": 15960,
+   "household_2": 21640,
+   "per_additional": 5680,
+   "source_url": "https://aspe.hhs.gov/topics/poverty-economic-mobility/poverty-guidelines",
+   "note": "Read from the ASPE page on 2026-11-09; Federal Register 2026-00755 (2026-01-15) not fetched directly."
+  },
+  "2025": {
+   "household_1": 15650,
+   "household_2": 21150,
+   "per_additional": 5500,
+   "source_url": "https://aspe.hhs.gov/topics/poverty-economic-mobility/prior-hhs-poverty-guidelines-federal-register-references"
+  }
+ },
+ "hospitals": [
+  {
+   "ccn": "050625",
+   "name": "Cedars-Sinai Medical Center",
+   "city": "Los Angeles",
+   "state": "CA",
+   "website_domain": "cedars-sinai.org",
+   "sheet_version": 3,
+   "sheet_status": "published",
+   "transition": {
+    "state": "CA",
+    "law": "AB 1312 (Stats. 2025, Ch. 450), Health & Safety Code 127406 et seq.",
+    "effective": "2027-07-01",
+    "what_changes": "Hospitals must screen patients and presume financial-assistance eligibility under a written screening process, without requiring an application.",
+    "source_url": "https://hcai.ca.gov/document/2026-biennial-reporting-period-and-new-legislation/",
+    "confidence": "medium (HCAI summary; chaptered text not opened)"
+   },
+   "policy": {
+    "free_care_max_fpl": {
+     "value": "400",
+     "quote": "Charity Care will be made available to patients receiving medically necessary procedures and whose income is at or below 400% of the current year’s federal poverty level (FPL).",
+     "source_id": "summary-a221638c3f7fb1ad",
+     "checked_on": "2026-10-10"
+    },
+    "discount_tiers": {
+     "value": [
+      {
+       "min_fpl_exclusive": "400",
+       "max_fpl_inclusive": "450",
+       "discount_percent": 95
+      },
+      {
+       "min_fpl_exclusive": "450",
+       "max_fpl_inclusive": "500",
+       "discount_percent": 90
+      },
+      {
+       "min_fpl_exclusive": "500",
+       "max_fpl_inclusive": "550",
+       "discount_percent": 85
+      },
+      {
+       "min_fpl_exclusive": "550",
+       "max_fpl_inclusive": "600",
+       "discount_percent": 85
+      }
+     ],
+     "quote": "Attachment B Financial Assistance for Charity Care or Discount Payment by Federal Poverty Guidelines To find your Federal Poverty Level percentage (“FPL%”) and for updated annual salary amounts by family size ranges, visit the Organization’s website at https://www.cedars-sinai.org/billing-insurance-records/help-paying-your-bill.html The Organization uses the following Federal Poverty Level (“FPL”) and insurance guidelines to determine a discount: Charity Care Discount Payment FPL % 400% 450% 500% 550% 600% Uninsured 100% 95% 90% 85% 85%",
+     "source_id": "billing-55fa0c103d7c9755",
+     "checked_on": "2026-10-10"
+    },
+    "assistance_ceiling_fpl": null,
+    "insured_patients_covered": {
+     "value": true,
+     "quote": "Patients whose income ranges between 401%–600 % of the FPL also qualify for a Discount Payment, using a sliding scale based on family size, income level and insurance status.",
+     "source_id": "summary-a221638c3f7fb1ad",
+     "checked_on": "2026-10-10"
+    },
+    "residency": null
+   },
+   "apply": {
+    "form_url": null,
+    "window_days_from_first_bill": null,
+    "submit_methods": null,
+    "documents_required": {
+     "value": [
+      "proof_of_income",
+      "tax_return",
+      "pay_stubs",
+      "bank_statements"
+     ],
+     "quote": "Income documents may include pay stubs or income tax return. 3. Other documents may include: a. Health Savings Account statement showing the available balance for the current plan year. b. The Organization may require that the patient be screened for Medi-Cal eligibility so that the patient receives information on the benefits of Medi-Cal coverage.",
+     "source_id": "billing-55fa0c103d7c9755",
+     "checked_on": "2026-10-10"
+    }
+   },
+   "contacts": {
+    "phone": {
+     "value": "323-866-8600",
+     "quote": "Call Patient Services at 323-866-8600.",
+     "source_id": "summary-a221638c3f7fb1ad",
+     "checked_on": "2026-10-10"
+    },
+    "hours": null
+   },
+   "sources": {
+    "fap-bffbc3cb565c14a4": {
+     "url": "https://www.cedars-sinai.org/med-pros/patient-financial-assistance-program.html",
+     "title": "Patient Financial Assistance Program – Los Angeles, CA",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-10"
+    },
+    "application-a2149204ee49c23c": {
+     "url": "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/financial-assistance/documents/faps/fap-application-arabic.pdf",
+     "title": "Financial Assistance Application",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-10"
+    },
+    "summary-a221638c3f7fb1ad": {
+     "url": "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/financial-assistance/documents/plain-language-summary-english.pdf",
+     "title": "Summary of Financial Assistance and Surprise Billing ...",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-10"
+    },
+    "billing-9953b9a059c25b18": {
+     "url": "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/financial-assistance/documents/faps/full-fap-armenian.pdf",
+     "title": "ՔԱՂԱՔԱԿԱՆՈՒԹ ՅՈՒՆ",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-10"
+    },
+    "billing-18c9512a73ff8dc8": {
+     "url": "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/financial-assistance/documents/faps/fap-user-report.pdf",
+     "title": "Participating Physicians (PDF) (Opens in a new tab)",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-10"
+    },
+    "billing-55fa0c103d7c9755": {
+     "url": "https://www.cedars-sinai.org/content/dam/cedars-sinai/billing-insurance/financial-assistance/documents/faps/full-fap-english.pdf",
+     "title": "Cedars‑Sinai's Financial Assistance Policy (PDF) (Opens in a new tab)",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-10"
+    }
+   }
+  },
+  {
+   "ccn": "140258",
+   "name": "Alexian Brothers Medical Center 1",
+   "city": "Elk Grove Village",
+   "state": "IL",
+   "website_domain": "ascension.org",
+   "sheet_version": 2,
+   "sheet_status": "published",
+   "transition": {
+    "state": "IL",
+    "law": "Public Act 104-0521 (HB 5390), amending the Fair Patient Billing Act",
+    "effective": "2026",
+    "what_changes": "Hospitals must use the Attorney General's uniform financial assistance form; approvals last at least 12 months; the AG sets presumptive-eligibility methods by rule.",
+    "source_url": "https://ilga.gov/Legislation/PublicActs/View/104-0521",
+    "confidence": "medium (signing date not confirmed)"
+   },
+   "policy": {
+    "free_care_max_fpl": {
+     "value": "250",
+     "quote": "Patients with income less than or equal to 250% of the Federal Poverty Level income (\"FPL\"), will be eligible for 100% discount on the portion of the charges in which the Patient is responsible following payment by an insurer, if any, if such Patient determined to be eligible pursuant to presumptive scoring (described in Paragraph 5 below) or submits a financial assistance application (an \"Application\") on or prior to the 240th day after the Patient's first discharge bill and the Application is approved by the Organization.",
+     "source_id": "fap-3c3f219a8487efd2",
+     "checked_on": "2026-10-09"
+    },
+    "discount_tiers": {
+     "value": [
+      {
+       "min_fpl_exclusive": "250",
+       "max_fpl_inclusive": "300",
+       "discount_percent": 95
+      },
+      {
+       "min_fpl_exclusive": "300",
+       "max_fpl_inclusive": "400",
+       "discount_percent": 90
+      },
+      {
+       "min_fpl_exclusive": "400",
+       "max_fpl_inclusive": "600",
+       "discount_percent": 85
+      }
+     ],
+     "quote": "(FPL – Federal Poverty Level Income) Uninsured Patient Sliding Scale % Insured Patient Sliding Scale % 0% - 250% FPL 100% 0% - 250% FPL 100% 251% - 300% FPL 95% 251% - 300% FPL 95% 301% - 400% FPL 90% 301% - 400% FPL 90% 401% - 600% FPL 85%",
+     "source_id": "fap-3c3f219a8487efd2",
+     "checked_on": "2026-10-09"
+    },
+    "assistance_ceiling_fpl": null,
+    "insured_patients_covered": null,
+    "residency": null
+   },
+   "apply": {
+    "form_url": {
+     "value": "https://www.amitahealth.org/patient-resources/pay-your-bill/financial-assistance",
+     "quote": "Copies of the Financial Assistance Policy and Financial Assistance Policy application form are available at https://www.amitahealth.org/patient-resources/pay-your-bill/financial-assistance and at the health ministries listed above.",
+     "source_id": "summary-2b7444beacfba961",
+     "checked_on": "2026-10-09"
+    },
+    "window_days_from_first_bill": {
+     "value": 240,
+     "quote": "We will accept your application for up to 240 days following the first billing statement for your care.",
+     "source_id": "application-a411bd43f1bbbf00",
+     "checked_on": "2026-10-09"
+    },
+    "submit_methods": {
+     "value": [
+      {
+       "kind": "mail",
+       "detail": "Please print and mail your completed application to the following address: Alexian Brothers Health System Attention: Financial Assistance Department PO Box 74008855 Chicago, IL 60674-8843"
+      },
+      {
+       "kind": "fax",
+       "detail": "Please complete this form and submit it to Alexian Brothers Health System, d/b/a Ascension Illinois affiliates in person, by mail, by electronic mail, or by fax to apply for free or discounted care as soon as possible after the date of service."
+      },
+      {
+       "kind": "email",
+       "detail": "Please complete this form and submit it to Alexian Brothers Health System, d/b/a Ascension Illinois affiliates in person, by mail, by electronic mail, or by fax to apply for free or discounted care as soon as possible after the date of service."
+      },
+      {
+       "kind": "in_person",
+       "detail": "Please complete this form and submit it to Alexian Brothers Health System, d/b/a Ascension Illinois affiliates in person, by mail, by electronic mail, or by fax to apply for free or discounted care as soon as possible after the date of service."
+      }
+     ],
+     "quote": "Please complete this form and submit it to Alexian Brothers Health System, d/b/a Ascension Illinois affiliates in person, by mail, by electronic mail, or by fax to apply for free or discounted care as soon as possible after the date of service.",
+     "source_id": "application-a411bd43f1bbbf00",
+     "checked_on": "2026-10-09"
+    },
+    "documents_required": {
+     "value": [
+      "proof_of_income",
+      "tax_return",
+      "pay_stubs",
+      "bank_statements",
+      "other"
+     ],
+     "quote": "Along with the application, please provide a copy of at least one of the following items as your proof of income. If you are married or have lived with a significant other for 6 months or longer, they will also need to provide a copy of at least one of the following items as proof of their income before the application can be processed. • Copies of 3 most recent paystubs from employer • Copies of most recent yearly tax return (if self-employed, include all schedules) • Social Security and/or Pension Retirement Award Letter • Parent or Guardian’s most recent yearly tax return, if applicant is a dependent listed on their tax form and under the age 25 • Other income validation documents • Copies of bank statements from last 3 months • Copy of receipt of unemployment benefits I Finally, please also provide documentation as proof of your outstanding monthly medical and pharmacy/drug costs.",
+     "source_id": "application-a411bd43f1bbbf00",
+     "checked_on": "2026-10-09"
+    }
+   },
+   "contacts": {
+    "phone": {
+     "value": "833-272-7585",
+     "quote": "For help with a Financial Assistance Policy application, you may contact Alexian Brothers Health System, d/b/a Ascension Illinois affiliates by calling 833-272-7585, by email at amitafinancialassistance@ascension.org, or in writing at: Alexian Brothers Health System Attention: Financial Assistance Department PO box 74008855 Chicago, IL 60674-8843",
+     "source_id": "summary-2b7444beacfba961",
+     "checked_on": "2026-10-09"
+    },
+    "hours": null
+   },
+   "sources": {
+    "fap-3c3f219a8487efd2": {
+     "url": "https://healthcare.ascension.org/-/media/healthcare/financial-assistance/illinois/fap/runningfile_ilchi_english_financial-assistance-policy.pdf",
+     "title": "[PDF] FINANCIAL ASSISTANCE POLICY - Alexian Brothers Health System ...",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-09"
+    },
+    "application-a411bd43f1bbbf00": {
+     "url": "https://healthcare.ascension.org/-/media/healthcare/financial-assistance/illinois/fap-application/runningfile_ilchi_english_financial-assistance-application.pdf",
+     "title": "Financial assistance application form",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-09"
+    },
+    "summary-2b7444beacfba961": {
+     "url": "https://healthcare.ascension.org/-/media/healthcare/financial-assistance/illinois/plain-language-summary/runningfile_ilchi_english_financial-assistance-policy-summary.pdf",
+     "title": "Alexian Brothers Health System, d/b/a ...",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-09"
+    },
+    "summary-86959e0a754da3d4": {
+     "url": "https://healthcare.ascension.org/-/media/healthcare/financial-assistance/indiana/plain-language-summary-dob/runningfile_inasc_english_dob_plain_language_summary.pdf",
+     "title": "Summary of Financial Assistance Policy",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-09"
+    }
+   }
+  },
+  {
+   "ccn": "330214",
+   "name": "Nyu Langone Hospitals",
+   "city": "New York",
+   "state": "NY",
+   "website_domain": "nyulangone.org",
+   "sheet_version": 1,
+   "sheet_status": "published",
+   "transition": {
+    "state": "NY",
+    "law": "Hospital Financial Aid Law (Public Health Law 2807-k), 2026 Attorney General guidance",
+    "effective": "2026 (guidance on an existing law)",
+    "what_changes": "Every hospital must offer aid; patients may apply from the day of service using the state application.",
+    "source_url": "https://ag.ny.gov/press-release/2026/attorney-general-james-releases-guidance-help-new-yorkers-access-hospital",
+    "confidence": "low as a transition; chosen for data quality"
+   },
+   "policy": {
+    "free_care_max_fpl": {
+     "value": "600",
+     "quote": "The Hospital provides 100% discounts for eligible patients up to 600% FPL and lower discounts for eligible patients up to 800% FPL.",
+     "source_id": "fap-5aad16a459e827a5",
+     "checked_on": "2026-10-14"
+    },
+    "discount_tiers": {
+     "value": [
+      {
+       "min_fpl_exclusive": "600",
+       "max_fpl_inclusive": "650",
+       "discount_percent": 75
+      },
+      {
+       "min_fpl_exclusive": "650",
+       "max_fpl_inclusive": "700",
+       "discount_percent": 50
+      },
+      {
+       "min_fpl_exclusive": "700",
+       "max_fpl_inclusive": "800",
+       "discount_percent": 25
+      }
+     ],
+     "quote": "100% Discount\n100% Discount\n100% Discount\n100% Discount\n75% Discount\n50% Discount\n25% Discount\nFamily Size\n0% - 150% FPL\n151% - 300% FPL\n301% - 400% FPL\n401% - 600% FPL\n601% - 650% FPL\n651% - 700% FPL\n701% - 800% FPL",
+     "source_id": "fap-5aad16a459e827a5",
+     "checked_on": "2026-10-14"
+    },
+    "assistance_ceiling_fpl": null,
+    "insured_patients_covered": null,
+    "residency": null
+   },
+   "apply": {
+    "form_url": null,
+    "window_days_from_first_bill": {
+     "value": 240,
+     "quote": "Patients will have at least two hundred and forty (240) days from the date of service or discharge to apply for financial assistance.",
+     "source_id": "summary-a7eb8e941efbceac",
+     "checked_on": "2026-10-14"
+    },
+    "submit_methods": {
+     "value": [
+      {
+       "kind": "in_person",
+       "detail": "by visiting a Financial Counselor between the hours of 8am-5pm at any of the following locations: (a) NYU Langone Hospital Tisch: 550 First Avenue, MSB 2-100A, New York, NY 10016; (b) NYU Langone Hospital – Brooklyn 150 55th Street, Suite 2840, Brooklyn, NY 11220; (c) NYU Langone Hospital – Long Island 131 Mineola Boulevard, Suite 105, Mineola, NY 11501 or Admitting Office 259 First Street Mineola, NY 11501; or (d) NYU Langone Hospital – Suffolk 101 Hospital Road, Room NW 1011, Patchogue, NY 11772."
+      }
+     ],
+     "quote": "If you have questions or need help completing the application, please call Financial Counseling Services at (888) 279-1364.",
+     "source_id": "application-370813be735cdc11",
+     "checked_on": "2026-10-14"
+    },
+    "documents_required": {
+     "value": [
+      "proof_of_income",
+      "social_security_letter",
+      "tax_return",
+      "pay_stubs"
+     ],
+     "quote": "Acceptable documentation of income may include any of the following: \n• Most Recent 1040 Tax Return\n• Recent and consecutive pay stubs (Requires 3-4)\n• W2 Forms\n• 1099 forms for self-employed applicants\n• Employer income letter\n• Unemployment benefit documentation, notarized letter attesting to unemployment income, or furlough or employment termination letters\n• Current school transcript for full-time students\n• Documentation of pension income, or 401(k) or IRA distributions\n• Income verification from public assistance, income verification from disability, or Social Security benefit verification letters\n• Income verification from alimony, or income verification from child support\n• Other supporting documentation may be considered on a case-by-case basis",
+     "source_id": "fap-223a8bfa912dbdc8",
+     "checked_on": "2026-10-14"
+    }
+   },
+   "contacts": {
+    "phone": {
+     "value": "888-279-1364",
+     "quote": "Speak with a financial counselor for free and confidential assistance by calling [888-279-1364](tel:888-279-1364), available Monday through Friday, 8:00AM to 5:00PM.",
+     "source_id": "billing-922e5b325265270e",
+     "checked_on": "2026-10-14"
+    },
+    "hours": {
+     "value": "8 am-5 pm",
+     "quote": "Applications are available on the NYU Langone Health website (see https://nyulangone.org/insurance-billing-financial-assistance; go to “Patient Financial Counselors and Financial Assistance for Hospital Bills” and click on “financial assistance application”) or by visiting a Financial Counselor at NYU Langone Hospitals (Tisch): Skirball lobby (560 First Avenue, Rm SK, tel: 866-486-9847) or NYU Langone Hospital- Brooklyn (150 55th Street, Suite 2-40, tel: 718-630-6252) between the hours of 8 am to 5 pm.",
+     "source_id": "fap-2064e78dd084e6ee",
+     "checked_on": "2026-10-14"
+    }
+   },
+   "sources": {
+    "fap-5aad16a459e827a5": {
+     "url": "https://nyulangone.org/files/charity-care-financial-assistance.pdf",
+     "title": "Reissue Dates: 06/2006 01/2025 NYU Langone Hospitals ...",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-14"
+    },
+    "summary-a7eb8e941efbceac": {
+     "url": "https://nyulangone.org/files/financial-assistance-brochure-english-aug-2022.pdf",
+     "title": "Financial Assistance Summary",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-14"
+    },
+    "billing-922e5b325265270e": {
+     "url": "https://nyulangone.org/insurance-billing-financial-assistance",
+     "title": "Insurance, Billing & Financial Assistance | NYU Langone Health",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-14"
+    },
+    "fap-2064e78dd084e6ee": {
+     "url": "https://nyulangone.org/files/charity-care-financial-assistance-feb-2021.pdf",
+     "title": "Charity Care and Financial Assistance",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-14"
+    },
+    "fap-223a8bfa912dbdc8": {
+     "url": "https://www.nyulangone.org/files/nyulh-charity-care-and-financial-assistance-policy.pdf",
+     "title": "Financial Assistance Policy",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-14"
+    },
+    "application-370813be735cdc11": {
+     "url": "https://www.nyulangone.org/files/cover-letter-uniform-financial-assistance-application-english-fillable.pdf",
+     "title": "Financial Assistance Program",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-14"
+    },
+    "application-755657ead43c7fbe": {
+     "url": "https://www.nyulangone.org/files/uniform-financial-assistance-application-english-fillable.pdf",
+     "title": "English",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-14"
+    },
+    "application-b5bcce33d493cbbb": {
+     "url": "https://www.nyulangone.org/files/uniform-financial-assistance-application-arabic-fillable.pdf",
+     "title": "Arabic (العربية)",
+     "kind": "hospital_web",
+     "fetched_on": "2026-10-14"
+    }
+   }
+  }
+ ]
+}
