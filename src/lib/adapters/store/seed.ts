@@ -13,6 +13,8 @@ export async function seedDemo(store: Store, dir: string = FIXTURE_DIR): Promise
   const files = readdirSync(dir).filter((f) => f.endsWith(".json")).sort();
   for (const f of files) {
     const fx = JSON.parse(readFileSync(join(dir, f), "utf8")) as CaseFixture;
+    // Idempotent across cold starts on a shared database: a case that already exists keeps its progress.
+    if (await store.cases.get(fx.case.id)) continue;
     await store.cases.put(fx.case);
     for (const d of fx.documents ?? []) await store.documents.put(d);
   }
