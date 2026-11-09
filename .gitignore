@@ -42,3 +42,8 @@ next-env.d.ts
 
 # keep the example env file
 !.env.example
+
+# generated voice-over and captures
+video/vo/
+video/captures/
+video/out/
