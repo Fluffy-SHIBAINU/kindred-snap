@@ -1,0 +1,201 @@
+{
+  "sources": [
+    {
+      "kind": "web",
+      "from": "https://snap.kindred-ai.dev",
+      "at": "2026-11-10T01:58:22.705Z",
+      "title": "Kindred Snap",
+      "description": "Snap the bill once. Kindred investigates, prepares the right request, asks for one approval, and tracks the case to a documented resolution.",
+      "files": [
+        {
+          "kind": "screen",
+          "file": "materials/web-snap-kindred-ai-dev/screen-01.png",
+          "from": "https://snap.kindred-ai.dev",
+          "note": "y=0px, 2x"
+        },
+        {
+          "kind": "screen",
+          "file": "materials/web-snap-kindred-ai-dev/screen-02.png",
+          "from": "https://snap.kindred-ai.dev",
+          "note": "y=900px, 2x"
+        },
+        {
+          "kind": "screen",
+          "file": "materials/web-snap-kindred-ai-dev/screen-03.png",
+          "from": "https://snap.kindred-ai.dev",
+          "note": "y=1800px, 2x"
+        },
+        {
+          "kind": "logo",
+          "file": "materials/web-snap-kindred-ai-dev/logo-01.ico",
+          "from": "https://snap.kindred-ai.dev/favicon.ico?favicon.38folom4sz_yx.ico",
+          "note": "icon 48x48"
+        }
+      ],
+      "colours": [
+        {
+          "role": "ground",
+          "hex": "lab(97.2673 0.123411 4.20818)",
+          "w": 4321354.375
+        },
+        {
+          "role": "ground",
+          "hex": "lab(100 0 0)",
+          "w": 3402967.5
+        },
+        {
+          "role": "ground",
+          "hex": "lab(96.2114 -6.41078 2.54823)",
+          "w": 800302.5
+        },
+        {
+          "role": "ground",
+          "hex": "#ffffff",
+          "w": 323479.86572265625
+        },
+        {
+          "role": "type",
+          "hex": "lab(8.69031 -8.27733 1.58126)",
+          "w": 1074
+        },
+        {
+          "role": "type",
+          "hex": "lab(41.1625 -7.94904 2.29844)",
+          "w": 449
+        },
+        {
+          "role": "type",
+          "hex": "lab(20.2249 -6.77259 1.26303)",
+          "w": 235
+        },
+        {
+          "role": "accent",
+          "hex": "#ffffff",
+          "w": 400
+        },
+        {
+          "role": "accent",
+          "hex": "lab(43.7008 -43.9579 17.1976)",
+          "w": 400
+        },
+        {
+          "role": "accent",
+          "hex": "lab(90.952 0 -0.0000119209)",
+          "w": 200
+        },
+        {
+          "role": "accent",
+          "hex": "lab(8.69031 -8.27733 1.58126)",
+          "w": 90
+        },
+        {
+          "role": "css --p-mon",
+          "hex": "#eec1bf"
+        },
+        {
+          "role": "css --p-tue",
+          "hex": "#f2cfaf"
+        },
+        {
+          "role": "css --p-wed",
+          "hex": "#eee4b4"
+        },
+        {
+          "role": "css --p-thu",
+          "hex": "#a8e2c2"
+        },
+        {
+          "role": "css --p-fri",
+          "hex": "#b1dde6"
+        },
+        {
+          "role": "css --p-sat",
+          "hex": "#bfcae9"
+        },
+        {
+          "role": "css --p-sun",
+          "hex": "#dac1de"
+        },
+        {
+          "role": "css --light",
+          "hex": "#fffdf7"
+        },
+        {
+          "role": "css --glint",
+          "hex": "#fff"
+        },
+        {
+          "role": "css --background",
+          "hex": "#0a0a0a"
+        },
+        {
+          "role": "css --foreground",
+          "hex": "#fafafa"
+        },
+        {
+          "role": "css --card",
+          "hex": "#171717"
+        },
+        {
+          "role": "css --card-foreground",
+          "hex": "#fafafa"
+        },
+        {
+          "role": "css --popover",
+          "hex": "#171717"
+        },
+        {
+          "role": "css --popover-foreground",
+          "hex": "#fafafa"
+        },
+        {
+          "role": "css --primary",
+          "hex": "#e5e5e5"
+        },
+        {
+          "role": "css --primary-foreground",
+          "hex": "#171717"
+        },
+        {
+          "role": "css --secondary",
+          "hex": "#262626"
+        },
+        {
+          "role": "css --secondary-foreground",
+          "hex": "#fafafa"
+        },
+        {
+          "role": "css --muted",
+          "hex": "#262626"
+        },
+        {
+          "role": "css --muted-foreground",
+          "hex": "#a1a1a1"
+        },
+        {
+          "role": "css --accent",
+          "hex": "#262626"
+        },
+        {
+          "role": "css --accent-foreground",
+          "hex": "#fafafa"
+        },
+        {
+          "role": "css --destructive",
+          "hex": "#ff6568"
+        }
+      ],
+      "fonts": [
+        {
+          "family": "Atkinson Hyperlegible Next",
+          "chars": 1542
+        },
+        {
+          "family": "Atkinson Hyperlegible Mono",
+          "chars": 293
+        }
+      ],
+      "missing": []
+    }
+  ]
+}

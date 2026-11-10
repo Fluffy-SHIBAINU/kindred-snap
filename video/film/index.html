@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="en" data-composition-variables='[
+  {"id":"amountBilled","type":"string","label":"Billed amount","default":"$466.00","group":"Numbers"},
+  {"id":"amountNew","type":"string","label":"New balance","default":"$56.50","group":"Numbers"},
+  {"id":"tier","type":"string","label":"Help tier","default":"75%","group":"Numbers"},
+  {"id":"savings","type":"string","label":"Savings","default":"$409.50","group":"Numbers"},
+  {"id":"capTable","type":"string","label":"Table caption","default":"Dorothy, 74. On Medicare.","group":"Words"},
+  {"id":"chant1","type":"string","label":"Chant 1","default":"Snap the Bill.","group":"Words"},
+  {"id":"chant2","type":"string","label":"Chant 2","default":"One Number.","group":"Words"},
+  {"id":"chant3","type":"string","label":"Chant 3","default":"That’s It.","group":"Words"},
+  {"id":"capWork","type":"string","label":"Clippings headline","default":"Same Line. Two Answers.","group":"Words"},
+  {"id":"capTier","type":"string","label":"Tier label","default":"Dorothy’s Tier","group":"Words"},
+  {"id":"capResult1","type":"string","label":"Result headline","default":"One Screen.","group":"Words"},
+  {"id":"capResult2","type":"string","label":"Result caption","default":"Every Finding Shows the Line It Rests On.","group":"Words"},
+  {"id":"capResult3","type":"string","label":"Press caption","default":"One Tap Sends Both Letters.","group":"Words"},
+  {"id":"capFloor1","type":"string","label":"Done caption","default":"Done. Jenna Hears Back in 2 to 4 Weeks.","group":"Words"},
+  {"id":"capFloor2","type":"string","label":"Floor caption","default":"Simulated Answer: the Bill Drops to","group":"Words"},
+  {"id":"capAnswer","type":"string","label":"Answer caption","default":"Three Numbers That Never Blur.","group":"Words"},
+  {"id":"capStaff1","type":"string","label":"Staff caption 1","default":"Every Edit Keeps Its Original.","group":"Words"},
+  {"id":"capStaff2","type":"string","label":"Staff caption 2","default":"Nothing Leaves Without the Family’s Approval.","group":"Words"},
+  {"id":"endLine","type":"string","label":"End line","default":"Snap the bill once. Kindred does the rest.","group":"Words"},
+  {"id":"endFooter","type":"string","label":"End footer","default":"Demo partner · synthetic data · nothing was sent","group":"Words"},
+  {"id":"hangHold","type":"number","label":"Hang on the rule (s)","default":1.4,"min":0.4,"max":3,"step":0.1,"group":"Timing"},
+  {"id":"silenceHold","type":"number","label":"Silence before the lock (s)","default":0.6,"min":0.2,"max":1.6,"step":0.1,"group":"Timing"},
+  {"id":"endHold","type":"number","label":"End hold (s)","default":2.4,"min":0.5,"max":6,"step":0.1,"group":"Timing"}
+]'>
+<head>
+<meta charset="utf-8">
+<title>Kindred Snap · The Bill Comes Down</title>
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/om.js"></script>
+<style id="om-fonts">
+@font-face { font-family: "Atkinson Hyperlegible Next"; src: url("assets/fonts/AtkinsonHyperlegibleNext-var.woff2") format("woff2"); font-weight: 200 800; font-style: normal; }
+@font-face { font-family: "Atkinson Hyperlegible Mono"; src: url("assets/fonts/AtkinsonHyperlegibleMono-var.woff2") format("woff2"); font-weight: 200 800; font-style: normal; }
+</style>
+<style>
+/* ---- Kindred Snap mock kit (docs/design/kit.css), copied so the rebuilt screens match the product ---- */
+:root{
+  --color-paper:#FAF7EF;--color-paper-2:#E9F8EF;--color-paper-3:#D4F0E0;--color-ink:#0C1C16;--color-ink-2:#26342F;--color-muted:#54655D;--color-rule:#CBD6C9;
+  --color-accent:#007948;--color-accent-deep:#005F3A;--color-accent-soft:#A9E8C6;--color-accent-ink:#F8FDFA;--color-focus:#006B38;--color-night:#040807;--color-green-ground:#006B40;
+  --glint:#FFFFFF;--color-white:#FFFFFF;
+  --shadow-glint:inset 0 1px 0 rgb(255 255 255 / .25);--shadow-tray:inset 0 1.5px 0 var(--glint),inset 0 -24px 36px -28px rgb(12 28 22 / .10);
+  --font-body:"Atkinson Hyperlegible Next",ui-sans-serif,system-ui,sans-serif;--font-mono:"Atkinson Hyperlegible Mono",ui-monospace,monospace;
+  --text-sm:16px;--text-md:18px;--text-lg:22px;--text-xl:26px;--text-2xl:32px;--text-3xl:38px;--text-display:46px;
+  --radius-input:10px;--radius-card:14px;--radius-pill:999px;--radius-phone:28px;
+  --shadow-card:0 1px 2px rgb(12 28 22 / .08),0 24px 48px -24px rgb(12 28 22 / .35);
+}
+body{margin:0;background:var(--color-paper);color:var(--color-ink);font-family:var(--font-body);font-size:var(--text-md);line-height:1.5;-webkit-font-smoothing:antialiased}
+*,*::before,*::after{box-sizing:border-box}
+h1,h2,h3{margin:0;font-weight:700;line-height:1.15;letter-spacing:-0.01em;overflow-wrap:break-word;min-width:0}
+h1{font-size:var(--text-2xl)}h2{font-size:var(--text-xl)}h3{font-size:var(--text-lg)}
+p{margin:0}
+.mono,.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--color-muted)}.small{font-size:var(--text-sm)}
+svg{display:block}
+.phone{width:390px;height:844px;background:var(--color-paper);display:flex;flex-direction:column;overflow:hidden}
+.appbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 24px 8px}
+.wordmark{font-weight:800;font-size:var(--text-lg);letter-spacing:-0.02em}
+.screen{flex:1;min-height:0;overflow:hidden;padding:8px 24px 16px;display:flex;flex-direction:column;gap:16px}
+.actionbar{padding:12px 24px 28px;display:flex;flex-direction:column;gap:8px;background:var(--color-paper);border-top:1px solid var(--color-rule)}
+.btn-primary,.btn-secondary{display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 20px;border-radius:var(--radius-input);font-weight:500;font-size:var(--text-md);text-decoration:none;border:0;width:100%}
+.btn-primary{background:var(--color-accent);color:var(--color-accent-ink);box-shadow:var(--shadow-glint),0 0 0 1px var(--color-accent-deep),0 3px 0 var(--color-accent-deep)}
+.btn-secondary{background:var(--color-white);color:var(--color-ink);box-shadow:inset 0 1px 0 var(--glint),0 0 0 1px var(--color-rule),0 3px 0 var(--color-rule)}
+.btn-text{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 8px;background:none;border:0;color:var(--color-ink);font-weight:500;text-decoration:underline;text-underline-offset:.16em;text-decoration-thickness:1px;width:100%}
+.card{background:var(--color-white);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:20px;display:flex;flex-direction:column;gap:12px}
+.tray{background:var(--color-paper-2);border-radius:var(--radius-card);padding:16px;box-shadow:var(--shadow-tray)}
+.step{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:var(--radius-card);background:var(--color-paper-2)}
+.step .icon{width:28px;height:28px;flex:0 0 28px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:var(--color-white);color:var(--color-ink);box-shadow:0 0 0 1px var(--color-rule)}
+.step .title{font-weight:500}
+.step .sub{color:var(--color-muted);font-size:var(--text-sm)}
+.step--done{background:var(--color-accent-soft)}
+.step--done .icon{background:var(--color-accent);color:var(--color-accent-ink);box-shadow:none}
+.step--active{background:var(--color-white);box-shadow:0 0 0 2px var(--color-accent),var(--shadow-card)}
+.step--active .icon{color:var(--color-accent);box-shadow:0 0 0 1px var(--color-accent)}
+.step--waiting{background:var(--color-paper-2);color:var(--color-ink-2)}
+.step--waiting .icon{color:var(--color-muted)}
+.clip{background:var(--color-white);border-radius:var(--radius-input);box-shadow:var(--shadow-card);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.clip .line{font-family:var(--font-mono);font-size:var(--text-sm);line-height:1.45;color:var(--color-ink);display:flex;justify-content:space-between;gap:12px}
+.clip .src{font-size:var(--text-sm);color:var(--color-muted)}
+.hl{background:var(--color-accent-soft);padding:0 4px;border-radius:3px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.evidence{display:flex;flex-direction:column;gap:10px}
+.money{display:flex;flex-direction:column;gap:4px}
+.money .amount{font-family:var(--font-mono);font-size:var(--text-2xl);font-weight:500;letter-spacing:-0.01em}
+.money--actual{background:var(--color-ink);color:var(--color-paper);border-radius:var(--radius-card);padding:16px 20px}
+.money--actual .amount{color:var(--color-accent-soft)}
+.badge{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 10px;border-radius:var(--radius-pill);font-size:var(--text-sm);font-weight:500;width:max-content}
+.badge--demo{background:var(--color-paper-3);color:var(--color-ink)}
+.badge--synthetic{background:transparent;box-shadow:inset 0 0 0 1px var(--color-rule);color:var(--color-ink-2)}
+.badge--estimated{background:transparent;border:1px dashed var(--color-ink-2);color:var(--color-ink-2)}
+.badge--confirmed{background:var(--color-accent);color:var(--color-accent-ink)}
+.alert{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:var(--radius-card);background:var(--color-paper-2);color:var(--color-ink)}
+.alert .icon{flex:0 0 24px;width:24px;height:24px;color:var(--color-ink)}
+.field{display:flex;flex-direction:column;gap:8px}
+.label{font-weight:500;font-size:var(--text-md)}
+.helper{font-size:var(--text-sm);color:var(--color-muted)}
+.input{min-height:56px;padding:0 16px;border-radius:var(--radius-input);border:1px solid var(--color-muted);background:var(--color-white);font-size:var(--text-md);width:100%;display:flex;align-items:center}
+.tile{display:flex;align-items:center;gap:14px;min-height:96px;padding:18px;border-radius:var(--radius-card);background:var(--color-white);box-shadow:inset 0 0 0 1px var(--color-rule);text-align:left;width:100%;border:0}
+.tile .icon{width:32px;height:32px;flex:0 0 32px;color:var(--color-ink)}
+
+/* ---- the film ---- */
+html,body{width:100%;height:100%;overflow:hidden}
+#film{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--color-paper)}
+#world{position:absolute;left:0;top:0;width:1920px;height:1080px}
+.stage{position:absolute;top:0;width:1920px;height:1080px}
+.abs{position:absolute}
+/* the phone frame: paper ground, 28px radius, hairline ring, soft shadow */
+.pframe{position:absolute;width:390px;height:844px;border-radius:var(--radius-phone);overflow:hidden;background:var(--color-paper);
+  box-shadow:0 0 0 1px var(--color-rule),0 2px 6px rgb(12 28 22 / .06),0 48px 90px -36px rgb(12 28 22 / .38)}
+.pframe .phone{position:absolute;left:0;top:0}
+.scr2{position:absolute;inset:0;opacity:0;z-index:2}
+.tight .screen{gap:10px}
+.srow{position:relative;flex:0 0 auto}
+.srow .L{position:absolute;inset:0}
+.srow .a,.srow .d{opacity:0}
+.mark{position:relative;display:inline-block;padding:0 4px}
+.mark i{position:absolute;inset:0;background:var(--color-accent-soft);border-radius:3px;transform-origin:0 50%;z-index:0}
+.mark b{position:relative;font-weight:inherit;z-index:1}
+/* type for the film: captions 44-56, headlines 96-160, amounts 240-300 mono */
+.cap{font-size:52px;font-weight:700;line-height:1.15;letter-spacing:-0.01em;color:var(--color-ink)}
+.head{font-size:120px;font-weight:800;line-height:1;letter-spacing:-0.03em;color:var(--color-ink)}
+.big{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-weight:500;letter-spacing:-0.02em;line-height:1}
+/* table */
+#bill{left:120px;top:170px;width:560px;height:740px;background:var(--color-white);border-radius:6px;box-shadow:var(--shadow-card);padding:44px 44px 36px;display:flex;flex-direction:column;gap:14px}
+#bill .hosp{font-size:26px;font-weight:700;line-height:1.2}
+#bill .meta{font-size:18px;color:var(--color-muted);line-height:1.4}
+#bill .ledger{display:flex;flex-direction:column;margin-top:6px}
+#bill .row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:11px 0;border-bottom:1px solid var(--color-rule);font-family:var(--font-mono);font-size:21px;line-height:1.3}
+#bill .row .k{color:var(--color-muted)}
+#bill .row.total{border-bottom:0;border-top:2px solid var(--color-ink);margin-top:6px;font-weight:700;font-size:23px;position:relative}
+#bill .strike{position:absolute;right:-4px;top:50%;width:120px;height:3px;background:var(--color-ink);transform-origin:0 50%}
+#bill .row.newbal{border-bottom:0;color:var(--color-accent);font-weight:700;font-size:23px}
+#bigAmt{left:780px;top:250px;width:1020px}
+#bigAmt .big{font-size:240px}
+#bigAmt .due{font-size:56px;font-weight:500;color:var(--color-muted);margin-top:18px}
+#capTable{left:780px;top:690px;width:1020px}
+#endBlock{left:780px;top:300px;width:1040px}
+#endBlock .wm{font-size:150px;font-weight:800;letter-spacing:-0.03em;line-height:1}
+#endBlock .line{font-size:56px;font-weight:500;margin-top:36px;line-height:1.2;max-width:760px}
+#endBlock .foot{display:inline-block;margin-top:44px;font-family:var(--font-mono);font-size:30px;white-space:nowrap;padding:10px 22px;border-radius:999px;background:var(--color-paper-3);color:var(--color-ink)}
+/* snap: three dancers on flat colour bands */
+.band{position:absolute;top:0;width:640px;height:1080px;overflow:hidden}
+.strip{position:absolute;left:0;top:0;width:640px}
+.strip div{height:1080px}
+.dancer{position:absolute;top:96px}
+#chant{left:0;top:850px;width:1920px;height:130px}
+#chant .ch{position:absolute;left:0;top:0;width:1920px;text-align:center;font-size:110px;font-weight:800;letter-spacing:-0.03em;line-height:1.1}
+#chant .w{display:inline-block;opacity:0}
+/* working */
+#wPanel{left:560px;top:96px;width:1240px;height:888px;border-radius:28px;background:var(--color-paper-2);box-shadow:var(--shadow-tray);opacity:0}
+.bigclip{width:342px;transform-origin:0 0}
+#capWork{left:600px;top:760px;width:1134px;text-align:center}
+#policy{left:600px;top:150px;width:1134px;padding:40px 44px;gap:18px;opacity:0}
+#policy .q{font-size:38px;line-height:1.35;font-weight:500}
+#policy .src{font-size:26px;color:var(--color-muted)}
+#policy .who{font-size:32px;line-height:1.3;border-top:1px solid var(--color-rule);padding-top:18px}
+#tierRow{left:600px;top:640px;width:1134px;display:flex;align-items:baseline;gap:44px;opacity:0}
+#tierRow .big{font-size:260px;color:var(--color-ink)}
+/* result + floor */
+#rGround{left:-500px;top:-800px;width:2900px;height:2700px;background:var(--color-paper-2)}
+#floorRule{left:200px;top:966px;width:1520px;height:4px;background:var(--color-ink);opacity:0}
+#floor,#floorNew{top:984px;font-size:440px;white-space:nowrap}
+#floor .dg,#floorNew .dg{display:inline-block}
+#floorNew{color:var(--color-accent-deep)}
+.press{position:absolute;width:120px;height:120px;border-radius:999px;border:4px solid var(--color-accent);opacity:0}
+/* answer */
+#mRows{left:720px;top:118px;width:1080px;display:flex;flex-direction:column;gap:22px}
+.mrow{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:22px 34px;border-radius:var(--radius-card);background:var(--color-white);box-shadow:var(--shadow-card);opacity:0}
+.mrow .lab{display:flex;flex-direction:column;gap:12px;font-size:44px;font-weight:700;line-height:1.1}
+.mrow .amt{font-family:var(--font-mono);font-size:120px;font-weight:500;letter-spacing:-0.02em;line-height:1}
+.mrow .badge{font-size:28px;min-height:48px;padding:0 20px}
+.mrow.actual{background:var(--color-ink);color:var(--color-paper)}
+.mrow.actual .amt{color:var(--color-accent-soft)}
+#capAnswer{left:720px;top:880px;width:1080px}
+/* staff */
+#dash{left:640px;top:110px;width:1160px;height:860px;border-radius:var(--radius-card);overflow:hidden;box-shadow:0 0 0 1px var(--color-rule),var(--shadow-card);background:var(--color-paper)}
+#dashInner{position:absolute;left:0;top:0;width:1160px}
+#dashInner img{display:block;width:1160px}
+#dashRing{left:40px;top:792px;width:1080px;height:70px;border-radius:10px;box-shadow:0 0 0 4px var(--color-accent);opacity:0}
+#sCap1{left:120px;top:250px;width:460px}
+#sCap2{left:120px;top:560px;width:460px}
+#sCap0{left:120px;top:150px;width:460px;font-size:44px;font-weight:500;color:var(--color-muted)}
+/* screen-space captions over the result and the floor */
+#hud{position:absolute;inset:0}
+#hud .cap,#hud .head{position:absolute;opacity:0}
+</style>
+<script type="application/json" id="om-cues">{"source":"recording:narration.wav","precision":"phrase-per-beat","offset":0,"duration":92,"words":[{"word":"A","start":0.291,"end":0.506},{"word":"hospital","start":0.506,"end":1.473},{"word":"bill","start":1.473,"end":2.011},{"word":"Four","start":2.011,"end":2.542},{"word":"hundred","start":2.542,"end":3.392},{"word":"sixty-six","start":3.392,"end":4.348},{"word":"dollars","start":4.348,"end":5.198},{"word":"Dorothy","start":5.404,"end":6.217},{"word":"is","start":6.217,"end":6.522},{"word":"seventy-four","start":6.522,"end":7.743},{"word":"Kindred","start":8.09,"end":9.124},{"word":"Snap","start":9.124,"end":9.77},{"word":"One","start":9.77,"end":10.339},{"word":"photo","start":10.339,"end":11.193},{"word":"of","start":11.193,"end":11.62},{"word":"the","start":11.62,"end":12.189},{"word":"bill","start":12.189,"end":12.9},{"word":"One","start":13.7,"end":13.811},{"word":"number","start":13.811,"end":14.005},{"word":"for","start":14.005,"end":14.116},{"word":"income","start":14.116,"end":14.309},{"word":"That's","start":14.42,"end":15.232},{"word":"the","start":15.232,"end":15.773},{"word":"whole","start":15.773,"end":16.584},{"word":"setup","start":16.584,"end":17.396},{"word":"Kindred","start":18.212,"end":18.858},{"word":"reads","start":18.858,"end":19.342},{"word":"every","start":19.342,"end":19.827},{"word":"line","start":19.827,"end":20.23},{"word":"and","start":20.23,"end":20.553},{"word":"pulls","start":20.553,"end":21.038},{"word":"Medicare's","start":21.038,"end":21.845},{"word":"notice","start":21.845,"end":22.41},{"word":"for","start":22.41,"end":22.733},{"word":"the","start":22.733,"end":23.056},{"word":"same","start":23.056,"end":23.46},{"word":"visit","start":23.46,"end":23.944},{"word":"Line","start":24.798,"end":24.912},{"word":"three","start":24.912,"end":25.048},{"word":"contrast","start":25.048,"end":25.593},{"word":"dye","start":25.593,"end":25.835},{"word":"two","start":25.835,"end":26.241},{"word":"hundred","start":26.241,"end":27.053},{"word":"forty","start":27.053,"end":27.663},{"word":"dollars","start":27.663,"end":28.475},{"word":"Medicare","start":28.754,"end":29.274},{"word":"says","start":29.274,"end":29.564},{"word":"it's","start":29.564,"end":29.795},{"word":"included","start":29.795,"end":30.316},{"word":"in","start":30.316,"end":30.489},{"word":"the","start":30.489,"end":30.721},{"word":"CT","start":30.721,"end":30.895},{"word":"payment","start":30.895,"end":31.357},{"word":"Then","start":31.616,"end":31.999},{"word":"it","start":31.999,"end":32.228},{"word":"checks","start":32.228,"end":32.764},{"word":"the","start":32.764,"end":33.07},{"word":"hospital's","start":33.07,"end":33.836},{"word":"own","start":33.836,"end":34.142},{"word":"assistance","start":34.142,"end":34.984},{"word":"policy","start":34.984,"end":35.52},{"word":"Dorothy","start":35.52,"end":36.16},{"word":"lands","start":36.16,"end":36.639},{"word":"in","start":36.639,"end":36.879},{"word":"the","start":36.879,"end":37.199},{"word":"seventy-five","start":37.199,"end":38.158},{"word":"percent","start":38.158,"end":38.798},{"word":"tier","start":38.798,"end":39.197},{"word":"One","start":40.188,"end":40.574},{"word":"screen","start":40.574,"end":41.248},{"word":"Dorothy","start":41.248,"end":42.017},{"word":"may","start":42.017,"end":42.401},{"word":"get","start":42.401,"end":42.786},{"word":"seventy-five","start":42.786,"end":43.939},{"word":"percent","start":43.939,"end":44.708},{"word":"off","start":44.708,"end":45.092},{"word":"and","start":45.813,"end":46.051},{"word":"two","start":46.051,"end":46.288},{"word":"hundred","start":46.288,"end":46.763},{"word":"forty","start":46.763,"end":47.119},{"word":"dollars","start":47.119,"end":47.593},{"word":"may","start":47.593,"end":47.831},{"word":"not","start":47.831,"end":48.068},{"word":"be","start":48.068,"end":48.246},{"word":"hers","start":48.246,"end":48.542},{"word":"to","start":48.542,"end":48.72},{"word":"pay","start":48.72,"end":48.958},{"word":"Every","start":48.958,"end":49.545},{"word":"finding","start":49.545,"end":50.329},{"word":"shows","start":50.329,"end":50.916},{"word":"the","start":50.916,"end":51.308},{"word":"line","start":51.308,"end":51.797},{"word":"it","start":51.797,"end":52.091},{"word":"rests","start":52.091,"end":52.679},{"word":"on","start":52.679,"end":52.972},{"word":"One","start":53.225,"end":53.435},{"word":"tap","start":53.435,"end":53.645},{"word":"sends","start":53.645,"end":53.96},{"word":"both","start":53.96,"end":54.223},{"word":"letters","start":54.223,"end":54.643},{"word":"Done","start":55.205,"end":55.764},{"word":"Jenna","start":55.764,"end":56.234},{"word":"hears","start":56.234,"end":56.705},{"word":"back","start":56.705,"end":57.097},{"word":"in","start":57.097,"end":57.333},{"word":"two","start":57.333,"end":57.646},{"word":"to","start":57.646,"end":57.882},{"word":"four","start":57.882,"end":58.274},{"word":"weeks","start":58.274,"end":58.745},{"word":"The","start":58.745,"end":58.966},{"word":"hospital's","start":58.966,"end":59.518},{"word":"answer","start":59.518,"end":59.905},{"word":"here","start":59.905,"end":60.182},{"word":"is","start":60.182,"end":60.348},{"word":"simulated","start":60.348,"end":60.9},{"word":"four","start":61.049,"end":61.487},{"word":"sixty-six","start":61.487,"end":62.275},{"word":"becomes","start":62.275,"end":62.975},{"word":"fifty-six","start":62.975,"end":63.763},{"word":"fifty","start":63.763,"end":64.289},{"word":"Estimated","start":64.504,"end":66.649},{"word":"confirmed","start":66.921,"end":67.349},{"word":"actual","start":67.561,"end":67.948},{"word":"Never","start":68.182,"end":68.649},{"word":"blurred","start":68.649,"end":69.271},{"word":"Behind","start":70.254,"end":71.35},{"word":"it","start":71.35,"end":71.819},{"word":"Kindred","start":71.928,"end":72.401},{"word":"staff","start":72.401,"end":72.756},{"word":"see","start":72.756,"end":72.993},{"word":"the","start":72.993,"end":73.229},{"word":"evidence","start":73.229,"end":73.761},{"word":"every","start":73.761,"end":74.267},{"word":"edit","start":74.267,"end":74.688},{"word":"with","start":74.688,"end":75.11},{"word":"its","start":75.11,"end":75.447},{"word":"original","start":75.447,"end":76.205},{"word":"and","start":76.319,"end":76.462},{"word":"a","start":76.462,"end":76.534},{"word":"full","start":76.534,"end":76.714},{"word":"audit","start":76.714,"end":76.929},{"word":"trail","start":76.929,"end":77.145},{"word":"Nothing","start":77.269,"end":78.074},{"word":"leaves","start":78.074,"end":78.779},{"word":"without","start":78.779,"end":79.584},{"word":"the","start":79.584,"end":79.987},{"word":"family's","start":79.987,"end":80.792},{"word":"approval","start":80.792,"end":81.698},{"word":"Kindred","start":82.16,"end":83.724},{"word":"Snap","start":83.724,"end":84.702},{"word":"Snap","start":84.841,"end":85.244},{"word":"the","start":85.244,"end":85.567},{"word":"bill","start":85.567,"end":85.97},{"word":"once","start":85.97,"end":86.373},{"word":"We","start":86.912,"end":87.013},{"word":"do","start":87.013,"end":87.114},{"word":"the","start":87.114,"end":87.249},{"word":"rest","start":87.249,"end":87.418},{"word":"Nothing","start":87.562,"end":88.502},{"word":"was","start":88.502,"end":88.972},{"word":"sent","start":88.972,"end":89.56}]}</script>
+</head>
+<body>
+<div id="film" data-composition-id="film" data-width="1920" data-height="1080">
+  <audio id="om-sound" src="assets/sound.wav" data-start="0" data-duration="91.96" data-track-index="8" data-volume="1"></audio>
+  <audio id="om-voice" src="assets/voice.wav" data-start="0" data-duration="92" data-track-index="9" data-volume="1"></audio>
+
+  <div id="world">
+    <!-- ============ TABLE (0–8 s): the bill on the kitchen table ============ -->
+    <section class="stage" id="sTable" style="left:0px" data-om-id="table">
+      <div id="bill" class="abs" data-om-id="bill">
+        <div class="hosp">Riverbend Community Hospital</div>
+        <div class="meta">Statement Oct 20, 2026<br>Account ending 4821<br>Patient: Dorothy M. Hale (synthetic)</div>
+        <div class="ledger" data-om-id="ledger">
+          <div class="row"><span><span class="k">1</span> 99284 ED visit</span><span>$1,480.00</span></div>
+          <div class="row"><span><span class="k">2</span> 74177 CT scan</span><span>$2,950.00</span></div>
+          <div class="row" data-om-id="billLine3"><span><span class="k">3</span> Q9967 Contrast</span><span class="mark" id="billMark"><i style="opacity:.5"></i><b>$240.00</b></span></div>
+          <div class="row"><span><span class="k">4</span> 96374 IV push</span><span>$310.00</span></div>
+          <div class="row"><span><span class="k">5</span> 71046 Chest X-ray</span><span>$380.00</span></div>
+          <div class="row total" data-om-id="billTotal"><span>Patient owes</span><span style="position:relative"><span data-var-text="amountBilled">$466.00</span><span class="strike" id="billStrike"></span></span></div>
+          <div class="row newbal" id="billNew" style="opacity:0" data-om-id="billNew"><span>Nov 21 balance</span><span data-var-text="amountNew">$56.50</span></div>
+        </div>
+        <div class="meta">Due Nov 30, 2026</div>
+        <div style="flex:1"></div>
+        <span class="badge badge--demo">Demo partner · synthetic data</span>
+      </div>
+      <div id="bigAmt" class="abs" data-om-id="bigAmount" style="opacity:0">
+        <div class="big" data-var-text="amountBilled">$466.00</div>
+        <div class="due">due Nov 30</div>
+      </div>
+      <div id="capTable" class="abs cap" data-om-id="capTable" data-var-text="capTable" style="opacity:0">Dorothy, 74. On Medicare.</div>
+      <div id="endBlock" class="abs" data-om-id="endCard">
+        <div class="wm" id="endWm" style="opacity:0">Kindred Snap</div>
+        <div class="line" id="endLine" data-var-text="endLine" style="opacity:0">Snap the bill once. Kindred does the rest.</div>
+        <div class="foot" id="endFoot" data-var-text="endFooter" style="opacity:0">Demo partner · synthetic data · nothing was sent</div>
+      </div>
+    </section>
+
+    <!-- ============ SNAP (8–18 s): three dancers on stepping colour bands ============ -->
+    <section class="stage" id="sSnap" style="left:2400px" data-om-id="snapRow">
+      <div class="band" id="band0" style="left:0px"><div class="strip"></div></div>
+      <div class="band" id="band1" style="left:640px"><div class="strip"></div></div>
+      <div class="band" id="band2" style="left:1280px"><div class="strip"></div></div>
+
+      <div class="dancer" id="d0" style="left:125px" data-om-id="phoneSnap"><div class="bob">
+        <div class="pframe" data-layout-allow-overflow><div class="phone">
+          <div class="appbar"><span class="wordmark">Kindred Snap</span></div>
+          <div class="screen">
+            <span class="badge badge--demo">Demo partner · synthetic data</span>
+            <h1>Take a Photo of the Bill</h1>
+            <p>Lay it flat, whole page in the box, good light.</p>
+            <div class="tray" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span class="muted">Fit the whole page inside this box</span>
+            </div>
+            <div class="btn-secondary">Pick a PDF or photo instead</div>
+            <div class="btn-text">Use the demo bill (pretend)</div>
+          </div>
+          <div class="actionbar"><div class="btn-primary">Take photo</div><div class="btn-text">Talk to a person</div></div>
+        </div></div>
+      </div></div>
+
+      <div class="dancer" id="d1" style="left:765px" data-om-id="phoneIncome"><div class="bob">
+        <div class="pframe"><div class="phone">
+          <div class="appbar"><span class="wordmark">Kindred Snap</span></div>
+          <div class="screen">
+            <span class="badge badge--demo">Demo partner · synthetic data</span>
+            <h1>Your Income</h1>
+            <div class="field"><span class="label">Dorothy's yearly household income, about</span>
+              <div class="input mono" id="incomeInput" data-om-id="incomeInput"></div>
+              <span class="helper">Social Security plus pension. A close guess is fine.</span></div>
+            <div class="tile"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="4"/></svg>
+              <div><div style="font-weight:500">Snap a document instead</div><div class="muted small">A tax form or benefit letter</div></div></div>
+            <div class="field"><span class="label">People in her home</span><div class="input mono">1</div></div>
+          </div>
+          <div class="actionbar"><div class="btn-primary">Start the case</div><div class="btn-text">Talk to a person</div></div>
+        </div></div>
+      </div></div>
+
+      <div class="dancer" id="d2" style="left:1405px" data-om-id="phoneWorkingSmall"><div class="bob">
+        <div class="pframe"><div class="phone tight">
+          <div class="appbar"><span class="wordmark">Kindred Snap</span></div>
+          <div class="screen steps-host" data-prefix="s"></div>
+          <div class="actionbar"><div class="btn-text">Talk to a person</div></div>
+        </div></div>
+      </div></div>
+
+      <div id="chant" class="abs" data-om-id="chant">
+        <div class="ch" id="ch1" data-om-var="chant1"></div>
+        <div class="ch" id="ch2" data-om-var="chant2"></div>
+        <div class="ch" id="ch3" data-om-var="chant3"></div>
+      </div>
+    </section>
+
+    <!-- ============ WORKING (18–40 s): the steps light up, the clippings come out ============ -->
+    <section class="stage" id="sWork" style="left:4800px" data-om-id="working">
+      <div id="wPanel" class="abs"></div>
+      <div class="pframe" id="wPhone" style="left:330px;top:118px" data-om-id="phoneWorking"><div class="phone tight">
+        <div class="appbar"><span class="wordmark">Kindred Snap</span></div>
+        <div class="screen steps-host" data-prefix="w"></div>
+        <div class="actionbar"><div class="btn-text">Talk to a person</div></div>
+      </div></div>
+
+      <div class="clip bigclip abs" id="clipA" style="left:600px;top:250px;opacity:0" data-om-id="clipBill">
+        <div class="line"><span>Bill line 3, contrast dye</span><span class="mark" id="clipMark"><i></i><b>$240.00</b></span></div>
+        <div class="src">Bill, page 1, line 3 (Q9967), statement Oct 20</div>
+      </div>
+      <div class="clip bigclip abs" id="clipB" style="left:1187px;top:250px;opacity:0" data-om-id="clipMedicare">
+        <div class="line"><span>Medicare line 3, you may be billed</span><span class="mark" id="clipMarkB"><i></i><b>$0.00</b></span></div>
+        <span class="badge badge--synthetic">Simulated</span>
+        <div class="src">Medicare notice, line 3 (Q9967): 'may not bill you separately for it.'</div>
+      </div>
+      <div id="capWork" class="abs head" data-om-id="capWork" data-var-text="capWork" style="opacity:0;font-size:96px">Same Line. Two Answers.</div>
+
+      <div id="policy" class="abs card" data-om-id="policyCard">
+        <div class="q">‘Households with income between 201% and 300% of the federal poverty guideline receive a <span class="mark" id="polMark"><i></i><b>75% discount</b></span>.’</div>
+        <div class="src">Riverbend Community Hospital, Financial Assistance Policy</div>
+        <div class="who">Dorothy: <span class="mono">$37,560</span> a year, household of 1, about <span class="mono">240%</span> of the guideline.</div>
+      </div>
+      <div id="tierRow" class="abs" data-om-id="tier75">
+        <span class="big" data-var-text="tier">75%</span>
+        <span class="cap" data-var-text="capTier">Dorothy’s Tier</span>
+      </div>
+    </section>
+
+    <!-- ============ RESULT + FLOOR (40–64 s) ============ -->
+    <section class="stage" id="sResult" style="left:7200px" data-om-id="result">
+      <div id="rGround" class="abs"></div>
+      <div id="floorRule" class="abs" data-om-id="floorRule"></div>
+      <div id="floor" class="abs big" data-om-id="floorBilled" data-om-var="amountBilled"></div>
+      <div id="floorNew" class="abs big" data-om-id="floorNew" data-om-var="amountNew"></div>
+
+      <div class="pframe" id="rPhone" style="left:765px;top:118px" data-om-id="phoneResult">
+        <div class="phone" id="scrResult">
+          <div class="appbar"><span class="wordmark">Kindred Snap</span></div>
+          <div class="screen" style="gap:12px">
+            <span class="badge badge--demo">Demo partner · synthetic data</span>
+            <h1>Dorothy May Get <span data-var-text="tier">75%</span> Off</h1>
+            <h2 style="font-weight:800">And <span class="mono">$240.00</span> of This Bill May Not Be Hers to Pay</h2>
+            <div class="evidence">
+              <div class="clip" data-om-id="resultClipBill"><div class="line"><span>Bill line 3, contrast dye</span><span class="mark"><i id="rMarkA" style="opacity:.0"></i><b>$240.00</b></span></div><div class="src">Bill, page 1, line 3 (Q9967), statement Oct 20</div></div>
+              <div class="clip" data-om-id="resultClipMedicare"><div class="line"><span>Medicare line 3, you may be billed</span><span class="hl">$0.00</span></div><div class="src">Medicare notice, line 3 (Q9967): 'may not bill you separately for it.'</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px"><span class="mono" style="font-size:32px;font-weight:500" data-var-text="savings">$409.50</span><span class="badge badge--estimated">Estimated</span></div>
+            <p class="small muted">Estimated. Riverbend decides. $240.00 removed + $169.50 off $226.00.</p>
+          </div>
+          <div class="actionbar">
+            <div class="btn-primary" id="sendBtn" data-om-id="sendButton">Draft the letters and send</div>
+            <div class="btn-text">Show the letters first</div>
+          </div>
+        </div>
+        <div class="phone scr2" id="scrDone">
+          <div class="appbar"><span class="wordmark">Kindred Snap</span></div>
+          <div class="screen" style="gap:12px">
+            <span class="badge badge--demo">Demo partner · synthetic data</span>
+            <h1>Done! You Will Hear Back in 2 to 4 Weeks</h1>
+            <div class="step step--done"><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></span><div><div class="title">Correction letter about line 3</div><div class="sub">Sent Nov 9, 2026 <span class="badge badge--synthetic">Simulated send</span></div></div></div>
+            <div class="step step--done"><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></span><div><div class="title">Help application, 75% tier</div><div class="sub">Sent Nov 9, 2026 <span class="badge badge--synthetic">Simulated send</span></div></div></div>
+            <p>We'll text you the moment Riverbend answers. Your case code: <span class="mono">KS-0412</span>.</p>
+            <div style="display:flex;align-items:center;gap:12px"><span style="font-weight:500">Possible</span><span class="mono" style="font-size:32px;font-weight:500">$409.50</span><span class="badge badge--estimated">Estimated</span></div>
+            <div class="alert"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Bill due Nov 30. We asked Riverbend to hold the account; the hold is asked for, not confirmed.</span></div>
+          </div>
+          <div class="actionbar"><div class="btn-primary">Back to my case</div><div class="btn-text">Talk to a person</div></div>
+        </div>
+      </div>
+      <div class="press" id="pressRing" style="left:900px;top:820px"></div>
+    </section>
+
+    <!-- ============ ANSWER (64–70 s): three numbers that never blur ============ -->
+    <section class="stage" id="sAnswer" style="left:9600px" data-om-id="answer">
+      <div class="pframe" id="aPhone" style="left:200px;top:118px" data-om-id="phoneResolved"><div class="phone">
+        <div class="appbar"><span class="wordmark">Kindred Snap</span></div>
+        <div class="screen" style="gap:12px">
+          <span class="badge badge--demo">Demo partner · synthetic data</span>
+          <h1>Riverbend Fixed the Bill</h1>
+          <p>Dorothy now owes <span class="mono">$56.50</span>, due Dec 21.</p>
+          <div class="clip" data-om-id="letterClip"><div style="font-size:18px;line-height:1.6">'...Your new balance is <span class="hl mono">$56.50, due December 21, 2026</span>.'</div>
+            <div style="display:flex;align-items:center;gap:10px"><span class="badge badge--synthetic">Simulated</span><span class="src">Riverbend letter, Nov 21</span></div></div>
+          <div style="display:flex;gap:16px">
+            <div class="money" style="flex:1"><span style="font-weight:500">Estimated</span><span class="amount">$409.50</span><span class="badge badge--estimated">Estimated</span></div>
+            <div class="money" style="flex:1"><span style="font-weight:500">Confirmed Nov 21</span><span class="amount">$409.50</span><span class="badge badge--confirmed">Confirmed by Riverbend</span></div>
+          </div>
+          <div class="money money--actual"><span style="font-weight:500">Actual savings</span><span class="amount">$409.50</span></div>
+        </div>
+        <div class="actionbar"><div class="btn-primary">Snap another bill</div><div class="btn-text">Talk to a person</div></div>
+      </div></div>
+      <div id="mRows" class="abs">
+        <div class="mrow" id="mr1" data-om-id="moneyEstimated"><div class="lab">Estimated<span class="badge badge--estimated">Estimated</span></div><span class="amt" id="amt1">$0.00</span></div>
+        <div class="mrow" id="mr2" data-om-id="moneyConfirmed"><div class="lab">Confirmed Nov 21<span class="badge badge--confirmed" id="stamp">Confirmed by the hospital</span></div><span class="amt" id="amt2">$0.00</span></div>
+        <div class="mrow actual" id="mr3" data-om-id="moneyActual"><div class="lab">Actual savings<span class="badge badge--synthetic" style="color:var(--color-paper);box-shadow:inset 0 0 0 1px var(--color-muted)">Simulated</span></div><span class="amt" id="amt3">$0.00</span></div>
+      </div>
+      <div id="capAnswer" class="abs cap" data-om-id="capAnswer" data-var-text="capAnswer" style="opacity:0">Three Numbers That Never Blur.</div>
+    </section>
+
+    <!-- ============ STAFF (70–82 s) ============ -->
+    <section class="stage" id="sStaff" style="left:12000px" data-om-id="staff">
+      <div id="sCap0" class="abs" style="opacity:0">Kindred Staff</div>
+      <div id="sCap1" class="abs cap" data-om-id="capStaff1" data-var-text="capStaff1" style="opacity:0">Every Edit Keeps Its Original.</div>
+      <div id="sCap2" class="abs cap" data-om-id="capStaff2" data-var-text="capStaff2" style="opacity:0">Nothing Leaves Without the Family’s Approval.</div>
+      <div id="dash" class="abs" data-om-id="staffDashboard">
+        <div id="dashInner"><img src="assets/img/staff-dashboard.png" alt="Kindred Snap staff dashboard"><div id="dashRing" class="abs" data-om-id="dashRow"></div></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- screen-space captions for the result and the floor, where the camera zoom changes under them -->
+  <div id="hud">
+    <div class="head" id="hR1" style="left:120px;top:250px;width:560px" data-om-id="capResult1" data-var-text="capResult1">One Screen.</div>
+    <div class="cap" id="hR2" style="left:120px;top:520px;width:540px" data-om-id="capResult2" data-var-text="capResult2">Every Finding Shows the Line It Rests On.</div>
+    <div class="cap" id="hR3" style="left:1270px;top:700px;width:530px" data-om-id="capResult3" data-var-text="capResult3">One Tap Sends Both Letters.</div>
+    <div id="hRAmt" style="position:absolute;left:1270px;top:300px;width:530px;opacity:0" data-om-id="resultSavings">
+      <div class="big" style="font-size:132px" data-var-text="savings">$409.50</div>
+      <span class="badge badge--estimated" style="font-size:30px;min-height:52px;padding:0 22px;margin-top:22px">Estimated</span>
+    </div>
+    <div class="cap" id="hF1" style="left:120px;top:120px;width:640px" data-om-id="capFloor1" data-var-text="capFloor1">Done. Jenna Hears Back in 2 to 4 Weeks.</div>
+    <div class="cap" id="hF2" style="left:120px;top:120px;width:640px" data-om-id="capFloor2"><span data-var-text="capFloor2">Simulated Answer: the Bill Drops to</span> <span class="mono" data-var-text="amountNew">$56.50</span>.</div>
+  </div>
+</div>
+
+<script>
+const V = OM.vars();
+const B = (n) => OM.beat(n);
+OM.music({ bpm: 96, style: 'mallet', drop: 'lock', ending: 'ring',
+  energy: { table: 0.35, snap: 0.85, working: 0.7, result: 0.4, floor: 0.15, lock: 1, answer: 0.6, staff: 0.35, end: 0.45 } });
+const BEAT = B(1);
+const q = (t) => B(Math.round(t / BEAT));                       // snap a time to the music grid
+const cue = (w, nth, fb, edge) => { try { return OM.cue(w, nth, edge); } catch (e) { return fb; } };
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+const esc = (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' })[c] || c;
+
+// ---- build what scripts build: step rows, chant words, floor digits, band strips ----
+const STEPS = [
+  { h: 70, n: '1. Read the bill', done: '5 lines, $466.00 due Nov 30' },
+  { h: 70, n: '2. Medicare notice', done: 'Sep 14 visit, processed Oct 2' },
+  { h: 94, n: '3. Compare lines', done: '4 of 5 match. Line 3, $240.00, needs asking' },
+  { h: 70, n: '4. Help program', done: 'Maybe 75% off, not confirmed' },
+  { h: 94, n: '5. Write letters', done: '', active: 'Drafting the correction letter and the help application' },
+];
+const ICON_CHECK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg>';
+const ICON_SPIN = '<svg class="spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 3a9 9 0 1 1-9 9"/></svg>';
+const ICON_CAL = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+for (const host of $$('.steps-host')) {
+  const p = host.dataset.prefix;
+  host.innerHTML =
+    '<span class="badge badge--demo">Demo partner · synthetic data</span><h1>We’re On It</h1>' +
+    '<p>Nothing for you to do yet. We’ll text you when it’s ready.</p>' +
+    '<div class="tray" style="display:flex;flex-direction:column;gap:4px;padding:12px 16px"><div style="display:flex;gap:12px;align-items:center">' + ICON_CAL +
+    '<span><span class="mono">' + esc(V.amountBilled) + '</span> due Nov 30</span></div><span class="small muted">21 days left. Saved as <span class="mono">KS-0412</span>.</span></div>' +
+    STEPS.map((s, i) =>
+      '<div class="srow" style="height:' + s.h + 'px" id="' + p + 'row' + i + '" data-om-id="' + p + 'Step' + (i + 1) + '">' +
+      '<div class="step step--waiting L w"><span class="icon"></span><div><div class="title">' + s.n + '</div><div class="sub">Next</div></div></div>' +
+      '<div class="step step--active L a"><span class="icon">' + ICON_SPIN + '</span><div><div class="title">' + s.n + ': working</div><div class="sub">' + (s.active || 'Working') + '</div></div></div>' +
+      (s.done ? '<div class="step step--done L d"><span class="icon">' + ICON_CHECK + '</span><div><div class="title">' + s.n + ': done</div><div class="sub">' + s.done + '</div></div></div>' : '') +
+      '</div>').join('');
+}
+const words = (el, text) => { el.innerHTML = text.split(' ').map((w) => '<span class="w">' + [...w].map(esc).join('') + '</span>').join(' '); };
+words($('#ch1'), V.chant1); words($('#ch2'), V.chant2); words($('#ch3'), V.chant3);
+const digits = (el, text) => { el.innerHTML = [...text].map((c) => '<span class="dg">' + esc(c) + '</span>').join(''); };
+digits($('#floor'), V.amountBilled); digits($('#floorNew'), V.amountNew);
+// centre the floor numbers under the phone (phone centre x = 960 in its stage); mono, so width = chars × advance
+const advance = 440 * 0.6;
+gsap.set('#floor', { x: 960 - (V.amountBilled.length * advance) / 2, opacity: 0 });
+gsap.set('#floorNew', { x: 960 - (V.amountNew.length * advance) / 2, y: 900, opacity: 0 });
+const BAND = ['#E9F8EF', '#D4F0E0', '#FAF7EF', '#E9F8EF', '#D4F0E0', '#FAF7EF', '#E9F8EF'];   // mist → tray → paper → mist …
+$$('.band .strip').forEach((s, i) => { s.innerHTML = BAND.slice(i, i + 5).map((c) => '<div style="background:' + c + '"></div>').join(''); });
+// the income field types its one number
+$('#incomeInput').innerHTML = [...'37,560'].map((c) => '<span class="k" style="opacity:0">' + c + '</span>').join('');
+
+// ---- initial states ----
+gsap.set('.dancer', { scale: 0.8, transformOrigin: '50% 0' });
+gsap.set('.dancer', { y: 640, opacity: 0 });
+gsap.set('#bill', { x: 170, rotation: 5, transformOrigin: '50% 50%' });
+gsap.set('#wPhone', { transformOrigin: '50% 0' });
+gsap.set('#clipA', { scale: 1.6, x: -350, y: 330, opacity: 0 });
+gsap.set('#clipB', { scale: 1.6, x: -900, y: 330, opacity: 0 });
+gsap.set('#clipMark i, #clipMarkB i, #polMark i', { scaleX: 0 });
+gsap.set('#policy', { y: 700 });
+gsap.set('#tierRow', { y: 60 });
+gsap.set('#rPhone', { transformOrigin: '50% 100%' });
+gsap.set('#billStrike', { scaleX: 0 });
+gsap.set('#endWm', { y: 40, scale: 1.04, transformOrigin: '0 50%' });
+gsap.set('#endLine, #endFoot', { y: 24 });
+gsap.set('#dashInner', { y: 0 });
+gsap.set('.mrow', { x: 80 });
+gsap.set('#stamp', { scale: 1.06 });
+gsap.set('#hud .cap, #hud .head', { y: 24 });
+gsap.set('#hRAmt', { y: 24 });
+gsap.set('#capTable, #capWork, #sCap0, #sCap1, #sCap2, #capAnswer, #billNew, #policy .who', { y: 36 });
+gsap.set('#policy .who', { opacity: 0 });
+
+// ---- the timeline ----
+const tl = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } });
+const cam = OM.camera('#world');
+const P = 2400;                                      // stage pitch in the world
+const C = (k) => k * P + 960;                        // a stage's centre x
+const show = (sel, at, d = 0.5, extra = {}) => tl.to(sel, { opacity: 1, y: 0, x: 0, duration: d, ...extra }, at);
+const hide = (sel, at, d = 0.3) => tl.to(sel, { opacity: 0, duration: d, ease: 'power2.in' }, at);
+const pan = (k, arrive, zoom = 1, fy = 540) => { cam.to(tl, arrive - 0.6, { focus: [C(k), fy], zoom, duration: 0.6, ease: 'expo.inOut' }); OM.sfx('whoosh', arrive - 0.18, { gain: 0.45 }); };
+
+// Scene times on the 96 bpm grid
+const S = { snap: B(13), working: B(29), result: B(64), floor: B(88), answer: B(103), staff: B(112), end: B(131) };
+const LOCK = Math.min(Math.max(q(cue('fifty-six', 1, 63.0)), B(100)), B(102));   // $56.50 locks on "fifty-six fifty"
+
+// ---------- TABLE ----------
+tl.addLabel('scene:table', 0);
+cam.set({ focus: [400, 545], zoom: 1.9 });                                // frame 0: the ledger, $240.00 dim
+tl.to('#bill', { x: 0, rotation: -1.5, duration: 0.9, ease: 'power3.out' }, 0.05);
+cam.to(tl, 0.2, { focus: [960, 540], zoom: 1, duration: 0.8, ease: 'expo.inOut' });
+OM.sfx('whoosh', 0.55, { gain: 0.5 });
+OM.sfx('paper', 1.1);
+const tFour = Math.max(1.6, cue('four', 1, 2.0) - 0.15);
+tl.fromTo('#bigAmt', { opacity: 0, scale: 1.6, x: -60, transformOrigin: '0 60%' }, { opacity: 1, scale: 1, x: 0, duration: 0.4, ease: 'power4.out' }, tFour);
+cam.to(tl, tFour + 0.1, { focus: [1060, 520], zoom: 1.1, duration: 0.18, ease: 'power2.out' });
+cam.to(tl, tFour + 0.3, { focus: [980, 540], zoom: 1.0, duration: 0.6, ease: 'power3.out' });
+OM.sfx('thud', tFour + 0.12);
+tl.to('#billMark i', { opacity: 1, duration: 0.4, ease: 'power2.out' }, tFour + 0.6);
+show('#capTable', Math.max(tFour + 1.4, cue('dorothy', 1, 5.4) - 0.2), 0.6);
+cam.to(tl, tFour + 0.95, { focus: [1150, 560], zoom: 1.16, duration: 7.45 - tFour - 0.95, ease: 'sine.inOut' });
+
+// ---------- SNAP: the Leenalchi floor ----------
+pan(1, S.snap);
+tl.addLabel('scene:snap', S.snap);
+const snapAt = S.snap + BEAT;          // the first phone snaps a beat after the cut, the last on "Snap"
+['#d0', '#d1', '#d2'].forEach((d, i) => {
+  const t = snapAt + i * BEAT;
+  tl.to(d, { y: 0, opacity: 1, duration: 0.42, ease: 'back.out(1.5)' }, t);
+  OM.sfx('pop', t + 0.16, { note: i * 2 + 1, pan: (i - 1) * 0.5 });
+});
+// dancers in lockstep: one bob per beat until the cut
+const bobFrom = snapAt + 3 * BEAT, bobBeats = Math.round((S.working - 0.6 - bobFrom) / BEAT);
+tl.fromTo('.bob', { y: 0 }, { y: -16, duration: BEAT / 2, ease: 'sine.inOut', yoyo: true, repeat: bobBeats * 2 - 1, immediateRender: false }, bobFrom);
+// flat colour bands step one tone per bar
+for (let k = 1; k <= 4; k++) tl.to('.band .strip', { y: -1080 * k, duration: 0.22, ease: 'power4.inOut' }, S.snap + k * B(4) - 0.11);
+// the chant, typed in on beats, one line per bar
+const chantAt = [S.snap + B(4), S.snap + B(8), S.snap + B(12)];
+['#ch1', '#ch2', '#ch3'].forEach((c, i) => {
+  $$(c + ' .w').forEach((w, j) => {
+    const t = chantAt[i] + j * BEAT / 2;
+    tl.fromTo(w, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.22, ease: 'power3.out', immediateRender: false }, t);
+    if (i < 2) OM.sfx('tick', t, { gain: 0.6 });
+  });
+  if (i < 2) tl.to(c, { y: -150, opacity: 0, duration: 0.25, ease: 'power3.in' }, chantAt[i + 1] - 0.25);
+});
+OM.sfx('hit', chantAt[2] + BEAT);
+// the one number types into the income field on chant 2
+$$('#incomeInput .k').forEach((k, i) => tl.to(k, { opacity: 1, duration: 0.05, ease: 'none' }, chantAt[1] + i * BEAT / 4));
+
+// ---------- WORKING ----------
+const R = [
+  q(cue('reads', 1, 18.9)), q(cue('notice', 1, 21.8)), q(cue('line', 2, 24.6)), q(cue('then', 1, 31.6)), q(cue('seventy-five', 1, 37.2)),
+];
+const tPull = R[2] + 0.1;
+// camera on the Working screen, close; it pulls back when the clippings come out
+const wFocus = [2 * P + 330 + 195, 540];
+cam.to(tl, S.working - 0.6, { focus: wFocus, zoom: 1.22, duration: 0.6, ease: 'expo.inOut' });
+OM.sfx('whoosh', S.working - 0.18, { gain: 0.45 });
+tl.addLabel('scene:working', S.working);
+cam.to(tl, Math.max(S.working + 0.1, R[0] - 0.3), { fit: '#wrow0', zoom: 1.32, duration: 0.7, ease: 'power3.inOut' });
+cam.to(tl, R[1] - 0.3, { fit: '#wrow1', zoom: 1.36, duration: 0.7, ease: 'power3.inOut' });
+cam.to(tl, R[1] + 0.5, { fit: '#wrow2', zoom: 1.42, duration: tPull - R[1] - 0.6, ease: 'sine.inOut' });
+cam.to(tl, tPull, { focus: [C(2), 540], zoom: 1, duration: 0.8, ease: 'expo.inOut' });
+R[0] = Math.max(R[0], S.working + BEAT);
+R.forEach((t, i) => {
+  const row = '#wrow' + i;
+  tl.to(row + ' .a', { opacity: 1, duration: 0.2, ease: 'power2.out' }, t);
+  tl.fromTo(row + ' .spin', { rotation: 0 }, { rotation: 360 * 8, duration: 8, ease: 'none', transformOrigin: '50% 50%', immediateRender: false }, t);
+  OM.sfx('pop', t + 0.05, { note: i + 1, gain: 0.7 });
+  if (i > 0) {
+    tl.to('#wrow' + (i - 1) + ' .d', { opacity: 1, duration: 0.2, ease: 'power2.out' }, t);
+    tl.to('#wrow' + (i - 1) + ' .a', { opacity: 0, duration: 0.2 }, t);
+  }
+});
+// "Line three": the two clippings come out of the phone and stand side by side at 1.6x
+tl.to('#wPhone', { x: -170, scale: 0.85, duration: 0.6, ease: 'expo.inOut' }, tPull);
+tl.to('#wPanel', { opacity: 1, duration: 0.5, ease: 'power2.out' }, tPull + 0.1);
+tl.to('#clipA', { x: 0, y: 0, opacity: 1, duration: 0.7, ease: 'expo.out' }, tPull + 0.15);
+tl.to('#clipB', { x: 0, y: 0, opacity: 1, duration: 0.7, ease: 'expo.out' }, tPull + 0.15 + BEAT / 2);
+OM.sfx('whoosh', tPull + 0.3);
+const tDraw = Math.max(tPull + 1.2, q(cue('forty', 1, 27.0)));
+tl.to('#clipMark i', { scaleX: 1, duration: 0.35, ease: 'power2.inOut' }, tDraw);
+OM.sfx('draw', tDraw + 0.05, { dur: 0.35 });
+const tZero = Math.max(tDraw + BEAT * 2, q(cue('medicare', 2, 28.7)));
+tl.to('#clipMarkB i', { scaleX: 1, duration: 0.3, ease: 'power2.inOut' }, tZero);
+OM.sfx('draw', tZero + 0.05, { dur: 0.3, gain: 0.7 });
+show('#capWork', tZero + BEAT * 2, 0.5);
+const W0 = 2 * P;
+cam.to(tl, tDraw - 0.5, { focus: [W0 + 873, 380], zoom: 1.3, duration: 0.6, ease: 'power3.inOut' });
+cam.to(tl, tZero - 0.5, { focus: [W0 + 1460, 420], zoom: 1.3, duration: 0.6, ease: 'power3.inOut' });
+cam.to(tl, tZero + BEAT * 2 - 0.3, { focus: [C(2) + 160, 520], zoom: 1.05, duration: 0.7, ease: 'power3.inOut' });
+// "Then it checks the hospital's own assistance policy": the clippings step aside, the policy rises
+const tHelp = R[3] + 0.2;
+tl.to('#clipA, #clipB, #capWork', { y: -120, opacity: 0, duration: 0.4, ease: 'power3.in', stagger: 0.06 }, tHelp);
+tl.to('#policy', { y: 0, opacity: 1, duration: 0.8, ease: 'expo.out' }, tHelp + 0.3);
+OM.sfx('paper', tHelp + 0.5, { gain: 0.7 });
+show('#policy .who', Math.max(tHelp + 1.6, cue('dorothy', 2, 35.5) - 0.2), 0.5);
+OM.sfx('pop', Math.max(tHelp + 1.6, cue('dorothy', 2, 35.5) - 0.2) + 0.1, { note: 4, gain: 0.5 });
+const t75 = R[4];
+cam.to(tl, tHelp + 0.4, { focus: [W0 + 1167, 360], zoom: 1.22, duration: 0.9, ease: 'power3.inOut' });
+cam.to(tl, Math.max(tHelp + 1.4, t75 - 0.5), { focus: [W0 + 1100, 600], zoom: 1.1, duration: 0.6, ease: 'power3.inOut' });
+tl.to('#polMark i', { scaleX: 1, duration: 0.35, ease: 'power2.inOut' }, t75 - 0.3);
+tl.fromTo('#tierRow', { opacity: 0, y: 60, scale: 1.12, transformOrigin: '0 70%' }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: 'power4.out', immediateRender: false }, t75);
+OM.sfx('thud', t75 + 0.1);
+
+// ---------- RESULT ----------
+pan(3, S.result, 1.2);
+tl.addLabel('scene:result', S.result);
+const tScreen = Math.max(S.result + 0.2, cue('screen', 1, 40.6) - 0.2);
+show('#hR1', tScreen, 0.5);
+const tOff = Math.max(tScreen + 1, cue('off', 1, 44.7) - 0.2);
+show('#hRAmt', tOff, 0.5);
+cam.to(tl, S.result + 0.05, { focus: [C(3), 470], zoom: 1.32, duration: tOff - S.result - 0.1, ease: 'sine.inOut' });
+cam.to(tl, tOff, { focus: [C(3), 560], zoom: 1.5, duration: 0.9, ease: 'power3.inOut' });
+OM.sfx('pop', tOff + 0.1, { note: 5, gain: 0.7 });
+const tForty2 = cue('forty', 2, 46.8);
+tl.to('#rMarkA', { opacity: 1, duration: 0.3 }, tForty2);
+const tFinding = Math.max(tForty2 + 1, cue('finding', 1, 49.5) - 0.3);
+hide('#hR1', tFinding - 0.3);
+show('#hR2', tFinding, 0.5);
+const tTap = Math.min(q(cue('tap', 1, 53.4)), S.floor - 0.9);
+cam.to(tl, tOff + 1, { focus: [C(3), 600], zoom: 1.56, duration: tTap - tOff - 2.4, ease: 'sine.inOut' });
+cam.to(tl, tTap - 1.3, { focus: [C(3), 760], zoom: 1.5, duration: 0.8, ease: 'power3.inOut' });
+show('#hR3', tTap - 1.2, 0.5);
+tl.to('#sendBtn', { scale: 1.035, duration: BEAT / 2, ease: 'sine.inOut', yoyo: true, repeat: 1 }, tTap - 2 * BEAT);      // one pulse with the beat
+tl.to('#sendBtn', { y: 3, duration: 0.08, ease: 'power2.in', yoyo: true, repeat: 1, repeatDelay: 0.12 }, tTap - 0.08);    // the real control's 3px press
+tl.fromTo('#pressRing', { opacity: 0.9, scale: 0.4 }, { opacity: 0, scale: 1.8, duration: 0.6, ease: 'power2.out', immediateRender: false }, tTap);
+OM.sfx('hit', tTap);
+
+// ---------- FLOOR: the bill comes down ----------
+tl.addLabel('scene:floor', S.floor);
+hide('#hR2, #hR3, #hRAmt', S.floor - 0.1);
+tl.to('#scrDone', { opacity: 1, duration: 0.35, ease: 'power2.out' }, S.floor + 0.05);
+OM.sfx('pop', S.floor + 0.1, { note: 3, gain: 0.5 });
+cam.to(tl, S.floor + 0.1, { focus: [C(3), 771], zoom: 0.68, duration: 1.2, ease: 'power3.inOut' });
+tl.to('#floorRule', { opacity: 1, duration: 0.4 }, S.floor + 0.3);
+tl.fromTo('#floor', { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', immediateRender: false }, S.floor + 0.25);
+show('#hF1', Math.max(S.floor + 0.6, cue('done', 1, 55.2)), 0.5);
+// digits fall one per beat, outside in, so the ones under the phone go last
+const order = [...Array(V.amountBilled.length).keys()].sort((a, b) => Math.abs(b - (V.amountBilled.length - 1) / 2) - Math.abs(a - (V.amountBilled.length - 1) / 2));
+const fallEnd = LOCK - V.silenceHold - V.hangHold;
+const fall0 = fallEnd - (order.length - 1) * BEAT;
+const dg = $$('#floor .dg');
+const rnd = OM.random(466);
+order.forEach((idx, i) => {
+  const t = fall0 + i * BEAT;
+  tl.to(dg[idx], { y: 1400, rotation: (rnd() - 0.5) * 50, duration: 0.85, ease: 'power2.in' }, t);
+  tl.to(dg[idx], { opacity: 0, duration: 0.2, ease: 'none' }, t + 0.65);
+  OM.sfx('whoosh', t + 0.4, { gain: 0.28, pan: (idx / (dg.length - 1) - 0.5) * 1.2 });
+});
+hide('#hF1', Math.max(S.floor + 2, cue('simulated', 1, 60.3) - 0.6));
+show('#hF2', Math.max(S.floor + 2.4, cue('simulated', 1, 60.3) - 0.3), 0.5);
+// the screen hangs on the thin rule, like a climber on a hold
+tl.to('#rPhone', { y: 14, duration: 0.22, ease: 'power2.in' }, fallEnd + 0.1);
+tl.to('#rPhone', { keyframes: [{ rotation: -2.4, duration: 0.3 }, { rotation: 1.4, duration: 0.35 }, { rotation: -0.6, duration: 0.35 }, { rotation: 0, duration: 0.3 }], ease: 'sine.inOut' }, fallEnd + 0.2);
+// silence, then the new floor rises and locks
+tl.addLabel('scene:lock', LOCK);
+OM.sfx('subdrop', LOCK - 0.12, { dur: 1.2 });
+tl.to('#floorNew', { y: 0, opacity: 1, duration: 0.5, ease: 'back.out(1.15)' }, LOCK - 0.42);
+tl.to('#rPhone', { y: 0, duration: 0.3, ease: 'back.out(2)' }, LOCK - 0.05);
+OM.sfx('thud', LOCK);
+
+// ---------- ANSWER ----------
+hide('#hF2', S.answer - 0.7);
+pan(4, S.answer);
+tl.addLabel('scene:answer', S.answer);
+cam.to(tl, S.answer + 0.05, { focus: [C(4) + 120, 520], zoom: 1.08, duration: S.staff - S.answer - 0.7, ease: 'sine.inOut' });
+const money = (n) => '$' + n.toFixed(2);
+const savingsNum = parseFloat(String(V.savings).replace(/[^0-9.]/g, '')) || 0;
+[['#mr1', '#amt1', cue('estimated', 1, 64.5)], ['#mr2', '#amt2', cue('confirmed', 1, 66.9)], ['#mr3', '#amt3', cue('actual', 1, 67.6)]].forEach(([row, amt, t0], i) => {
+  const t = Math.max(S.answer + 0.15 + i * BEAT, t0 - 0.25);
+  show(row, t, 0.45);
+  const c = { v: 0 };
+  tl.to(c, { v: savingsNum, duration: 0.7, ease: 'expo.out', onUpdate: () => { $(amt).textContent = money(c.v); } }, t + 0.1);
+  OM.sfx('pop', t + 0.15, { note: i + 2, gain: 0.55, pan: -0.2 + i * 0.2 });
+  if (i === 1) tl.to('#stamp', { scale: 1, duration: 0.22, ease: 'power3.out' }, t + 0.3);     // the Confirmed stamp lands, 1.06 → 1
+});
+show('#capAnswer', Math.max(S.answer + 3 * BEAT, cue('never', 1, 68.2) - 0.2), 0.5);
+
+// ---------- STAFF ----------
+pan(5, S.staff);
+tl.addLabel('scene:staff', S.staff);
+cam.to(tl, S.staff + 0.05, { focus: [C(5) - 20, 540], zoom: 1.04, duration: S.end - S.staff - 1.0, ease: 'sine.inOut' });
+show('#sCap0', S.staff + 0.4, 0.5);
+tl.to('#dashInner', { y: -120, duration: 1.0, ease: 'power3.inOut' }, S.staff + 1.0);
+const tEv = Math.max(S.staff + 1.2, cue('evidence', 1, 73.2) - 0.2);
+show('#sCap1', tEv, 0.5);
+tl.to('#dashInner', { y: -300, duration: 0.9, ease: 'power3.inOut' }, tEv - 0.4);
+OM.sfx('slide', tEv - 0.2, { gain: 0.35, dur: 0.6 });
+tl.to('#dashRing', { opacity: 1, duration: 0.3 }, tEv + 0.4);
+OM.sfx('pop', tEv + 0.45, { note: 4, gain: 0.5 });
+const tAudit = Math.max(tEv + 1.5, cue('audit', 1, 76.7) - 0.4);
+tl.to('#dashInner', { y: -427, duration: 1.1, ease: 'power2.inOut' }, tAudit);                       // the list scrolls two rows
+OM.sfx('tick', tAudit + 0.3, { gain: 0.5 }); OM.sfx('tick', tAudit + 0.7, { gain: 0.5 });
+show('#sCap2', Math.max(tAudit + 1.2, cue('nothing', 1, 79.1) - 0.2), 0.5);
+
+// ---------- END: back to the kitchen table ----------
+tl.to('#bigAmt, #capTable', { opacity: 0, duration: 0.1 }, S.end - 1.5);                                  // off screen by now
+cam.to(tl, S.end - 0.7, { focus: [6960, 540], zoom: 0.135, duration: 0.9, ease: 'power3.in' });         // the whole journey at once
+cam.to(tl, S.end + 0.2, { focus: [960, 540], zoom: 1, duration: 1.3, ease: 'expo.out' });
+OM.sfx('whoosh', S.end + 0.25);
+tl.addLabel('scene:end', S.end);
+const tWm = S.end + 0.9;
+tl.to('#endWm', { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'power4.out' }, tWm);
+OM.sfx('thud', tWm + 0.12);
+tl.to('#billStrike', { scaleX: 1, duration: 0.3, ease: 'power2.inOut' }, tWm + 0.5);
+show('#billNew', tWm + 0.85, 0.4);
+OM.sfx('pop', tWm + 0.9, { note: 5, gain: 0.6 });
+cam.to(tl, S.end + 1.55, { focus: [1060, 540], zoom: 1.06, duration: 8.5, ease: 'sine.inOut' });
+show('#endLine', Math.max(tWm + 1.2, cue('snap', 3, 84.8) - 0.2), 0.6);
+show('#endFoot', Math.max(tWm + 2.6, cue('nothing', 2, 87.6) - 0.2), 0.5);
+const lastWord = cue('sent', 1, 89.4, 'end');
+tl.to({}, { duration: V.endHold }, Math.max(lastWord, tWm + 4));        // the closing hold; the film ends here
+
+window.__timelines['film'] = tl;
+</script>
+</body>
+</html>

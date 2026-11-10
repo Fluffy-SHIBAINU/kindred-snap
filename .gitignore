@@ -47,3 +47,6 @@ next-env.d.ts
 video/vo/
 video/captures/
 video/out/
+video/film/out/
+video/film/.om/
+video/film/index-*.png
