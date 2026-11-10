@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="en" data-composition-variables='[
+  {"id":"plateName","type":"string","label":"Name plate","default":"Shawn Yoon","group":"Words"},
+  {"id":"plateRole","type":"string","label":"Role","default":"Founder, Kindred AI","group":"Words"},
+  {"id":"pct","type":"number","label":"Survey figure (%)","default":44,"min":0,"max":100,"step":1,"group":"Numbers"},
+  {"id":"pctLabel","type":"string","label":"Survey label","default":"of American adults weren’t familiar with hospital charity care","group":"Words"},
+  {"id":"pctSource","type":"string","label":"Survey attribution","default":"2025 survey","group":"Words"},
+  {"id":"billAmount","type":"string","label":"Hospital bill","default":"$480.00","group":"Numbers"},
+  {"id":"insAmount","type":"string","label":"Your responsibility","default":"$180.00","group":"Numbers"},
+  {"id":"gapAmount","type":"string","label":"Gap","default":"$300.00","group":"Numbers"},
+  {"id":"capNotProof","type":"string","label":"Caption: not proof","default":"Not proof of an error","group":"Words"},
+  {"id":"capGap","type":"string","label":"Caption: gap","default":"What to investigate","group":"Words"},
+  {"id":"help1","type":"string","label":"Card 1","default":"Check the Documents","group":"Words"},
+  {"id":"help2","type":"string","label":"Card 2","default":"Look for Financial Assistance","group":"Words"},
+  {"id":"help3","type":"string","label":"Card 3","default":"Prepare the Paperwork","group":"Words"},
+  {"id":"capOneQ","type":"string","label":"Caption: one question","default":"One Question","group":"Words"},
+  {"id":"parents1","type":"string","label":"Parents line 1","default":"My parents shouldn’t need to become billing experts to get help.","group":"Words"},
+  {"id":"parents2","type":"string","label":"Parents line 2","default":"Neither should yours.","group":"Words"},
+  {"id":"endTag","type":"string","label":"Tagline","default":"Reduce your medical bill.","group":"Words"},
+  {"id":"endFooter","type":"string","label":"End footer","default":"Synthetic example · nothing was sent","group":"Words"},
+  {"id":"endHold","type":"number","label":"End hold (s)","default":2.5,"min":0.5,"max":6,"step":0.1,"group":"Timing"}
+]'>
+<head>
+<meta charset="utf-8">
+<title>Kindred Snap · Neither Should Yours</title>
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/om.js"></script>
+<style id="om-fonts">
+@font-face { font-family: "Atkinson Hyperlegible Next"; src: url("assets/fonts/AtkinsonHyperlegibleNext-var.woff2") format("woff2"); font-weight: 200 800; font-style: normal; }
+@font-face { font-family: "Atkinson Hyperlegible Mono"; src: url("assets/fonts/AtkinsonHyperlegibleMono-var.woff2") format("woff2"); font-weight: 200 800; font-style: normal; }
+</style>
+<style>
+/* ---- Kindred Snap mock kit (docs/design/kit.css), the subset the rebuilt screens use ---- */
+:root{
+  --color-paper:#FAF7EF;--color-paper-2:#E9F8EF;--color-paper-3:#D4F0E0;--color-ink:#0C1C16;--color-ink-2:#26342F;--color-muted:#54655D;--color-rule:#CBD6C9;
+  --color-accent:#007948;--color-accent-deep:#005F3A;--color-accent-soft:#A9E8C6;--color-accent-ink:#F8FDFA;--color-focus:#006B38;
+  --glint:#FFFFFF;--color-white:#FFFFFF;
+  --shadow-glint:inset 0 1px 0 rgb(255 255 255 / .25);--shadow-tray:inset 0 1.5px 0 var(--glint),inset 0 -24px 36px -28px rgb(12 28 22 / .10);
+  --font-body:"Atkinson Hyperlegible Next",ui-sans-serif,system-ui,sans-serif;--font-mono:"Atkinson Hyperlegible Mono",ui-monospace,monospace;
+  --text-sm:16px;--text-md:18px;--text-lg:22px;--text-xl:26px;--text-2xl:32px;--text-3xl:38px;
+  --radius-input:10px;--radius-card:14px;--radius-pill:999px;--radius-phone:28px;
+  --shadow-card:0 1px 2px rgb(12 28 22 / .08),0 24px 48px -24px rgb(12 28 22 / .35);
+}
+body{margin:0;background:var(--color-paper);color:var(--color-ink);font-family:var(--font-body);font-size:var(--text-md);line-height:1.5;-webkit-font-smoothing:antialiased}
+*,*::before,*::after{box-sizing:border-box}
+h1,h2,h3{margin:0;font-weight:700;line-height:1.15;letter-spacing:-0.01em;overflow-wrap:break-word;min-width:0}
+h1{font-size:var(--text-2xl)}h2{font-size:var(--text-xl)}h3{font-size:var(--text-lg)}
+p{margin:0}
+.mono,.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--color-muted)}.small{font-size:var(--text-sm)}
+svg{display:block}
+.phone{width:390px;height:844px;background:var(--color-paper);display:flex;flex-direction:column;overflow:hidden}
+.appbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 24px 8px}
+.wordmark{font-weight:800;font-size:var(--text-lg);letter-spacing:-0.02em}
+.screen{flex:1;min-height:0;overflow:hidden;padding:8px 24px 16px;display:flex;flex-direction:column;gap:16px}
+.actionbar{padding:12px 24px 28px;display:flex;flex-direction:column;gap:8px;background:var(--color-paper);border-top:1px solid var(--color-rule)}
+.btn-primary,.btn-secondary{display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 20px;border-radius:var(--radius-input);font-weight:500;font-size:var(--text-md);text-decoration:none;border:0;width:100%}
+.btn-primary{background:var(--color-accent);color:var(--color-accent-ink);box-shadow:var(--shadow-glint),0 0 0 1px var(--color-accent-deep),0 3px 0 var(--color-accent-deep)}
+.btn-secondary{background:var(--color-white);color:var(--color-ink);box-shadow:inset 0 1px 0 var(--glint),0 0 0 1px var(--color-rule),0 3px 0 var(--color-rule)}
+.btn-text{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 8px;background:none;border:0;color:var(--color-ink);font-weight:500;text-decoration:underline;text-underline-offset:.16em;text-decoration-thickness:1px;width:100%}
+.card{background:var(--color-white);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:20px;display:flex;flex-direction:column;gap:12px}
+.tray{background:var(--color-paper-2);border-radius:var(--radius-card);padding:16px;box-shadow:var(--shadow-tray)}
+.clip{background:var(--color-white);border-radius:var(--radius-input);box-shadow:var(--shadow-card);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.clip .line{font-family:var(--font-mono);font-size:var(--text-sm);line-height:1.45;color:var(--color-ink);display:flex;justify-content:space-between;gap:12px}
+.clip .src{font-size:var(--text-sm);color:var(--color-muted)}
+.hl{background:var(--color-accent-soft);padding:0 4px;border-radius:3px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.evidence{display:flex;flex-direction:column;gap:10px}
+.badge{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 10px;border-radius:var(--radius-pill);font-size:var(--text-sm);font-weight:500;width:max-content}
+.badge--synthetic{background:transparent;box-shadow:inset 0 0 0 1px var(--color-rule);color:var(--color-ink-2)}
+.badge--estimated{background:transparent;border:1px dashed var(--color-ink-2);color:var(--color-ink-2)}
+.field{display:flex;flex-direction:column;gap:8px}
+.label{font-weight:500;font-size:var(--text-md)}
+.helper{font-size:var(--text-sm);color:var(--color-muted)}
+.input{min-height:56px;padding:0 16px;border-radius:var(--radius-input);border:1px solid var(--color-muted);background:var(--color-white);font-size:var(--text-md);width:100%;display:flex;align-items:center}
+.tile{display:flex;align-items:center;gap:14px;min-height:96px;padding:18px;border-radius:var(--radius-card);background:var(--color-white);box-shadow:inset 0 0 0 1px var(--color-rule);text-align:left;width:100%;border:0}
+.tile .icon{width:32px;height:32px;flex:0 0 32px;color:var(--color-ink)}
+.chip{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:var(--radius-pill);background:var(--color-white);box-shadow:inset 0 0 0 1px var(--color-rule);font-size:var(--text-sm);font-weight:500}
+
+/* ---- the film ---- */
+html,body{width:100%;height:100%;overflow:hidden}
+#film{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--color-paper)}
+#world{position:absolute;left:0;top:0;width:1920px;height:1080px}
+.scene{position:absolute;inset:0;opacity:0}
+#sHello{opacity:1}
+.abs{position:absolute}
+.pframe{position:absolute;width:390px;height:844px;border-radius:var(--radius-phone);overflow:hidden;background:var(--color-paper);
+  box-shadow:0 0 0 1px var(--color-rule),0 2px 6px rgb(12 28 22 / .06),0 48px 90px -36px rgb(12 28 22 / .38)}
+.pframe .phone{position:absolute;left:0;top:0}
+.layer{position:absolute;inset:0}
+.press{position:absolute;width:120px;height:120px;border-radius:999px;border:4px solid var(--color-accent);opacity:0}
+.cap{font-size:52px;font-weight:700;line-height:1.15;letter-spacing:-0.01em;color:var(--color-ink)}
+.big{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-weight:500;letter-spacing:-0.02em;line-height:1}
+.mask{overflow:hidden}
+.bar{display:inline-block;height:12px;border-radius:6px;background:var(--color-rule);vertical-align:middle}
+/* hello */
+#wm{left:160px;top:300px;font-size:150px;font-weight:800;letter-spacing:-0.03em;line-height:1;white-space:nowrap}
+#plate{left:166px;top:490px;opacity:0}
+#plate .name{font-size:56px;font-weight:700;line-height:1.1}
+#plate .role{font-size:34px;font-weight:500;color:var(--color-muted);margin-top:8px}
+.env{position:absolute;width:520px;height:340px;transform-origin:0 0}
+.env svg{position:absolute;left:0;top:0;z-index:1}
+.env .peek{position:absolute;left:60px;top:40px;width:260px;height:330px;background:var(--color-white);border-radius:4px;box-shadow:0 1px 2px rgb(12 28 22 / .08);padding:22px 20px;z-index:0}
+.env .peek .t{font-weight:700;font-size:20px;line-height:1.2}
+.env .peek .r{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-family:var(--font-mono);font-size:15px;color:var(--color-muted)}
+#env1{left:1180px;top:560px}
+/* mail */
+#door{left:480px;top:70px;transform-origin:50% 100%}
+#mat{left:420px;top:930px;width:560px;height:60px;border-radius:8px;background:var(--color-paper-3);box-shadow:inset 0 0 0 3px var(--color-ink)}
+#env2{left:560px;top:770px}
+#lantern{left:1040px;top:790px;font-family:var(--font-mono);font-size:28px;line-height:1;white-space:pre;font-weight:700;opacity:0;transform-origin:50% 100%}
+/* paid */
+#receipt{left:430px;top:220px;width:360px;height:600px;background:var(--color-white);border-radius:6px;box-shadow:var(--shadow-card);padding:34px 30px;display:flex;flex-direction:column;gap:14px;z-index:2}
+#receipt .t{font-size:24px;font-weight:700}
+#receipt .m{font-size:16px;color:var(--color-muted);line-height:1.4}
+#receipt .r{display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:18px;padding:8px 0;border-bottom:1px solid var(--color-rule)}
+#receipt .r.total{border-bottom:0;border-top:2px solid var(--color-ink);font-weight:700;margin-top:6px}
+#stampPaid{position:absolute;left:84px;top:380px;font-family:var(--font-mono);font-size:72px;font-weight:700;letter-spacing:.04em;padding:4px 20px;border:6px solid var(--color-ink);border-radius:8px;color:var(--color-ink);opacity:0}
+#policy{left:640px;top:280px;width:940px;padding:40px 48px 40px 400px;gap:16px;opacity:0;z-index:1}
+#policy .t{font-size:32px;font-weight:700;line-height:1.2}
+#policy .b{font-size:26px;line-height:1.4}
+#policy .f{font-size:18px;color:var(--color-muted)}
+/* survey + table */
+#pct{left:160px;top:190px;font-size:400px}
+#pctLabel{left:166px;top:640px;width:1400px}
+#pctSrc{left:170px;top:790px;font-family:var(--font-mono);font-size:30px;color:var(--color-muted)}
+.table{position:absolute;inset:0;opacity:0}
+.table .top{position:absolute;left:0;top:600px;width:1920px;height:600px;background:var(--color-paper-3)}
+.table .edge{position:absolute;left:0;top:600px;width:1920px;height:4px;background:var(--color-ink);opacity:.5}
+.table .mug{position:absolute;top:700px}
+.table .sheet{position:absolute;left:800px;top:690px;width:320px;height:220px;background:var(--color-white);border-radius:4px;box-shadow:var(--shadow-card);padding:24px 26px;display:flex;flex-direction:column;gap:14px;transform:rotate(3deg)}
+/* forms */
+#pile{left:620px;top:0;width:680px;height:1080px}
+.fcard{position:absolute;left:0;width:680px;height:100px;background:var(--color-white);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:0 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:23px;font-weight:500;white-space:nowrap;opacity:0}
+.fcard .id{font-family:var(--font-mono);font-size:20px;color:var(--color-muted);white-space:nowrap}
+/* ai */
+#chat{left:580px;top:130px;width:760px;height:820px;background:var(--color-white);border-radius:var(--radius-card);box-shadow:var(--shadow-card);overflow:hidden;opacity:0}
+#chat .hd{position:absolute;left:0;top:0;width:760px;height:64px;border-bottom:1px solid var(--color-rule);display:flex;align-items:center;padding:0 28px;font-size:20px;font-weight:500;color:var(--color-muted);background:var(--color-white);z-index:2}
+#bubbles{position:absolute;left:28px;bottom:28px;width:704px;display:flex;flex-direction:column;gap:14px}
+.bub{height:96px;padding:0 24px;border-radius:var(--radius-card);background:var(--color-paper-2);display:flex;align-items:center;font-size:25px;line-height:1.3;opacity:0;max-width:600px}
+.typing{position:absolute;left:28px;bottom:28px;width:96px;height:52px;border-radius:var(--radius-card);background:var(--color-paper-2);display:flex;align-items:center;justify-content:center;gap:10px;opacity:0}
+.typing i{display:block;width:10px;height:10px;border-radius:50%;background:var(--color-muted)}
+/* snap */
+#snapPhone{left:765px;top:118px}
+#flash{position:absolute;inset:0;background:var(--color-white);opacity:0}
+/* example */
+.doc{position:absolute;top:160px;width:700px;height:520px;background:var(--color-white);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:36px 40px;display:flex;flex-direction:column;gap:14px;opacity:0}
+.doc .t{font-size:36px;font-weight:700;line-height:1.15}
+.doc .m{font-size:22px;color:var(--color-muted)}
+.doc .r{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--color-rule);font-size:22px;color:var(--color-ink-2)}
+.doc .tot{display:flex;justify-content:space-between;align-items:baseline;gap:24px;margin-top:auto;padding-top:14px;border-top:2px solid var(--color-ink)}
+.doc .tot .k{font-size:26px;font-weight:500;white-space:nowrap}
+.doc .tot .v{font-family:var(--font-mono);font-size:78px;font-weight:500;letter-spacing:-0.02em;line-height:1;opacity:0}
+#docBill{left:220px}
+#docIns{left:1000px}
+#notProof{left:220px;top:790px;width:700px;opacity:0}
+#gapBlock{left:1000px;top:745px;width:700px;opacity:0}
+#gapBlock .rule{height:4px;background:var(--color-ink);transform-origin:0 50%}
+#gapBlock .v{font-family:var(--font-mono);font-size:120px;font-weight:500;letter-spacing:-0.02em;line-height:1;margin-top:18px}
+#gapBlock .k{font-size:36px;font-weight:700;margin-top:10px}
+/* help */
+.hcard{position:absolute;top:330px;width:480px;height:300px;background:var(--color-white);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:32px;display:flex;flex-direction:column;gap:16px;opacity:0}
+.hcard .t{font-size:40px;font-weight:700;line-height:1.12}
+.hcard .d{font-size:24px;color:var(--color-muted);line-height:1.35;margin-top:auto}
+#capOneQ{left:200px;top:290px;opacity:0}
+#oneQ{left:200px;top:390px;width:760px;padding:32px;opacity:0}
+#oneQ .label{font-size:26px}
+#oneQ .input{min-height:68px;font-size:26px}
+#oneQ .helper{font-size:20px}
+.caret{display:inline-block;width:2px;height:30px;background:var(--color-ink);margin-left:2px}
+#twenty{left:1040px;top:330px;width:700px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;opacity:0}
+#twenty .chip{min-height:46px;justify-content:center;font-size:20px;opacity:0}
+#strike{left:1020px;top:300px;width:740px;height:360px;opacity:0}
+/* approve + connect */
+#resPhone{left:765px;top:118px;transform-origin:50% 50%}
+.conn{position:absolute;left:1180px;width:520px;height:180px;background:var(--color-white);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:34px 36px;display:flex;flex-direction:column;gap:8px;opacity:0}
+.conn .t{font-size:40px;font-weight:700;line-height:1.1}
+.conn .d{font-size:24px;color:var(--color-muted)}
+#cMedicare{top:310px}
+#cInsurer{top:590px}
+#links{left:0;top:0;width:1920px;height:1080px;clip-path:inset(0 100% 0 0)}
+/* parents */
+#line1{left:160px;top:220px;width:1560px;font-size:64px;font-weight:500;line-height:1.25}
+#line2{left:160px;top:420px;width:1560px;font-size:112px;font-weight:700;line-height:1.1;letter-spacing:-0.02em}
+/* end */
+#endWm{left:160px;top:330px;font-size:150px;font-weight:800;letter-spacing:-0.03em;line-height:1;opacity:0}
+#endTag{left:166px;top:520px;font-size:64px;font-weight:500;line-height:1.2;opacity:0}
+#endFoot{left:166px;top:660px;display:inline-block;font-family:var(--font-mono);font-size:30px;white-space:nowrap;padding:10px 22px;border-radius:999px;background:var(--color-paper-3);color:var(--color-ink);opacity:0}
+</style>
+<script type="application/json" id="om-cues">{"source":"recording:vo-Charon.wav","precision":"silence, paragraph > sentence > clause (tools/cues.mjs)","offset":0,"duration":84.85,"words":[{"word":"Hi","start":0.749,"end":1.037},{"word":"I'm","start":1.551,"end":1.701},{"word":"Shawn","start":1.701,"end":2.001},{"word":"Yoon","start":2.001,"end":2.25},{"word":"founder","start":2.704,"end":3.139},{"word":"of","start":3.139,"end":3.302},{"word":"Kindred","start":3.302,"end":3.737},{"word":"AI","start":3.737,"end":3.9},{"word":"Have","start":4.906,"end":5.219},{"word":"you","start":5.219,"end":5.469},{"word":"ever","start":5.469,"end":5.781},{"word":"gotten","start":5.781,"end":6.219},{"word":"a","start":6.219,"end":6.344},{"word":"surprise","start":6.344,"end":6.907},{"word":"medical","start":6.907,"end":7.407},{"word":"bill","start":7.407,"end":7.72},{"word":"in","start":7.72,"end":7.907},{"word":"the","start":7.907,"end":8.157},{"word":"mail","start":8.157,"end":8.47},{"word":"In","start":8.833,"end":8.956},{"word":"the","start":8.956,"end":9.12},{"word":"US","start":9.12,"end":9.242},{"word":"those","start":9.242,"end":9.488},{"word":"bills","start":9.488,"end":9.733},{"word":"are","start":9.733,"end":9.896},{"word":"scarier","start":9.896,"end":10.224},{"word":"than","start":10.224,"end":10.428},{"word":"the","start":10.428,"end":10.592},{"word":"Halloween","start":10.592,"end":11.001},{"word":"kids","start":11.001,"end":11.205},{"word":"knocking","start":11.205,"end":11.573},{"word":"on","start":11.573,"end":11.696},{"word":"your","start":11.696,"end":11.9},{"word":"door","start":11.9,"end":12.105},{"word":"What's","start":13.224,"end":13.481},{"word":"worse","start":13.481,"end":13.738},{"word":"Paying","start":14.178,"end":14.552},{"word":"it","start":14.552,"end":14.713},{"word":"then","start":15.193,"end":15.393},{"word":"finding","start":15.393,"end":15.713},{"word":"out","start":15.713,"end":15.874},{"word":"you","start":15.874,"end":16.034},{"word":"might've","start":16.034,"end":16.354},{"word":"qualified","start":16.354,"end":16.755},{"word":"for","start":16.755,"end":16.915},{"word":"help","start":16.915,"end":17.116},{"word":"A","start":18.225,"end":18.326},{"word":"2025","start":18.326,"end":19.191},{"word":"survey","start":19.191,"end":19.547},{"word":"found","start":19.547,"end":19.852},{"word":"that","start":19.852,"end":20.106},{"word":"44%","start":20.106,"end":20.97},{"word":"of","start":20.97,"end":21.123},{"word":"American","start":21.123,"end":21.58},{"word":"adults","start":21.58,"end":21.936},{"word":"weren't","start":21.936,"end":22.292},{"word":"familiar","start":22.292,"end":22.75},{"word":"with","start":22.75,"end":23.004},{"word":"hospital","start":23.004,"end":23.461},{"word":"charity","start":23.461,"end":23.868},{"word":"care","start":23.868,"end":24.122},{"word":"My","start":25.118,"end":25.218},{"word":"parents","start":25.218,"end":25.485},{"word":"didn't","start":25.485,"end":25.686},{"word":"know","start":25.686,"end":25.853},{"word":"either","start":25.853,"end":26.086},{"word":"And","start":27.078,"end":27.128},{"word":"honestly","start":27.128,"end":27.24},{"word":"the","start":27.24,"end":27.289},{"word":"whole","start":27.289,"end":27.364},{"word":"process","start":27.364,"end":27.463},{"word":"is","start":27.463,"end":27.5},{"word":"exhausting","start":27.5,"end":27.637},{"word":"Which","start":27.887,"end":28.581},{"word":"program","start":28.581,"end":29.506},{"word":"Which","start":30.234,"end":31.282},{"word":"form","start":31.282,"end":32.156},{"word":"Who","start":32.451,"end":32.623},{"word":"do","start":32.623,"end":32.752},{"word":"you","start":32.752,"end":32.924},{"word":"call","start":32.924,"end":33.139},{"word":"We","start":34.053,"end":34.241},{"word":"tried","start":34.241,"end":34.615},{"word":"AI","start":34.615,"end":34.803},{"word":"It","start":35.423,"end":35.537},{"word":"just","start":35.537,"end":35.728},{"word":"gave","start":35.728,"end":35.92},{"word":"them","start":35.92,"end":36.111},{"word":"more","start":36.111,"end":36.302},{"word":"questions","start":36.302,"end":36.684},{"word":"they","start":36.684,"end":36.875},{"word":"didn't","start":36.875,"end":37.104},{"word":"understand","start":37.104,"end":37.524},{"word":"They","start":38.243,"end":38.442},{"word":"needed","start":38.442,"end":38.721},{"word":"help","start":38.721,"end":38.92},{"word":"not","start":39.211,"end":39.454},{"word":"more","start":39.454,"end":39.756},{"word":"homework","start":39.756,"end":40.302},{"word":"So","start":41.082,"end":41.229},{"word":"we're","start":41.229,"end":41.475},{"word":"building","start":41.475,"end":41.916},{"word":"Kindred","start":41.916,"end":42.309},{"word":"Snap","start":42.309,"end":42.555},{"word":"Take","start":43.19,"end":43.353},{"word":"a","start":43.353,"end":43.418},{"word":"photo","start":43.418,"end":43.614},{"word":"of","start":43.614,"end":43.712},{"word":"your","start":43.712,"end":43.874},{"word":"bill","start":43.874,"end":44.037},{"word":"to","start":44.037,"end":44.135},{"word":"start","start":44.135,"end":44.33},{"word":"Here's","start":45.228,"end":45.448},{"word":"an","start":45.448,"end":45.558},{"word":"example","start":45.558,"end":45.852},{"word":"The","start":46.653,"end":46.843},{"word":"hospital","start":46.843,"end":47.271},{"word":"bill","start":47.271,"end":47.509},{"word":"says","start":47.509,"end":47.747},{"word":"$480","start":47.747,"end":48.936},{"word":"The","start":49.606,"end":49.782},{"word":"insurance","start":49.782,"end":50.222},{"word":"statement","start":50.222,"end":50.662},{"word":"says","start":50.662,"end":50.882},{"word":"your","start":50.882,"end":51.103},{"word":"responsibility","start":51.103,"end":51.763},{"word":"is","start":51.763,"end":51.895},{"word":"$180","start":51.895,"end":52.952},{"word":"That","start":53.681,"end":53.875},{"word":"doesn't","start":53.875,"end":54.146},{"word":"automatically","start":54.146,"end":54.689},{"word":"prove","start":54.689,"end":54.921},{"word":"an","start":54.921,"end":55.038},{"word":"error","start":55.038,"end":55.27},{"word":"but","start":55.785,"end":55.934},{"word":"it","start":55.934,"end":56.046},{"word":"tells","start":56.046,"end":56.27},{"word":"us","start":56.27,"end":56.381},{"word":"what","start":56.381,"end":56.568},{"word":"to","start":56.568,"end":56.68},{"word":"investigate","start":56.68,"end":57.127},{"word":"Kindred","start":57.904,"end":58.284},{"word":"helps","start":58.284,"end":58.57},{"word":"check","start":58.57,"end":58.855},{"word":"the","start":58.855,"end":59.045},{"word":"documents","start":59.045,"end":59.52},{"word":"look","start":59.52,"end":59.757},{"word":"for","start":59.757,"end":59.947},{"word":"financial","start":59.947,"end":60.422},{"word":"assistance","start":60.422,"end":60.945},{"word":"and","start":60.945,"end":61.135},{"word":"prepare","start":61.135,"end":61.515},{"word":"the","start":61.515,"end":61.705},{"word":"paperwork","start":61.705,"end":62.18},{"word":"If","start":62.909,"end":63.009},{"word":"something's","start":63.009,"end":63.378},{"word":"missing","start":63.378,"end":63.646},{"word":"we","start":64.043,"end":64.162},{"word":"ask","start":64.162,"end":64.319},{"word":"for","start":64.319,"end":64.477},{"word":"that","start":64.477,"end":64.674},{"word":"not","start":65.116,"end":65.307},{"word":"twenty","start":65.307,"end":65.642},{"word":"decisions","start":65.642,"end":66.121},{"word":"about","start":66.121,"end":66.408},{"word":"what","start":66.408,"end":66.648},{"word":"to","start":66.648,"end":66.791},{"word":"do","start":66.791,"end":66.935},{"word":"next","start":66.935,"end":67.174},{"word":"You","start":68.111,"end":68.296},{"word":"review","start":68.296,"end":68.621},{"word":"and","start":68.621,"end":68.807},{"word":"approve","start":68.807,"end":69.179},{"word":"before","start":69.179,"end":69.504},{"word":"anything","start":69.504,"end":69.921},{"word":"gets","start":69.921,"end":70.154},{"word":"sent","start":70.154,"end":70.386},{"word":"We're","start":71.251,"end":71.421},{"word":"starting","start":71.421,"end":71.729},{"word":"with","start":71.729,"end":71.9},{"word":"hospital","start":71.9,"end":72.207},{"word":"bills","start":72.207,"end":72.413},{"word":"Eventually","start":72.976,"end":73.416},{"word":"direct","start":73.812,"end":74.062},{"word":"connections","start":74.062,"end":74.491},{"word":"could","start":74.491,"end":74.706},{"word":"mean","start":74.706,"end":74.884},{"word":"you","start":74.884,"end":75.027},{"word":"don't","start":75.027,"end":75.206},{"word":"even","start":75.206,"end":75.385},{"word":"need","start":75.385,"end":75.564},{"word":"the","start":75.564,"end":75.707},{"word":"photo","start":75.707,"end":75.921},{"word":"My","start":76.996,"end":77.122},{"word":"parents","start":77.122,"end":77.457},{"word":"shouldn't","start":77.457,"end":77.834},{"word":"need","start":77.834,"end":78.044},{"word":"to","start":78.044,"end":78.169},{"word":"become","start":78.169,"end":78.463},{"word":"billing","start":78.463,"end":78.798},{"word":"experts","start":78.798,"end":79.133},{"word":"to","start":79.133,"end":79.259},{"word":"get","start":79.259,"end":79.427},{"word":"help","start":79.427,"end":79.636},{"word":"Neither","start":80.324,"end":80.607},{"word":"should","start":80.607,"end":80.854},{"word":"yours","start":80.854,"end":81.066},{"word":"Kindred","start":82.079,"end":82.533},{"word":"Snap","start":82.533,"end":82.817},{"word":"Reduce","start":83.465,"end":83.705},{"word":"your","start":83.705,"end":83.876},{"word":"medical","start":83.876,"end":84.151},{"word":"bill","start":84.151,"end":84.322}]}</script>
+</head>
+<body>
+<div id="film" data-composition-id="film" data-width="1920" data-height="1080">
+  <audio id="om-sound" src="assets/sound.wav" data-start="0" data-duration="86.822" data-track-index="8" data-volume="1"></audio>
+  <audio id="om-voice" src="assets/voice.wav" data-start="0" data-duration="84.85" data-track-index="9" data-volume="1"></audio>
+
+  <div id="world">
+    <!-- ============ HELLO: the poster, wordmark and envelope on paper ============ -->
+    <section class="scene" id="sHello" data-om-id="hello">
+      <div id="wm" class="abs" data-om-id="wordmark">Kindred Snap</div>
+      <div id="plate" class="abs" data-om-id="namePlate">
+        <div class="name" data-var-text="plateName">Shawn Yoon</div>
+        <div class="role" data-var-text="plateRole">Founder, Kindred AI</div>
+      </div>
+      <div id="env1" class="env" data-om-id="envelope">
+        <svg viewBox="0 0 520 340" width="520" height="340" aria-hidden="true">
+          <rect x="2" y="2" width="516" height="336" rx="6" fill="#FFFFFF" stroke="#CBD6C9" stroke-width="3"/>
+          <rect x="414" y="30" width="72" height="84" rx="4" fill="none" stroke="#CBD6C9" stroke-width="3"/>
+          <rect x="60" y="170" width="250" height="12" rx="6" fill="#CBD6C9"/>
+          <rect x="60" y="206" width="190" height="12" rx="6" fill="#CBD6C9"/>
+          <rect x="60" y="242" width="220" height="12" rx="6" fill="#CBD6C9"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ============ MAIL: the front door, the envelope on the mat, two knocks ============ -->
+    <section class="scene" id="sMail" data-om-id="mail">
+      <div id="door" class="abs" data-om-id="door">
+        <svg viewBox="0 0 440 860" width="440" height="860" aria-hidden="true">
+          <rect x="3" y="3" width="434" height="854" rx="10" fill="#D4F0E0" stroke="#0C1C16" stroke-width="4"/>
+          <rect x="52" y="60" width="150" height="300" rx="6" fill="none" stroke="#0C1C16" stroke-width="3" opacity=".5"/>
+          <rect x="238" y="60" width="150" height="300" rx="6" fill="none" stroke="#0C1C16" stroke-width="3" opacity=".5"/>
+          <rect x="52" y="500" width="150" height="300" rx="6" fill="none" stroke="#0C1C16" stroke-width="3" opacity=".5"/>
+          <rect x="238" y="500" width="150" height="300" rx="6" fill="none" stroke="#0C1C16" stroke-width="3" opacity=".5"/>
+          <circle cx="392" cy="440" r="15" fill="#0C1C16"/>
+        </svg>
+      </div>
+      <div id="mat" class="abs" data-om-id="doormat"></div>
+      <div id="env2" class="env" data-om-id="envelopeAtDoor" data-layout-allow-occlusion>
+        <div class="peek" id="peek" data-om-id="billPeek">
+          <div class="t">Statement</div>
+          <div class="r"><span>Account</span><span class="bar" style="width:70px"></span></div>
+          <div class="r"><span>Visit</span><span class="bar" style="width:90px"></span></div>
+          <div class="r"><span>Amount due</span><span class="bar" style="width:84px;background:#A9E8C6"></span></div>
+        </div>
+        <svg viewBox="0 0 520 340" width="520" height="340" aria-hidden="true">
+          <rect x="2" y="2" width="516" height="336" rx="6" fill="#FFFFFF" stroke="#CBD6C9" stroke-width="3"/>
+          <rect x="414" y="30" width="72" height="84" rx="4" fill="none" stroke="#CBD6C9" stroke-width="3"/>
+          <rect x="60" y="170" width="250" height="12" rx="6" fill="#CBD6C9"/>
+          <rect x="60" y="206" width="190" height="12" rx="6" fill="#CBD6C9"/>
+          <rect x="60" y="242" width="220" height="12" rx="6" fill="#CBD6C9"/>
+        </svg>
+      </div>
+      <div id="lantern" class="abs" data-om-id="lantern">    |
+  $$$$$$
+ $$^$$^$$
+$$$$$$$$$$
+ $$vvvv$$
+  $$$$$$</div>
+    </section>
+
+    <!-- ============ PAID: the receipt, the stamp, the policy page underneath ============ -->
+    <section class="scene" id="sPaid" data-om-id="paid">
+      <div id="policy" class="abs card" data-om-id="policyPage" data-layout-allow-occlusion>
+        <div class="t">Financial Assistance Policy</div>
+        <div class="b">Patients with household income at or below 300% of the federal poverty guideline <span class="hl">are eligible for free or discounted care</span>. Apply within 240 days of the first statement.</div>
+        <div class="f">Sample hospital policy · synthetic</div>
+      </div>
+      <div id="receipt" class="abs" data-om-id="receipt" data-layout-allow-occlusion>
+        <div class="t">Receipt</div>
+        <div class="m">Patient account · paid in full<br>Synthetic example</div>
+        <div class="r"><span>Emergency visit</span><span class="bar" style="width:70px"></span></div>
+        <div class="r"><span>Imaging</span><span class="bar" style="width:56px"></span></div>
+        <div class="r"><span>Laboratory</span><span class="bar" style="width:48px"></span></div>
+        <div class="r"><span>Supplies</span><span class="bar" style="width:40px"></span></div>
+        <div class="r total"><span>Total paid</span><span class="bar" style="width:84px;background:#0C1C16"></span></div>
+        <div id="stampPaid" data-om-id="paidStamp">PAID</div>
+      </div>
+    </section>
+
+    <!-- ============ SURVEY: 44%, then the quiet table ============ -->
+    <section class="scene" id="sSurvey" data-om-id="survey">
+      <div id="pct" class="abs big" data-om-id="surveyFigure" data-om-var="pct">0%</div>
+      <div id="pctLabel" class="abs cap" data-om-id="surveyLabel" data-var-text="pctLabel">of American adults weren’t familiar with hospital charity care</div>
+      <div id="pctSrc" class="abs" data-om-id="surveySource" data-var-text="pctSource">2025 survey</div>
+      <div class="table" id="tableA" data-om-id="table">
+        <div class="top"></div><div class="edge"></div>
+        <svg class="mug" style="left:520px" viewBox="0 0 160 130" width="160" height="130" aria-hidden="true"><circle cx="60" cy="62" r="56" fill="#FFFFFF" stroke="#0C1C16" stroke-width="4"/><path d="M114 40 q40 22 0 46" fill="none" stroke="#0C1C16" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="62" r="40" fill="none" stroke="#CBD6C9" stroke-width="3"/></svg>
+        <svg class="mug" style="left:1240px" viewBox="0 0 160 130" width="160" height="130" aria-hidden="true"><circle cx="60" cy="62" r="56" fill="#FFFFFF" stroke="#0C1C16" stroke-width="4"/><path d="M114 40 q40 22 0 46" fill="none" stroke="#0C1C16" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="62" r="40" fill="none" stroke="#CBD6C9" stroke-width="3"/></svg>
+        <div class="sheet"><span class="bar" style="width:170px"></span><span class="bar" style="width:220px"></span><span class="bar" style="width:140px"></span><span class="bar" style="width:200px;background:#A9E8C6"></span></div>
+      </div>
+    </section>
+
+    <!-- ============ FORMS: the pile, then the collapse ============ -->
+    <section class="scene" id="sForms" data-om-id="forms">
+      <div id="pile" class="abs" data-om-id="pile" data-layout-allow-overlap data-layout-allow-occlusion data-layout-allow-overflow></div>
+    </section>
+
+    <!-- ============ AI: a wall of questions, then it clears ============ -->
+    <section class="scene" id="sAi" data-om-id="ai">
+      <div id="chat" class="abs" data-om-id="chat" data-layout-allow-overflow>
+        <div class="hd">Assistant</div>
+        <div class="typing" id="typing" data-om-id="typing"><i></i><i></i><i></i></div>
+        <div id="bubbles"></div>
+      </div>
+    </section>
+
+    <!-- ============ SNAP: the real Take a Photo screen ============ -->
+    <section class="scene" id="sSnap" data-om-id="snap">
+      <div class="pframe" id="snapPhone" data-om-id="phoneSnap"><div class="phone">
+        <div class="appbar"><span class="wordmark">Kindred Snap</span></div>
+        <div class="screen">
+          <h1>Take a Photo of the Bill</h1>
+          <p>Lay it flat, whole page in the box, good light.</p>
+          <div class="tray" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;position:relative">
+            <div style="width:150px;height:180px;border:2px dashed var(--color-muted);border-radius:6px"></div>
+            <span class="muted">Fit the whole page inside this box</span>
+          </div>
+          <div class="btn-secondary">Pick a PDF or photo instead</div>
+          <div class="btn-text">Use the demo bill</div>
+        </div>
+        <div class="actionbar"><div class="btn-primary" id="takeBtn" data-om-id="takePhoto"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="4"/></svg>Take photo</div><div class="btn-text">Talk to a person</div></div>
+        <div id="flash"></div>
+      </div></div>
+      <div class="press" id="ring1" style="left:900px;top:790px"></div>
+    </section>
+
+    <!-- ============ EXAMPLE: the bill, the statement, the gap ============ -->
+    <section class="scene" id="sExample" data-om-id="example">
+      <div class="doc" id="docBill" data-om-id="docBill">
+        <div class="t">Hospital Bill</div>
+        <div class="m">Statement · synthetic example</div>
+        <div class="r"><span>Emergency visit</span><span class="bar" style="width:90px"></span></div>
+        <div class="r"><span>Imaging</span><span class="bar" style="width:70px"></span></div>
+        <div class="r"><span>Insurance paid</span><span class="bar" style="width:110px"></span></div>
+        <div class="tot"><span class="k">Amount due</span><span class="v" id="billV"><span class="hl" data-var-text="billAmount">$480.00</span></span></div>
+      </div>
+      <div class="doc" id="docIns" data-om-id="docStatement">
+        <div class="t">Insurance Statement</div>
+        <div class="m">Explanation of benefits · synthetic example</div>
+        <div class="r"><span>Billed by the hospital</span><span class="bar" style="width:90px"></span></div>
+        <div class="r"><span>Plan paid</span><span class="bar" style="width:70px"></span></div>
+        <div class="r"><span>Adjustments</span><span class="bar" style="width:110px"></span></div>
+        <div class="tot"><span class="k">Your responsibility</span><span class="v" id="insV"><span class="hl" data-var-text="insAmount">$180.00</span></span></div>
+      </div>
+      <div id="notProof" class="abs cap" data-om-id="capNotProof" data-var-text="capNotProof">Not proof of an error</div>
+      <div id="gapBlock" class="abs" data-om-id="gap">
+        <div class="rule" id="gapRule"></div>
+        <div class="v" data-var-text="gapAmount">$300.00</div>
+        <div class="k" data-var-text="capGap">What to investigate</div>
+      </div>
+    </section>
+
+    <!-- ============ HELP: three cards, one question, twenty crossed out ============ -->
+    <section class="scene" id="sHelp" data-om-id="help">
+      <div class="hcard" id="h1" style="left:200px" data-om-id="cardCheck"><div class="t" data-var-text="help1">Check the Documents</div><div class="d">The bill against the insurer’s statement, line by line.</div></div>
+      <div class="hcard" id="h2" style="left:720px" data-om-id="cardLook"><div class="t" data-var-text="help2">Look for Financial Assistance</div><div class="d">The hospital’s own policy, quoted, not summarised.</div></div>
+      <div class="hcard" id="h3" style="left:1240px" data-om-id="cardPrepare"><div class="t" data-var-text="help3">Prepare the Paperwork</div><div class="d">The letters and forms, drafted for you to approve.</div></div>
+      <div id="capOneQ" class="abs cap" data-om-id="capOneQ" data-var-text="capOneQ">One Question</div>
+      <div id="oneQ" class="abs card" data-om-id="oneQuestion">
+        <div class="field"><span class="label">Your yearly household income, about</span>
+          <div class="input mono"><span id="typed"></span><span class="caret" id="caret"></span></div>
+          <span class="helper">Social Security plus pension. A close guess is fine.</span></div>
+      </div>
+      <div id="twenty" class="abs" data-om-id="twentyDecisions"></div>
+      <svg id="strike" class="abs" viewBox="0 0 740 360" width="740" height="360" aria-hidden="true" data-om-id="strike"><path id="strikePath" d="M20 340 L720 20" fill="none" stroke="#0C1C16" stroke-width="8" stroke-linecap="round"/></svg>
+    </section>
+
+    <!-- ============ APPROVE + CONNECT: the real result screen, then the dotted line ============ -->
+    <section class="scene" id="sApprove" data-om-id="approve">
+      <div class="pframe" id="resPhone" data-om-id="phoneResult">
+        <div class="phone" id="scrResult">
+          <div class="appbar"><span class="wordmark">Kindred Snap</span></div>
+          <div class="screen" style="gap:12px">
+            <h1>We Found <span class="mono" data-var-text="gapAmount">$300.00</span> to Investigate</h1>
+            <h2 style="font-weight:800">The Bill and the Insurance Statement Disagree</h2>
+            <div class="evidence">
+              <div class="clip" data-om-id="resultClipBill"><div class="line"><span>Hospital bill, amount due</span><span class="hl" data-var-text="billAmount">$480.00</span></div><div class="src">Bill, page 1 · synthetic example</div></div>
+              <div class="clip" data-om-id="resultClipStatement"><div class="line"><span>Insurance statement, your responsibility</span><span class="hl" data-var-text="insAmount">$180.00</span></div><div class="src">Statement, page 2 · synthetic example</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px"><span class="mono" style="font-size:32px;font-weight:500" data-var-text="gapAmount">$300.00</span><span class="badge badge--estimated">Estimated</span></div>
+            <p class="small muted">Not proof of an error. The hospital decides.</p>
+          </div>
+          <div class="actionbar">
+            <div class="btn-primary" id="sendBtn" data-om-id="sendButton">Draft the letters and send</div>
+            <div class="btn-text">Show the letters first</div>
+          </div>
+        </div>
+        <div class="phone layer" id="scrSnap2" style="opacity:0">
+          <div class="appbar"><span class="wordmark">Kindred Snap</span></div>
+          <div class="screen">
+            <h1>Take a Photo of the Bill</h1>
+            <p>Lay it flat, whole page in the box, good light.</p>
+            <div class="tray" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+              <div style="width:150px;height:180px;border:2px dashed var(--color-muted);border-radius:6px"></div>
+              <span class="muted">Fit the whole page inside this box</span>
+            </div>
+            <div class="btn-secondary">Pick a PDF or photo instead</div>
+            <div class="btn-text">Use the demo bill</div>
+          </div>
+          <div class="actionbar"><div class="btn-primary"><svg id="camIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" data-om-id="cameraIcon"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="4"/></svg>Take photo</div><div class="btn-text">Talk to a person</div></div>
+        </div>
+      </div>
+      <div class="press" id="ring2" style="left:900px;top:790px"></div>
+      <svg id="links" class="abs" viewBox="0 0 1920 1080" width="1920" height="1080" aria-hidden="true" data-om-id="connections">
+        <path d="M728 540 C 900 540, 980 400, 1180 400" fill="none" stroke="#007948" stroke-width="7" stroke-linecap="round" stroke-dasharray="0 20"/>
+        <path d="M728 560 C 900 560, 980 680, 1180 680" fill="none" stroke="#007948" stroke-width="7" stroke-linecap="round" stroke-dasharray="0 20"/>
+      </svg>
+      <div class="conn" id="cMedicare" data-om-id="cardMedicare"><div class="t">Medicare</div><div class="d">Direct connection</div></div>
+      <div class="conn" id="cInsurer" data-om-id="cardInsurer"><div class="t">Your Insurer</div><div class="d">Direct connection</div></div>
+    </section>
+
+    <!-- ============ PARENTS: two lines on paper, the table returns ============ -->
+    <section class="scene" id="sParents" data-om-id="parents">
+      <div class="table" id="tableB" style="opacity:1">
+        <div class="top"></div><div class="edge"></div>
+        <svg class="mug" style="left:520px" viewBox="0 0 160 130" width="160" height="130" aria-hidden="true"><circle cx="60" cy="62" r="56" fill="#FFFFFF" stroke="#0C1C16" stroke-width="4"/><path d="M114 40 q40 22 0 46" fill="none" stroke="#0C1C16" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="62" r="40" fill="none" stroke="#CBD6C9" stroke-width="3"/></svg>
+        <svg class="mug" style="left:1240px" viewBox="0 0 160 130" width="160" height="130" aria-hidden="true"><circle cx="60" cy="62" r="56" fill="#FFFFFF" stroke="#0C1C16" stroke-width="4"/><path d="M114 40 q40 22 0 46" fill="none" stroke="#0C1C16" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="62" r="40" fill="none" stroke="#CBD6C9" stroke-width="3"/></svg>
+      </div>
+      <div id="line1" class="abs mask" data-om-id="parentsLine1"><div data-var-text="parents1">My parents shouldn’t need to become billing experts to get help.</div></div>
+      <div id="line2" class="abs mask" data-om-id="parentsLine2"><div data-var-text="parents2">Neither should yours.</div></div>
+    </section>
+
+    <!-- ============ END ============ -->
+    <section class="scene" id="sEnd" data-om-id="end">
+      <div id="endWm" class="abs" data-om-id="endWordmark">Kindred Snap.</div>
+      <div id="endTag" class="abs" data-om-id="endTagline" data-var-text="endTag">Reduce your medical bill.</div>
+      <div id="endFoot" class="abs" data-om-id="endFooter" data-var-text="endFooter">Synthetic example · nothing was sent</div>
+    </section>
+  </div>
+</div>
+
+<script>
+const V = OM.vars();
+OM.music({ bpm: 84, style: 'piano', ending: 'ring',
+  energy: { hello: 0.3, mail: 0.4, paid: 0.45, survey: 0.5, table: 0.2, forms: 0.75, ai: 0.45, snap: 0.5, example: 0.55, help: 0.5, approve: 0.65, connect: 0.4, parents: 0.3, end: 0.4 } });
+const cue = (w, nth, fb, edge) => { try { return OM.cue(w, nth, edge); } catch (e) { return fb; } };
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+const esc = (s) => String(s).replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' })[c]);
+
+// ---- what scripts build ----
+const FORMS = [
+  ['Financial Assistance Application', 'Form FA-1'], ['Medicaid Eligibility Screening', '(800) 555-0142'], ['Charity Care Worksheet', 'Form CC-2'],
+  ['Itemized Statement Request', '(800) 555-0199'], ['Patient Financial Services', '(800) 555-0128'], ['Income Verification', 'Form IV-7'],
+  ['Appeal of Claim Denial', '(800) 555-0163'], ['Payment Plan Enrollment', 'Form PP-3'], ['Explanation of Benefits Review', '(800) 555-0177'],
+  ['Hardship Waiver', 'Form HW-4'], ['Presumptive Eligibility', '(800) 555-0105'], ['Billing Dispute Form', 'Form BD-9'],
+];
+$('#pile').innerHTML = FORMS.map((f, i) => '<div class="fcard" id="f' + i + '" style="top:' + (880 - i * 56) + 'px;z-index:' + i + '" data-om-id="form' + (i + 1) + '"><span>' + esc(f[0]) + '</span><span class="id">' + esc(f[1]) + '</span></div>').join('');
+const QUESTIONS = [
+  'Is this an EOB or an itemized bill?', 'Do you want FAP, Medicaid, or a payment plan?', 'What was your MAGI for the prior tax year?',
+  'Which CPT codes are you disputing?', 'Has the claim been adjudicated yet?', 'Would you like a 12-month hardship review?',
+];
+$('#bubbles').innerHTML = QUESTIONS.map((q, i) => '<div class="bub" id="b' + i + '" data-om-id="question' + (i + 1) + '">' + esc(q) + '</div>').join('');
+const TWENTY = ['Program?', 'Form?', 'Appeal?', 'Apply?', 'Call who?', 'Deadline?', 'Income?', 'Household?', 'Which year?', 'Itemized?', 'In network?', 'Deductible?', 'Dispute?', 'Plan?', 'Waiver?', 'Notice?', 'Codes?', 'Proof?', 'Fax or mail?', 'Then what?'];
+$('#twenty').innerHTML = TWENTY.map((q) => '<span class="chip">' + esc(q) + '</span>').join('');
+$('#typed').innerHTML = [...'37,560'].map((c) => '<span class="k" style="opacity:0">' + c + '</span>').join('');
+
+// ---- initial states ----
+gsap.set('#env1', { rotation: -6, y: 18, transformOrigin: '0 0' });
+gsap.set('#env2', { rotation: -8, scale: 0.55, transformOrigin: '0 0' });
+gsap.set('#peek', { y: 0 });
+gsap.set('#plate', { y: 24 });
+gsap.set('#lantern', { scale: 0 });
+gsap.set('#receipt', { x: -120, y: 40, opacity: 0 });
+gsap.set('#stampPaid', { scale: 1.8, rotation: -12 });
+gsap.set('#policy', { y: 90 });
+gsap.set('#pctLabel, #pctSrc, #notProof, #capOneQ', { opacity: 0, y: 30 });
+gsap.set('#pct', { opacity: 0 });
+gsap.set('.fcard', { y: -420, rotation: (i) => (i % 2 ? 1.6 : -1.6), transformOrigin: '50% 50%' });
+gsap.set('#bubbles', { y: QUESTIONS.length * 110 });
+gsap.set('.bub', { y: 60 });
+gsap.set('#snapPhone', { y: 140, opacity: 0, transformOrigin: '50% 50%' });
+gsap.set('.doc', { y: 60 });
+gsap.set('.doc .v', { y: 40 });
+gsap.set('#gapRule', { scaleX: 0 });
+gsap.set('.hcard', { y: 50, scale: 0.96, transformOrigin: '50% 50%' });
+gsap.set('#oneQ', { y: 40 });
+gsap.set('#twenty .chip', { scale: 0.6, transformOrigin: '50% 50%' });
+gsap.set('#strikePath', { strokeDasharray: 800, strokeDashoffset: 800 });
+gsap.set('#resPhone', { y: 120, opacity: 0 });
+gsap.set('.conn', { x: 60 });
+gsap.set('#line1 > div, #line2 > div', { yPercent: 110 });
+gsap.set('#endWm', { y: 40, scale: 1.04, transformOrigin: '0 50%' });
+gsap.set('#endTag, #endFoot', { y: 24 });
+
+// ---- word anchors (fallbacks are the measured take; OM.cue follows a new recording) ----
+const T = {
+  shawn: cue('shawn', 1, 1.70), have: cue('have', 1, 4.91), mail: cue('mail', 1, 8.16), hallo: cue('halloween', 1, 10.59), knock: cue('knocking', 1, 11.21), door: cue('door', 1, 11.90, 'end'),
+  whats: cue("what's", 1, 13.22), paying: cue('paying', 1, 14.18), finding: cue('finding', 1, 15.39), qual: cue('qualified', 1, 16.35),
+  y2025: cue('2025', 1, 18.33), pct: cue('44%', 1, 20.11), parents1: cue('parents', 1, 25.22),
+  honestly: cue('honestly', 1, 27.13), which1: cue('which', 1, 27.89), which2: cue('which', 2, 30.23), who: cue('who', 2, 32.45), callEnd: cue('call', 1, 33.14, 'end'),
+  tried: cue('tried', 1, 34.24), gave: cue('gave', 1, 35.73), understand: cue('understand', 1, 37.10, 'end'), needed: cue('needed', 1, 38.44),
+  so: cue('so', 1, 41.08), building: cue('building', 1, 41.48), photo1: cue('photo', 1, 43.42), example: cue('example', 1, 45.56), b480: cue('480', 1, 47.75), b180: cue('180', 1, 51.90),
+  auto: cue('automatically', 1, 54.15), invest: cue('investigate', 1, 56.68), helps: cue('helps', 1, 58.28), check: cue('check', 1, 58.57), look: cue('look', 1, 59.52), prepare: cue('prepare', 1, 61.13),
+  missing: cue('missing', 1, 63.38), twenty: cue('twenty', 1, 65.31), decisions: cue('decisions', 1, 65.64), you: cue('review', 1, 68.30) - 0.2, approve: cue('approve', 1, 68.81),
+  starting: cue('starting', 1, 71.42), conn: cue('connections', 1, 74.06), photo2: cue('photo', 2, 75.71), parents2: cue('parents', 2, 77.12), neither: cue('neither', 1, 80.32),
+  kindred: cue('kindred', 4, 82.08), reduce: cue('reduce', 1, 83.47), last: (OM.words().at(-1) || { end: 84.32 }).end,
+};
+
+// ---- the timeline ----
+const tl = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } });
+const cam = OM.camera('#world');
+const show = (sel, at, d = 0.5, extra = {}) => tl.to(sel, { opacity: 1, y: 0, x: 0, duration: d, ...extra }, at);
+const hide = (sel, at, d = 0.3) => tl.to(sel, { opacity: 0, duration: d, ease: 'power2.in' }, at);
+const swap = (from, to, at, d = 0.45) => { tl.to(from, { opacity: 0, duration: d, ease: 'power2.inOut' }, at); tl.to(to, { opacity: 1, duration: d, ease: 'power2.inOut' }, at); };
+
+// ---------- HELLO ----------
+tl.addLabel('scene:hello', 0);
+cam.set({ focus: [960, 540], zoom: 1 });
+tl.to('#env1', { y: 0, rotation: -5, duration: 0.9, ease: 'power3.out' }, 0.1);           // the envelope settles on the paper
+OM.sfx('paper', 0.55, { gain: 0.5 });
+show('#plate', T.shawn - 0.15, 0.6);
+OM.sfx('pop', T.shawn, { note: 2, gain: 0.45 });
+cam.to(tl, 0.2, { focus: [980, 560], zoom: 1.04, duration: T.have - 0.9, ease: 'sine.inOut' });
+
+// ---------- MAIL ----------
+const S2 = T.have - 0.35;
+tl.addLabel('scene:mail', S2);
+tl.to('#env1', { x: -620, y: 210, scale: 0.55, rotation: -8, duration: 0.7, ease: 'expo.inOut' }, S2);   // the envelope travels to the mat
+swap('#sHello', '#sMail', S2 + 0.1, 0.5);
+cam.to(tl, S2, { focus: [900, 560], zoom: 1, duration: 0.7, ease: 'expo.inOut' });
+OM.sfx('whoosh', S2 + 0.25, { gain: 0.4 });
+OM.sfx('paper', S2 + 0.75, { gain: 0.6 });
+cam.to(tl, S2 + 0.9, { focus: [880, 640], zoom: 1.1, duration: T.mail - S2 - 1.0, ease: 'sine.inOut' });
+tl.to('#peek', { y: -150, duration: 0.7, ease: 'power3.out' }, T.mail - 0.1);          // the bill peeks out of the envelope
+OM.sfx('slide', T.mail + 0.05, { gain: 0.3, dur: 0.5 });
+cam.to(tl, T.mail + 0.9, { focus: [900, 585], zoom: 1.04, duration: 0.9, ease: 'power2.inOut' });   // the whole door, room for the lantern
+tl.to('#lantern', { opacity: 1, scale: 1, duration: 0.5, ease: OM.spring(0.22) }, T.hallo - 0.05);   // the jack-o'-lantern, in the bill's own glyphs
+OM.sfx('pop', T.hallo + 0.1, { note: 5, gain: 0.5 });
+tl.to('#door', { keyframes: [{ x: 7, duration: 0.07 }, { x: -5, duration: 0.07 }, { x: 0, duration: 0.1 }], ease: 'power2.inOut' }, T.knock);
+tl.to('#door', { keyframes: [{ x: 7, duration: 0.07 }, { x: -5, duration: 0.07 }, { x: 0, duration: 0.1 }], ease: 'power2.inOut' }, T.knock + 0.28);
+OM.sfx('thud', T.knock + 0.03, { gain: 0.8, pan: -0.2 }); OM.sfx('thud', T.knock + 0.31, { gain: 0.8, pan: -0.2 });
+
+// ---------- PAID ----------
+const S3 = T.whats - 0.3;
+tl.addLabel('scene:paid', S3);
+swap('#sMail', '#sPaid', S3, 0.45);
+cam.to(tl, S3, { focus: [960, 540], zoom: 1, duration: 0.6, ease: 'power3.inOut' });
+tl.to('#receipt', { x: 0, y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }, S3 + 0.1);
+OM.sfx('paper', S3 + 0.45, { gain: 0.6 });
+tl.to('#stampPaid', { opacity: 0.92, scale: 1, duration: 0.22, ease: 'power4.in' }, T.paying - 0.1);   // PAID thumps down
+OM.sfx('stamp', T.paying + 0.12);
+tl.to('#policy', { y: 0, opacity: 1, duration: 0.8, ease: 'expo.out' }, T.finding - 0.1);
+OM.sfx('paper', T.finding + 0.15, { gain: 0.55 });
+tl.to('#receipt', { x: 210, duration: 0.7, ease: 'power3.inOut' }, T.qual - 0.1);   // the paid receipt slides over the policy page
+OM.sfx('slide', T.qual + 0.2, { gain: 0.35, dur: 0.6 });
+cam.to(tl, T.qual + 0.3, { focus: [1040, 540], zoom: 1.1, duration: 1.4, ease: 'sine.inOut' });
+
+// ---------- SURVEY ----------
+const S4 = T.y2025 - 0.5;
+tl.addLabel('scene:survey', S4);
+swap('#sPaid', '#sSurvey', S4, 0.45);
+cam.to(tl, S4, { focus: [960, 540], zoom: 1, duration: 0.6, ease: 'power3.inOut' });
+show('#pctSrc', T.y2025 - 0.1, 0.5);
+const counter = { v: 0 };
+tl.to('#pct', { opacity: 1, duration: 0.25, ease: 'power2.out' }, T.pct - 0.3);   // the figure appears as it starts counting
+tl.to(counter, { v: V.pct, duration: 0.8, ease: 'expo.out', onUpdate: () => { $('#pct').textContent = Math.round(counter.v) + '%'; } }, T.pct - 0.2);
+OM.sfx('count', T.pct - 0.2, { dur: 0.8, gain: 0.5 });
+show('#pctLabel', T.pct + 0.35, 0.6);
+cam.to(tl, T.pct + 0.4, { focus: [900, 520], zoom: 1.05, duration: T.parents1 - T.pct - 0.6, ease: 'sine.inOut' });
+// the quiet table
+tl.addLabel('scene:table', T.parents1 - 0.1);
+hide('#pct, #pctLabel, #pctSrc', T.parents1 - 0.1, 0.5);
+tl.to('#tableA', { opacity: 1, duration: 0.7, ease: 'power2.inOut' }, T.parents1 - 0.1);
+cam.to(tl, T.parents1 - 0.1, { focus: [960, 700], zoom: 1.08, duration: 2.2, ease: 'sine.inOut' });
+
+// ---------- FORMS ----------
+const S5 = T.honestly - 0.45;
+tl.addLabel('scene:forms', S5);
+swap('#sSurvey', '#sForms', S5, 0.45);
+cam.to(tl, S5, { focus: [960, 620], zoom: 1.02, duration: 0.6, ease: 'power3.inOut' });
+const dropAt = [S5 + 0.4, S5 + 0.9, S5 + 1.4,
+  T.which1 - 0.05, T.which1 + 0.25, T.which1 + 0.55,
+  T.which2 - 0.05, T.which2 + 0.25, T.which2 + 0.55,
+  T.who - 0.05, T.who + 0.22, T.who + 0.44];
+dropAt.forEach((t, i) => {
+  tl.to('#f' + i, { y: 0, opacity: 1, duration: 0.45, ease: 'power3.out' }, t);
+  OM.sfx('pop', t + 0.12, { note: (i % 7) + 1, gain: 0.45, pan: (i % 3 - 1) * 0.3 });
+});
+cam.to(tl, dropAt[3], { focus: [960, 560], zoom: 0.98, duration: T.callEnd - dropAt[3], ease: 'sine.inOut' });
+// the pile collapses
+const rnd = OM.random(44);
+const fall = T.callEnd + 0.15;
+for (let i = FORMS.length - 1; i >= 0; i--) {
+  const t = fall + (FORMS.length - 1 - i) * 0.045;
+  tl.to('#f' + i, { y: 1300, x: (rnd() - 0.5) * 700, rotation: (rnd() - 0.5) * 120, duration: 0.95, ease: 'power2.in' }, t);
+}
+OM.sfx('whoosh', fall + 0.3, { gain: 0.5 });
+OM.sfx('thud', fall + 0.75, { gain: 0.9, pan: -0.3 }); OM.sfx('thud', fall + 0.92, { gain: 0.7, pan: 0.3 }); OM.sfx('thud', fall + 1.1, { gain: 0.5 });
+cam.to(tl, fall, { focus: [960, 540], zoom: 0.94, duration: 0.9, ease: 'power2.out' });
+
+// ---------- AI ----------
+const S6 = T.tried - 0.5;
+tl.addLabel('scene:ai', S6);
+swap('#sForms', '#sAi', S6, 0.45);
+cam.to(tl, S6, { focus: [960, 540], zoom: 1, duration: 0.6, ease: 'power3.inOut' });
+tl.to('#chat', { opacity: 1, duration: 0.5, ease: 'power2.out' }, S6 + 0.1);
+OM.sfx('pop', S6 + 0.2, { note: 1, gain: 0.4 });
+tl.to('#typing', { opacity: 1, duration: 0.3 }, S6 + 0.4);                                                            // the assistant is typing…
+tl.to('#typing i', { y: -6, duration: 0.28, ease: 'sine.inOut', yoyo: true, repeat: 5, stagger: 0.12 }, S6 + 0.5);
+tl.to('#typing', { opacity: 0, duration: 0.2 }, T.gave - 0.3);
+const step = (T.understand - T.gave - 0.2) / (QUESTIONS.length - 1);
+QUESTIONS.forEach((q, i) => {
+  const t = T.gave - 0.1 + i * step;
+  tl.to('#b' + i, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, t);
+  tl.to('#bubbles', { y: (QUESTIONS.length - 1 - i) * 110, duration: 0.4, ease: 'power3.out' }, t);   // the newest pushes the older ones up
+  OM.sfx('pop', t + 0.08, { note: i + 1, gain: 0.4, pan: 0.15 });
+});
+cam.to(tl, T.gave, { focus: [960, 560], zoom: 1.06, duration: T.needed - T.gave - 0.2, ease: 'sine.inOut' });
+tl.to('#bubbles', { y: -900, opacity: 0, duration: 0.6, ease: 'power3.in' }, T.needed - 0.15);   // the wall clears
+OM.sfx('whoosh', T.needed + 0.3, { gain: 0.5 });
+cam.to(tl, T.needed, { focus: [960, 540], zoom: 1, duration: 0.8, ease: 'power2.inOut' });
+
+// ---------- SNAP ----------
+const S7 = T.so - 0.4;
+tl.addLabel('scene:snap', S7);
+swap('#sAi', '#sSnap', S7, 0.45);
+tl.to('#snapPhone', { y: 0, opacity: 1, duration: 0.8, ease: 'expo.out' }, T.building - 0.45);
+OM.sfx('pop', T.building - 0.2, { note: 3, gain: 0.5 });
+cam.to(tl, T.building - 0.4, { focus: [960, 560], zoom: 1.1, duration: 1.2, ease: 'power2.inOut' });
+cam.to(tl, T.photo1 - 0.9, { focus: [960, 660], zoom: 1.22, duration: 0.8, ease: 'power3.inOut' });
+tl.to('#takeBtn', { y: 3, duration: 0.08, ease: 'power2.in', yoyo: true, repeat: 1, repeatDelay: 0.12 }, T.photo1 - 0.08);    // the real control's 3px press
+tl.fromTo('#ring1', { opacity: 0.9, scale: 0.4 }, { opacity: 0, scale: 1.8, duration: 0.6, ease: 'power2.out', immediateRender: false }, T.photo1);
+OM.sfx('click', T.photo1);
+tl.fromTo('#flash', { opacity: 0 }, { opacity: 0.85, duration: 0.08, yoyo: true, repeat: 1, immediateRender: false }, T.photo1 + 0.18);
+OM.sfx('shutter', T.photo1 + 0.2);
+cam.to(tl, T.photo1 + 0.5, { focus: [960, 560], zoom: 1.08, duration: 1.0, ease: 'power2.inOut' });
+
+// ---------- EXAMPLE ----------
+const S8 = T.example - 0.6;
+tl.addLabel('scene:example', S8);
+swap('#sSnap', '#sExample', S8, 0.45);
+cam.to(tl, S8, { focus: [960, 540], zoom: 1, duration: 0.6, ease: 'power3.inOut' });
+tl.to('#docBill', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, S8 + 0.25);
+tl.to('#docIns', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, S8 + 0.4);
+OM.sfx('paper', S8 + 0.45, { gain: 0.5, pan: -0.4 }); OM.sfx('paper', S8 + 0.6, { gain: 0.5, pan: 0.4 });
+tl.to('#billV', { opacity: 1, y: 0, duration: 0.45, ease: 'power4.out' }, T.b480 - 0.1);
+OM.sfx('thud', T.b480 + 0.02, { pan: -0.4 });
+cam.to(tl, T.b480 - 0.3, { focus: [600, 480], zoom: 1.12, duration: 0.7, ease: 'power3.inOut' });
+tl.to('#insV', { opacity: 1, y: 0, duration: 0.45, ease: 'power4.out' }, T.b180 - 0.1);
+OM.sfx('thud', T.b180 + 0.02, { pan: 0.4 });
+cam.to(tl, T.b180 - 0.4, { focus: [1320, 480], zoom: 1.12, duration: 0.7, ease: 'power3.inOut' });
+cam.to(tl, T.auto - 0.6, { focus: [960, 600], zoom: 1, duration: 0.8, ease: 'power3.inOut' });
+show('#notProof', T.auto - 0.1, 0.5);
+OM.sfx('pop', T.auto + 0.05, { note: 4, gain: 0.45 });
+tl.to('#gapBlock', { opacity: 1, duration: 0.3 }, T.invest - 0.4);
+tl.to('#gapRule', { scaleX: 1, duration: 0.5, ease: 'power3.inOut' }, T.invest - 0.4);
+OM.sfx('draw', T.invest - 0.35, { dur: 0.5 });
+tl.fromTo('#gapBlock .v', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'power4.out', immediateRender: false }, T.invest - 0.05);
+OM.sfx('thud', T.invest + 0.05, { gain: 0.9 });
+tl.fromTo('#gapBlock .k', { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: 'power3.out', immediateRender: false }, T.invest + 0.2);
+
+// ---------- HELP ----------
+const S9 = T.helps - 0.5;
+tl.addLabel('scene:help', S9);
+swap('#sExample', '#sHelp', S9, 0.45);
+cam.to(tl, S9, { focus: [960, 540], zoom: 1, duration: 0.6, ease: 'power3.inOut' });
+[['#h1', T.check], ['#h2', T.look], ['#h3', T.prepare]].forEach(([sel, t], i) => {
+  tl.to(sel, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: 'power3.out' }, t - 0.12);
+  OM.sfx('pop', t, { note: i * 2 + 1, gain: 0.5, pan: (i - 1) * 0.5 });
+});
+cam.to(tl, T.check, { focus: [960, 500], zoom: 1.04, duration: T.missing - T.check - 0.5, ease: 'sine.inOut' });
+// one question
+tl.to('.hcard', { y: -120, opacity: 0, duration: 0.4, ease: 'power3.in', stagger: 0.05 }, T.missing - 0.35);
+show('#capOneQ', T.missing - 0.05, 0.5);
+tl.to('#oneQ', { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' }, T.missing);
+OM.sfx('pop', T.missing + 0.1, { note: 3, gain: 0.5 });
+tl.to('#caret', { opacity: 0, duration: 0.01, repeat: 9, repeatDelay: 0.5, yoyo: true, ease: 'none' }, T.missing);   // blinks while the question is up
+$$('#typed .k').forEach((k, i) => tl.to(k, { opacity: 1, duration: 0.05, ease: 'none' }, T.missing + 0.7 + i * 0.09));
+OM.sfx('type', T.missing + 0.7, { dur: 0.55, gain: 0.35 });
+cam.to(tl, T.missing, { focus: [960, 520], zoom: 1, duration: 0.6, ease: 'power2.inOut' });
+// versus twenty
+tl.to('#twenty', { opacity: 1, duration: 0.2 }, T.twenty - 0.2);
+tl.to('#twenty .chip', { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(1.4)', stagger: 0.018 }, T.twenty - 0.2);
+OM.sfx('pop', T.twenty, { note: 6, gain: 0.5, pan: 0.4 });
+tl.to('#strike', { opacity: 1, duration: 0.1 }, T.decisions);
+tl.to('#strikePath', { strokeDashoffset: 0, duration: 0.45, ease: 'power3.inOut' }, T.decisions);
+OM.sfx('draw', T.decisions + 0.05, { dur: 0.45 });
+
+// ---------- APPROVE ----------
+const S10 = T.you - 0.3;
+tl.addLabel('scene:approve', S10);
+swap('#sHelp', '#sApprove', S10, 0.45);
+tl.to('#resPhone', { y: 0, opacity: 1, duration: 0.8, ease: 'expo.out' }, S10 + 0.05);
+OM.sfx('pop', S10 + 0.25, { note: 3, gain: 0.45 });
+cam.to(tl, S10, { focus: [960, 560], zoom: 1.1, duration: 0.9, ease: 'power3.inOut' });
+cam.to(tl, T.approve - 0.7, { focus: [960, 720], zoom: 1.3, duration: 0.6, ease: 'power3.inOut' });
+tl.to('#sendBtn', { y: 3, duration: 0.08, ease: 'power2.in', yoyo: true, repeat: 1, repeatDelay: 0.12 }, T.approve - 0.08);   // pressed once
+tl.fromTo('#ring2', { opacity: 0.9, scale: 0.4 }, { opacity: 0, scale: 1.8, duration: 0.6, ease: 'power2.out', immediateRender: false }, T.approve);
+OM.sfx('click', T.approve);
+cam.to(tl, T.approve + 0.6, { focus: [960, 560], zoom: 1.1, duration: 1.2, ease: 'power2.inOut' });
+
+// ---------- CONNECT ----------
+tl.addLabel('scene:connect', T.starting - 0.2);
+cam.to(tl, T.starting - 0.2, { focus: [960, 540], zoom: 1, duration: 0.8, ease: 'power3.inOut' });
+tl.to('#resPhone', { x: -430, scale: 0.92, duration: 0.8, ease: 'expo.inOut' }, T.starting - 0.1);   // the phone steps aside
+tl.to('#scrSnap2', { opacity: 1, duration: 0.5, ease: 'power2.inOut' }, T.starting + 0.2);
+OM.sfx('whoosh', T.starting + 0.2, { gain: 0.4 });
+tl.to('#links', { clipPath: 'inset(0 0% 0 0)', duration: 0.9, ease: 'power2.inOut' }, T.conn - 0.25);   // the dotted lines draw across
+OM.sfx('draw', T.conn - 0.2, { dur: 0.8, gain: 0.6 });
+tl.to('#cMedicare', { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out' }, T.conn + 0.45);
+tl.to('#cInsurer', { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out' }, T.conn + 0.6);
+OM.sfx('pop', T.conn + 0.55, { note: 5, gain: 0.5, pan: 0.4 }); OM.sfx('pop', T.conn + 0.7, { note: 7, gain: 0.5, pan: 0.4 });
+tl.to('#camIcon', { opacity: 0.12, duration: 0.6, ease: 'power2.inOut' }, T.photo2 - 0.05);   // the camera icon fades
+
+// ---------- PARENTS ----------
+const S12 = T.parents2 - 0.5;
+tl.addLabel('scene:parents', S12);
+swap('#sApprove', '#sParents', S12, 0.5);
+cam.to(tl, S12, { focus: [960, 540], zoom: 1, duration: 0.6, ease: 'power3.inOut' });
+tl.to('#line1 > div', { yPercent: 0, duration: 0.8, ease: 'expo.out' }, T.parents2 - 0.2);
+OM.sfx('paper', T.parents2, { gain: 0.5 });
+tl.to('#line2 > div', { yPercent: 0, duration: 0.8, ease: 'expo.out' }, T.neither - 0.15);
+OM.sfx('pop', T.neither, { note: 1, gain: 0.5 });
+cam.to(tl, T.parents2, { focus: [980, 520], zoom: 1.03, duration: T.kindred - T.parents2 - 0.4, ease: 'sine.inOut' });
+
+// ---------- END ----------
+const S13 = T.kindred - 0.3;
+tl.addLabel('scene:end', S13);
+swap('#sParents', '#sEnd', S13, 0.45);
+cam.to(tl, S13, { focus: [960, 540], zoom: 1, duration: 0.6, ease: 'power3.inOut' });
+tl.to('#endWm', { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'power4.out' }, T.kindred - 0.05);
+OM.sfx('thud', T.kindred + 0.08);
+show('#endTag', T.reduce - 0.1, 0.6);
+OM.sfx('chime', T.reduce + 0.1, { gain: 0.6 });
+show('#endFoot', T.reduce + 0.7, 0.5);
+cam.to(tl, T.kindred + 0.5, { focus: [980, 540], zoom: 1.03, duration: T.last + V.endHold - T.kindred - 0.5, ease: 'sine.inOut' });
+tl.to({}, { duration: V.endHold }, T.last);        // the closing hold; the film ends here
+
+window.__timelines['film'] = tl;
+</script>
+</body>
+</html>

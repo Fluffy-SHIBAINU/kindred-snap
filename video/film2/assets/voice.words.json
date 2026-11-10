@@ -1,0 +1,1073 @@
+{
+ "source": "recording:vo-Charon.wav",
+ "precision": "silence-hierarchical",
+ "offset": 0,
+ "duration": 84.85,
+ "words": [
+  {
+   "word": "Hi",
+   "start": 0.749,
+   "end": 1.037
+  },
+  {
+   "word": "I'm",
+   "start": 1.551,
+   "end": 1.701
+  },
+  {
+   "word": "Shawn",
+   "start": 1.701,
+   "end": 2.001
+  },
+  {
+   "word": "Yoon",
+   "start": 2.001,
+   "end": 2.25
+  },
+  {
+   "word": "founder",
+   "start": 2.704,
+   "end": 3.139
+  },
+  {
+   "word": "of",
+   "start": 3.139,
+   "end": 3.302
+  },
+  {
+   "word": "Kindred",
+   "start": 3.302,
+   "end": 3.737
+  },
+  {
+   "word": "AI",
+   "start": 3.737,
+   "end": 3.9
+  },
+  {
+   "word": "Have",
+   "start": 4.906,
+   "end": 5.219
+  },
+  {
+   "word": "you",
+   "start": 5.219,
+   "end": 5.469
+  },
+  {
+   "word": "ever",
+   "start": 5.469,
+   "end": 5.781
+  },
+  {
+   "word": "gotten",
+   "start": 5.781,
+   "end": 6.219
+  },
+  {
+   "word": "a",
+   "start": 6.219,
+   "end": 6.344
+  },
+  {
+   "word": "surprise",
+   "start": 6.344,
+   "end": 6.907
+  },
+  {
+   "word": "medical",
+   "start": 6.907,
+   "end": 7.407
+  },
+  {
+   "word": "bill",
+   "start": 7.407,
+   "end": 7.72
+  },
+  {
+   "word": "in",
+   "start": 7.72,
+   "end": 7.907
+  },
+  {
+   "word": "the",
+   "start": 7.907,
+   "end": 8.157
+  },
+  {
+   "word": "mail",
+   "start": 8.157,
+   "end": 8.47
+  },
+  {
+   "word": "In",
+   "start": 8.833,
+   "end": 8.956
+  },
+  {
+   "word": "the",
+   "start": 8.956,
+   "end": 9.12
+  },
+  {
+   "word": "US",
+   "start": 9.12,
+   "end": 9.242
+  },
+  {
+   "word": "those",
+   "start": 9.242,
+   "end": 9.488
+  },
+  {
+   "word": "bills",
+   "start": 9.488,
+   "end": 9.733
+  },
+  {
+   "word": "are",
+   "start": 9.733,
+   "end": 9.896
+  },
+  {
+   "word": "scarier",
+   "start": 9.896,
+   "end": 10.224
+  },
+  {
+   "word": "than",
+   "start": 10.224,
+   "end": 10.428
+  },
+  {
+   "word": "the",
+   "start": 10.428,
+   "end": 10.592
+  },
+  {
+   "word": "Halloween",
+   "start": 10.592,
+   "end": 11.001
+  },
+  {
+   "word": "kids",
+   "start": 11.001,
+   "end": 11.205
+  },
+  {
+   "word": "knocking",
+   "start": 11.205,
+   "end": 11.573
+  },
+  {
+   "word": "on",
+   "start": 11.573,
+   "end": 11.696
+  },
+  {
+   "word": "your",
+   "start": 11.696,
+   "end": 11.9
+  },
+  {
+   "word": "door",
+   "start": 11.9,
+   "end": 12.105
+  },
+  {
+   "word": "What's",
+   "start": 13.224,
+   "end": 13.481
+  },
+  {
+   "word": "worse",
+   "start": 13.481,
+   "end": 13.738
+  },
+  {
+   "word": "Paying",
+   "start": 14.178,
+   "end": 14.552
+  },
+  {
+   "word": "it",
+   "start": 14.552,
+   "end": 14.713
+  },
+  {
+   "word": "then",
+   "start": 15.193,
+   "end": 15.393
+  },
+  {
+   "word": "finding",
+   "start": 15.393,
+   "end": 15.713
+  },
+  {
+   "word": "out",
+   "start": 15.713,
+   "end": 15.874
+  },
+  {
+   "word": "you",
+   "start": 15.874,
+   "end": 16.034
+  },
+  {
+   "word": "might've",
+   "start": 16.034,
+   "end": 16.354
+  },
+  {
+   "word": "qualified",
+   "start": 16.354,
+   "end": 16.755
+  },
+  {
+   "word": "for",
+   "start": 16.755,
+   "end": 16.915
+  },
+  {
+   "word": "help",
+   "start": 16.915,
+   "end": 17.116
+  },
+  {
+   "word": "A",
+   "start": 18.225,
+   "end": 18.326
+  },
+  {
+   "word": "2025",
+   "start": 18.326,
+   "end": 19.191
+  },
+  {
+   "word": "survey",
+   "start": 19.191,
+   "end": 19.547
+  },
+  {
+   "word": "found",
+   "start": 19.547,
+   "end": 19.852
+  },
+  {
+   "word": "that",
+   "start": 19.852,
+   "end": 20.106
+  },
+  {
+   "word": "44%",
+   "start": 20.106,
+   "end": 20.97
+  },
+  {
+   "word": "of",
+   "start": 20.97,
+   "end": 21.123
+  },
+  {
+   "word": "American",
+   "start": 21.123,
+   "end": 21.58
+  },
+  {
+   "word": "adults",
+   "start": 21.58,
+   "end": 21.936
+  },
+  {
+   "word": "weren't",
+   "start": 21.936,
+   "end": 22.292
+  },
+  {
+   "word": "familiar",
+   "start": 22.292,
+   "end": 22.75
+  },
+  {
+   "word": "with",
+   "start": 22.75,
+   "end": 23.004
+  },
+  {
+   "word": "hospital",
+   "start": 23.004,
+   "end": 23.461
+  },
+  {
+   "word": "charity",
+   "start": 23.461,
+   "end": 23.868
+  },
+  {
+   "word": "care",
+   "start": 23.868,
+   "end": 24.122
+  },
+  {
+   "word": "My",
+   "start": 25.118,
+   "end": 25.218
+  },
+  {
+   "word": "parents",
+   "start": 25.218,
+   "end": 25.485
+  },
+  {
+   "word": "didn't",
+   "start": 25.485,
+   "end": 25.686
+  },
+  {
+   "word": "know",
+   "start": 25.686,
+   "end": 25.853
+  },
+  {
+   "word": "either",
+   "start": 25.853,
+   "end": 26.086
+  },
+  {
+   "word": "And",
+   "start": 27.078,
+   "end": 27.128
+  },
+  {
+   "word": "honestly",
+   "start": 27.128,
+   "end": 27.24
+  },
+  {
+   "word": "the",
+   "start": 27.24,
+   "end": 27.289
+  },
+  {
+   "word": "whole",
+   "start": 27.289,
+   "end": 27.364
+  },
+  {
+   "word": "process",
+   "start": 27.364,
+   "end": 27.463
+  },
+  {
+   "word": "is",
+   "start": 27.463,
+   "end": 27.5
+  },
+  {
+   "word": "exhausting",
+   "start": 27.5,
+   "end": 27.637
+  },
+  {
+   "word": "Which",
+   "start": 27.887,
+   "end": 28.581
+  },
+  {
+   "word": "program",
+   "start": 28.581,
+   "end": 29.506
+  },
+  {
+   "word": "Which",
+   "start": 30.234,
+   "end": 31.282
+  },
+  {
+   "word": "form",
+   "start": 31.282,
+   "end": 32.156
+  },
+  {
+   "word": "Who",
+   "start": 32.451,
+   "end": 32.623
+  },
+  {
+   "word": "do",
+   "start": 32.623,
+   "end": 32.752
+  },
+  {
+   "word": "you",
+   "start": 32.752,
+   "end": 32.924
+  },
+  {
+   "word": "call",
+   "start": 32.924,
+   "end": 33.139
+  },
+  {
+   "word": "We",
+   "start": 34.053,
+   "end": 34.241
+  },
+  {
+   "word": "tried",
+   "start": 34.241,
+   "end": 34.615
+  },
+  {
+   "word": "AI",
+   "start": 34.615,
+   "end": 34.803
+  },
+  {
+   "word": "It",
+   "start": 35.423,
+   "end": 35.537
+  },
+  {
+   "word": "just",
+   "start": 35.537,
+   "end": 35.728
+  },
+  {
+   "word": "gave",
+   "start": 35.728,
+   "end": 35.92
+  },
+  {
+   "word": "them",
+   "start": 35.92,
+   "end": 36.111
+  },
+  {
+   "word": "more",
+   "start": 36.111,
+   "end": 36.302
+  },
+  {
+   "word": "questions",
+   "start": 36.302,
+   "end": 36.684
+  },
+  {
+   "word": "they",
+   "start": 36.684,
+   "end": 36.875
+  },
+  {
+   "word": "didn't",
+   "start": 36.875,
+   "end": 37.104
+  },
+  {
+   "word": "understand",
+   "start": 37.104,
+   "end": 37.524
+  },
+  {
+   "word": "They",
+   "start": 38.243,
+   "end": 38.442
+  },
+  {
+   "word": "needed",
+   "start": 38.442,
+   "end": 38.721
+  },
+  {
+   "word": "help",
+   "start": 38.721,
+   "end": 38.92
+  },
+  {
+   "word": "not",
+   "start": 39.211,
+   "end": 39.454
+  },
+  {
+   "word": "more",
+   "start": 39.454,
+   "end": 39.756
+  },
+  {
+   "word": "homework",
+   "start": 39.756,
+   "end": 40.302
+  },
+  {
+   "word": "So",
+   "start": 41.082,
+   "end": 41.229
+  },
+  {
+   "word": "we're",
+   "start": 41.229,
+   "end": 41.475
+  },
+  {
+   "word": "building",
+   "start": 41.475,
+   "end": 41.916
+  },
+  {
+   "word": "Kindred",
+   "start": 41.916,
+   "end": 42.309
+  },
+  {
+   "word": "Snap",
+   "start": 42.309,
+   "end": 42.555
+  },
+  {
+   "word": "Take",
+   "start": 43.19,
+   "end": 43.353
+  },
+  {
+   "word": "a",
+   "start": 43.353,
+   "end": 43.418
+  },
+  {
+   "word": "photo",
+   "start": 43.418,
+   "end": 43.614
+  },
+  {
+   "word": "of",
+   "start": 43.614,
+   "end": 43.712
+  },
+  {
+   "word": "your",
+   "start": 43.712,
+   "end": 43.874
+  },
+  {
+   "word": "bill",
+   "start": 43.874,
+   "end": 44.037
+  },
+  {
+   "word": "to",
+   "start": 44.037,
+   "end": 44.135
+  },
+  {
+   "word": "start",
+   "start": 44.135,
+   "end": 44.33
+  },
+  {
+   "word": "Here's",
+   "start": 45.228,
+   "end": 45.448
+  },
+  {
+   "word": "an",
+   "start": 45.448,
+   "end": 45.558
+  },
+  {
+   "word": "example",
+   "start": 45.558,
+   "end": 45.852
+  },
+  {
+   "word": "The",
+   "start": 46.653,
+   "end": 46.843
+  },
+  {
+   "word": "hospital",
+   "start": 46.843,
+   "end": 47.271
+  },
+  {
+   "word": "bill",
+   "start": 47.271,
+   "end": 47.509
+  },
+  {
+   "word": "says",
+   "start": 47.509,
+   "end": 47.747
+  },
+  {
+   "word": "$480",
+   "start": 47.747,
+   "end": 48.936
+  },
+  {
+   "word": "The",
+   "start": 49.606,
+   "end": 49.782
+  },
+  {
+   "word": "insurance",
+   "start": 49.782,
+   "end": 50.222
+  },
+  {
+   "word": "statement",
+   "start": 50.222,
+   "end": 50.662
+  },
+  {
+   "word": "says",
+   "start": 50.662,
+   "end": 50.882
+  },
+  {
+   "word": "your",
+   "start": 50.882,
+   "end": 51.103
+  },
+  {
+   "word": "responsibility",
+   "start": 51.103,
+   "end": 51.763
+  },
+  {
+   "word": "is",
+   "start": 51.763,
+   "end": 51.895
+  },
+  {
+   "word": "$180",
+   "start": 51.895,
+   "end": 52.952
+  },
+  {
+   "word": "That",
+   "start": 53.681,
+   "end": 53.875
+  },
+  {
+   "word": "doesn't",
+   "start": 53.875,
+   "end": 54.146
+  },
+  {
+   "word": "automatically",
+   "start": 54.146,
+   "end": 54.689
+  },
+  {
+   "word": "prove",
+   "start": 54.689,
+   "end": 54.921
+  },
+  {
+   "word": "an",
+   "start": 54.921,
+   "end": 55.038
+  },
+  {
+   "word": "error",
+   "start": 55.038,
+   "end": 55.27
+  },
+  {
+   "word": "but",
+   "start": 55.785,
+   "end": 55.934
+  },
+  {
+   "word": "it",
+   "start": 55.934,
+   "end": 56.046
+  },
+  {
+   "word": "tells",
+   "start": 56.046,
+   "end": 56.27
+  },
+  {
+   "word": "us",
+   "start": 56.27,
+   "end": 56.381
+  },
+  {
+   "word": "what",
+   "start": 56.381,
+   "end": 56.568
+  },
+  {
+   "word": "to",
+   "start": 56.568,
+   "end": 56.68
+  },
+  {
+   "word": "investigate",
+   "start": 56.68,
+   "end": 57.127
+  },
+  {
+   "word": "Kindred",
+   "start": 57.904,
+   "end": 58.284
+  },
+  {
+   "word": "helps",
+   "start": 58.284,
+   "end": 58.57
+  },
+  {
+   "word": "check",
+   "start": 58.57,
+   "end": 58.855
+  },
+  {
+   "word": "the",
+   "start": 58.855,
+   "end": 59.045
+  },
+  {
+   "word": "documents",
+   "start": 59.045,
+   "end": 59.52
+  },
+  {
+   "word": "look",
+   "start": 59.52,
+   "end": 59.757
+  },
+  {
+   "word": "for",
+   "start": 59.757,
+   "end": 59.947
+  },
+  {
+   "word": "financial",
+   "start": 59.947,
+   "end": 60.422
+  },
+  {
+   "word": "assistance",
+   "start": 60.422,
+   "end": 60.945
+  },
+  {
+   "word": "and",
+   "start": 60.945,
+   "end": 61.135
+  },
+  {
+   "word": "prepare",
+   "start": 61.135,
+   "end": 61.515
+  },
+  {
+   "word": "the",
+   "start": 61.515,
+   "end": 61.705
+  },
+  {
+   "word": "paperwork",
+   "start": 61.705,
+   "end": 62.18
+  },
+  {
+   "word": "If",
+   "start": 62.909,
+   "end": 63.009
+  },
+  {
+   "word": "something's",
+   "start": 63.009,
+   "end": 63.378
+  },
+  {
+   "word": "missing",
+   "start": 63.378,
+   "end": 63.646
+  },
+  {
+   "word": "we",
+   "start": 64.043,
+   "end": 64.162
+  },
+  {
+   "word": "ask",
+   "start": 64.162,
+   "end": 64.319
+  },
+  {
+   "word": "for",
+   "start": 64.319,
+   "end": 64.477
+  },
+  {
+   "word": "that",
+   "start": 64.477,
+   "end": 64.674
+  },
+  {
+   "word": "not",
+   "start": 65.116,
+   "end": 65.307
+  },
+  {
+   "word": "twenty",
+   "start": 65.307,
+   "end": 65.642
+  },
+  {
+   "word": "decisions",
+   "start": 65.642,
+   "end": 66.121
+  },
+  {
+   "word": "about",
+   "start": 66.121,
+   "end": 66.408
+  },
+  {
+   "word": "what",
+   "start": 66.408,
+   "end": 66.648
+  },
+  {
+   "word": "to",
+   "start": 66.648,
+   "end": 66.791
+  },
+  {
+   "word": "do",
+   "start": 66.791,
+   "end": 66.935
+  },
+  {
+   "word": "next",
+   "start": 66.935,
+   "end": 67.174
+  },
+  {
+   "word": "You",
+   "start": 68.111,
+   "end": 68.296
+  },
+  {
+   "word": "review",
+   "start": 68.296,
+   "end": 68.621
+  },
+  {
+   "word": "and",
+   "start": 68.621,
+   "end": 68.807
+  },
+  {
+   "word": "approve",
+   "start": 68.807,
+   "end": 69.179
+  },
+  {
+   "word": "before",
+   "start": 69.179,
+   "end": 69.504
+  },
+  {
+   "word": "anything",
+   "start": 69.504,
+   "end": 69.921
+  },
+  {
+   "word": "gets",
+   "start": 69.921,
+   "end": 70.154
+  },
+  {
+   "word": "sent",
+   "start": 70.154,
+   "end": 70.386
+  },
+  {
+   "word": "We're",
+   "start": 71.251,
+   "end": 71.421
+  },
+  {
+   "word": "starting",
+   "start": 71.421,
+   "end": 71.729
+  },
+  {
+   "word": "with",
+   "start": 71.729,
+   "end": 71.9
+  },
+  {
+   "word": "hospital",
+   "start": 71.9,
+   "end": 72.207
+  },
+  {
+   "word": "bills",
+   "start": 72.207,
+   "end": 72.413
+  },
+  {
+   "word": "Eventually",
+   "start": 72.976,
+   "end": 73.416
+  },
+  {
+   "word": "direct",
+   "start": 73.812,
+   "end": 74.062
+  },
+  {
+   "word": "connections",
+   "start": 74.062,
+   "end": 74.491
+  },
+  {
+   "word": "could",
+   "start": 74.491,
+   "end": 74.706
+  },
+  {
+   "word": "mean",
+   "start": 74.706,
+   "end": 74.884
+  },
+  {
+   "word": "you",
+   "start": 74.884,
+   "end": 75.027
+  },
+  {
+   "word": "don't",
+   "start": 75.027,
+   "end": 75.206
+  },
+  {
+   "word": "even",
+   "start": 75.206,
+   "end": 75.385
+  },
+  {
+   "word": "need",
+   "start": 75.385,
+   "end": 75.564
+  },
+  {
+   "word": "the",
+   "start": 75.564,
+   "end": 75.707
+  },
+  {
+   "word": "photo",
+   "start": 75.707,
+   "end": 75.921
+  },
+  {
+   "word": "My",
+   "start": 76.996,
+   "end": 77.122
+  },
+  {
+   "word": "parents",
+   "start": 77.122,
+   "end": 77.457
+  },
+  {
+   "word": "shouldn't",
+   "start": 77.457,
+   "end": 77.834
+  },
+  {
+   "word": "need",
+   "start": 77.834,
+   "end": 78.044
+  },
+  {
+   "word": "to",
+   "start": 78.044,
+   "end": 78.169
+  },
+  {
+   "word": "become",
+   "start": 78.169,
+   "end": 78.463
+  },
+  {
+   "word": "billing",
+   "start": 78.463,
+   "end": 78.798
+  },
+  {
+   "word": "experts",
+   "start": 78.798,
+   "end": 79.133
+  },
+  {
+   "word": "to",
+   "start": 79.133,
+   "end": 79.259
+  },
+  {
+   "word": "get",
+   "start": 79.259,
+   "end": 79.427
+  },
+  {
+   "word": "help",
+   "start": 79.427,
+   "end": 79.636
+  },
+  {
+   "word": "Neither",
+   "start": 80.324,
+   "end": 80.607
+  },
+  {
+   "word": "should",
+   "start": 80.607,
+   "end": 80.854
+  },
+  {
+   "word": "yours",
+   "start": 80.854,
+   "end": 81.066
+  },
+  {
+   "word": "Kindred",
+   "start": 82.079,
+   "end": 82.533
+  },
+  {
+   "word": "Snap",
+   "start": 82.533,
+   "end": 82.817
+  },
+  {
+   "word": "Reduce",
+   "start": 83.465,
+   "end": 83.705
+  },
+  {
+   "word": "your",
+   "start": 83.705,
+   "end": 83.876
+  },
+  {
+   "word": "medical",
+   "start": 83.876,
+   "end": 84.151
+  },
+  {
+   "word": "bill",
+   "start": 84.151,
+   "end": 84.322
+  }
+ ]
+}
