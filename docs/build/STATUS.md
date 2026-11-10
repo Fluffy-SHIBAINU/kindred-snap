@@ -33,6 +33,8 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 
 - 2026-11-09 16:50 KST — Demo-walk fix: the demo bill flow re-materialises on any serverless instance. Production switched to the Supabase store after the founder stored the service-role key; two cold-start races fixed (idempotent seed, locked preparation). Verified live: /case/demo/result renders the 75% result from Postgres (Fable).
 
+- 2026-11-10 — Production demo flow verified end to end on Supabase (income → working → result → done → resolved). Root causes fixed: Next.js request memoisation made supabase-js re-read a just-written row as missing (custom fetch with no-store + fresh AbortController signal); concurrent cold starts on one database (idempotent seed, meta locks for the demo and walk preparation); approval reads consent from the consents table when the case row lost it. Video: Gemini 3.8 Flash TTS over REST, beats fitted to slots; huashu-motion film in progress under video/film.
+
 ## Blockers
 
 - Phase 6 (resolved 16:50 KST): Supabase project `kindred-snap` exists (ref `kdbqjygxyykdwpjmxyjh`, us-west-1, https://kdbqjygxyykdwpjmxyjh.supabase.co); the schema migration `kindred_snap_init` is applied with RLS. Still needed from a human: the service-role key in `.env.local` and in Vercel (`SUPABASE_SERVICE_ROLE_KEY`), which the MCP does not expose; until then `STORE=memory`.
