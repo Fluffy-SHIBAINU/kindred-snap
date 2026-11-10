@@ -2,6 +2,9 @@ import { createClient } from "@supabase/supabase-js";
 import type { Action, AuditEvent, Case, Consent, Document, Finding, Resolution, ResponseLetter } from "@/lib/types";
 import type { Collection, Meta, Store } from "./types";
 
+/** Next.js memoises identical GET fetches within one render; a row written moments earlier would then read back as missing. Every Supabase call gets its own signal and no-store, which opts out. */
+const noMemoFetch: typeof fetch = (input, init) => fetch(input, { ...init, cache: "no-store", signal: init?.signal ?? new AbortController().signal });
+
 type Result = PromiseLike<{ data: unknown; error: { message: string } | null }>;
 type Query = Result & { eq(column: string, value: unknown): Query; order(column: string, opts?: { ascending?: boolean }): Query };
 /** The slice of the supabase-js client the store uses, so tests can pass a fake. */
@@ -104,7 +107,7 @@ export class SupabaseStore implements Store {
     const key = env.SUPABASE_SERVICE_ROLE_KEY;
     if (!url) throw new Error("STORE=supabase needs NEXT_PUBLIC_SUPABASE_URL");
     if (!key) throw new Error("STORE=supabase needs SUPABASE_SERVICE_ROLE_KEY (server only; from the Supabase dashboard, Project Settings → API Keys)");
-    const client = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+    const client = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false }, global: { fetch: noMemoFetch } });
     // the real builder's generics are wider than SupabaseLike; the calls used are the same
     return new SupabaseStore(client as unknown as SupabaseLike);
   }
