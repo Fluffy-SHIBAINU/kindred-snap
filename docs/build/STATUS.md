@@ -9,7 +9,7 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 | 2 Adapters and guards | done | fixtures (6 cases, 8 synthetic document images), extractor (fixture + Gemini with fake-client tests), synthetic Blue Button, demo-partner hospital connector, memory store + seed, templates with number validation, pipeline; atlas via vendor/waive-data submodule. 107 tests green, build green |
 | 3 Caregiver flow | done | shell, six screens, edge variants, demo controls; tsc clean |
 | 4 Staff workspace (lite) | done (smoke-tested locally) | dashboard, case detail, actions, resolution, audit; needs the smoke pass |
-| 5 Demo video | skipped (founder, 15:25 KST) | script and voice-over beats exist in video/; no capture or assembly |
+| 5 Demo video | done (2026-11-10) | video/film (huashu-motion): 92 s, 1920×1080, Gemini 3.8 Flash TTS narration, real UI rebuilt, one camera; render in video/film/out (ignored), regenerate with `om render video/film --blur` |
 | 6 Persistence and auth | store live | production runs STORE=supabase (service-role key set by the founder via the Supabase CLI); seed is idempotent and race-safe; sign-in scaffold exists, routes not yet gated by Supabase sessions |
 | 7 Landing and polish | landing built | axe spec and design-floor pass pending |
 | 8 Deploy | live | https://snap.kindred-ai.dev (alias) and https://kindred-snap.vercel.app — production env: EXTERNAL_ACTIONS=simulated, EXTRACTOR=fixture, STORE=supabase; staff pages show not-available without a staff session |
