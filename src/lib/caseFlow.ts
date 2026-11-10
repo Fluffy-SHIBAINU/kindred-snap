@@ -38,7 +38,9 @@ export async function demoClockFor(store: Store): Promise<DemoClock> {
 
 /** The caregiver's one tap: approve every draft, send each (simulated), mark the case sent. */
 export async function approveAndSend(store: Store, caseId: string, actor: Actor, now: string, hospital: HospitalConnector = HOSPITAL): Promise<Case> {
-  const c = await mustGet(store, caseId);
+  const loaded = await mustGet(store, caseId);
+  // Consent is also kept in its own table; a concurrent writer can have dropped it from the case row (last writer wins on one row).
+  const c: Case = loaded.consent ? loaded : { ...loaded, consent: (await store.consents.get(caseId)) ?? null };
   const approved = approve({ c, actions: await store.actionsFor(caseId), actor, now });
   const approval: Approval = { approvedBy: actor.id, approvedAt: now, role: actor.role as Approval["role"] };
   for (const a of approved.actions) await hospital.send(a, approval, now);

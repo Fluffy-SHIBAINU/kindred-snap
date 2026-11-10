@@ -54,6 +54,15 @@ export async function ensureWalkCase(store: Store, id: string, hints: WalkHints)
   if (!c) c = await materialise(store, id);
 
   if (hints.incomeCents != null && c.state === "created") {
+    // Several instances can serve the same walk case at once; the last writer of this key runs the investigation, the others re-read.
+    const token = crypto.randomUUID();
+    await store.meta.set("walk_lock_" + id, token);
+    await new Promise((r) => setTimeout(r, 150));
+    if ((await store.meta.get("walk_lock_" + id)) !== token) {
+      await new Promise((r) => setTimeout(r, 1500));
+      c = (await store.cases.get(id)) ?? c;
+      return c;
+    }
     const at = new Date().toISOString();
     const consent: Consent = { caseId: id, grantedAt: at, grantedBy: HELPER.id, role: HELPER.role, scope: "investigate_and_prepare" };
     await store.consents.put(consent);
