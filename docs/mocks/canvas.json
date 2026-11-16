@@ -185,6 +185,100 @@
    "w": 600,
    "h": 840,
    "title": "Poster"
+  },
+  "PM6-demo-files.dc.html": {
+   "x": 0,
+   "y": 9032,
+   "w": 1280,
+   "h": 760,
+   "title": "What a Person Can Drop"
+  },
+  "PM0-snap-private-button.dc.html": {
+   "x": 1360,
+   "y": 9032,
+   "w": 390,
+   "h": 1040,
+   "title": "Snap With the Private Mode Button",
+   "is_interactive": true
+  },
+  "PM1a-private-drop-demo.dc.html": {
+   "x": 1830,
+   "y": 9032,
+   "w": 390,
+   "h": 1200,
+   "title": "Private Drop, Demo Reader",
+   "is_interactive": true
+  },
+  "PM1b-private-drop-live.dc.html": {
+   "x": 2300,
+   "y": 9032,
+   "w": 390,
+   "h": 1540,
+   "title": "Private Drop, Live Reader",
+   "is_interactive": true
+  },
+  "PM1c-private-hard-stop.dc.html": {
+   "x": 2770,
+   "y": 9032,
+   "w": 390,
+   "h": 1390,
+   "title": "Private Drop, Hard Stop",
+   "is_interactive": true
+  },
+  "PM2-working.dc.html": {
+   "x": 3240,
+   "y": 9032,
+   "w": 390,
+   "h": 844,
+   "title": "We're On It, Private",
+   "is_interactive": true
+  },
+  "PM3a-result-line-found.dc.html": {
+   "x": 3710,
+   "y": 9032,
+   "w": 390,
+   "h": 2941,
+   "title": "We Found $240.00 You May Not Owe",
+   "is_interactive": true
+  },
+  "PM3b-result-no-notice.dc.html": {
+   "x": 4180,
+   "y": 9032,
+   "w": 390,
+   "h": 2581,
+   "title": "We Need the Notice or Statement to Check the Charges",
+   "is_interactive": true
+  },
+  "PM3c-result-policy-excludes-insured.dc.html": {
+   "x": 4650,
+   "y": 9032,
+   "w": 390,
+   "h": 2049,
+   "title": "This Hospital's Policy May Not Cover Patients Who Have Medicare",
+   "is_interactive": true
+  },
+  "PM4a-your-letters.dc.html": {
+   "x": 5120,
+   "y": 9032,
+   "w": 390,
+   "h": 3569,
+   "title": "Your Letters",
+   "is_interactive": true
+  },
+  "PM4b-letter-print.dc.html": {
+   "x": 5590,
+   "y": 9032,
+   "w": 816,
+   "h": 1056,
+   "title": "Letter Print Layout"
+  },
+  "PM5-erase.dc.html": {
+   "x": 6486,
+   "y": 9032,
+   "w": 390,
+   "h": 1600,
+   "title": "This Check Is Erased",
+   "is_interactive": true
   }
  },
  "order": [
@@ -209,7 +303,19 @@
   "S03-case-findings.dc.html",
   "S04-case-actions.dc.html",
   "S05-case-resolution-history.dc.html",
-  "P01-Poster.dc.html"
+  "P01-Poster.dc.html",
+  "PM6-demo-files.dc.html",
+  "PM0-snap-private-button.dc.html",
+  "PM1a-private-drop-demo.dc.html",
+  "PM1b-private-drop-live.dc.html",
+  "PM1c-private-hard-stop.dc.html",
+  "PM2-working.dc.html",
+  "PM3a-result-line-found.dc.html",
+  "PM3b-result-no-notice.dc.html",
+  "PM3c-result-policy-excludes-insured.dc.html",
+  "PM4a-your-letters.dc.html",
+  "PM4b-letter-print.dc.html",
+  "PM5-erase.dc.html"
  ],
  "notes": {
   "row-L": {
@@ -253,6 +359,13 @@
    "text": "Poster \u2014 Quiet Ledger (Canvas Design)",
    "kind": "title1",
    "maxW": 800
+  },
+  "row-PM": {
+   "x": 0,
+   "y": 8792,
+   "text": "Incognito \u2014 Private Mode: drop files like Snap, no typing, covered names and numbers tolerated",
+   "kind": "title1",
+   "maxW": 6876
   }
  },
  "designSystems": []
