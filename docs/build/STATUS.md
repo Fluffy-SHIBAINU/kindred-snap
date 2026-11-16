@@ -14,7 +14,7 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 | 7 Landing and polish | landing built | axe spec and design-floor pass pending |
 | 8 Deploy | live | https://snap.kindred-ai.dev (alias) and https://kindred-snap.vercel.app — production env: EXTERNAL_ACTIONS=simulated, EXTRACTOR=fixture, STORE=supabase; staff pages show not-available without a staff session |
 | 9 Docs and honest report | skipped (founder, 15:25 KST) | README still the Phase 0 stub plus links |
-| 10 Snap Incognito | planned | docs/features/snap-incognito.md; I1 can start without new keys |
+| 10 Snap Incognito | planned | replanned 2026-11-16: drop-files flow, no typing; I1 needs no new key |
 
 ## Log
 
@@ -36,7 +36,9 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 
 - 2026-11-10 — Production demo flow verified end to end on Supabase (income → working → result → done → resolved). Root causes fixed: Next.js request memoisation made supabase-js re-read a just-written row as missing (custom fetch with no-store + fresh AbortController signal); concurrent cold starts on one database (idempotent seed, meta locks for the demo and walk preparation); approval reads consent from the consents table when the case row lost it. Video: Gemini 3.8 Flash TTS over REST, beats fitted to slots; huashu-motion film in progress under video/film.
 
-- 2026-11-15 — Phase 10 planned: Snap Incognito (private mode). Feature plan after red-team review in docs/features/snap-incognito.md; runbook tasks I1–I4 in docs/BUILD.md. Nothing built. I1 (numbers path, computed in the browser) needs no new key; real bills wait on the I1 go-live gate, the live reader on a Vertex project and recorded terms (Fable).
+- 2026-11-15 — Phase 10 planned: Snap Incognito (private mode). Feature plan after red-team review in docs/features/snap-incognito.md; runbook tasks I1–I4 in docs/BUILD.md. Nothing built. I1 (numbers path, computed in the browser) needs no new key; real bills wait on the I1 go-live gate, the live reader on a Vertex project and recorded terms (Fable). Superseded by the 2026-11-16 entry below.
+
+- 2026-11-16 — Phase 10 replanned to the founder's direction: no typing; the user only drops files, as in Snap, and private mode copes with redacted pages (income is read from a dropped document). docs/features/snap-incognito.md rewritten and docs/BUILD.md Phase 10 replaced (20 tasks: I1 the whole drop-files flow with the demo reader, I2 PDFs turned into pictures on the phone, I3 the live reader behind the human go-live gate, I4 automatic on-device covering and the mocks). The typed-numbers path, the questions, the cover tool and the list of hospitals are gone. Nothing built. I1 needs no new key (Fable).
 
 ## Blockers
 
