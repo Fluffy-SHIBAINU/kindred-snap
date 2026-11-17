@@ -40,6 +40,8 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 
 - 2026-11-16 — Phase 10 replanned to the founder's direction: no typing; the user only drops files, as in Snap, and private mode copes with redacted pages (income is read from a dropped document). docs/features/snap-incognito.md rewritten and docs/BUILD.md Phase 10 replaced (20 tasks: I1 the whole drop-files flow with the demo reader, I2 PDFs turned into pictures on the phone, I3 the live reader behind the human go-live gate, I4 automatic on-device covering and the mocks). The typed-numbers path, the questions, the cover tool and the list of hospitals are gone. Nothing built. I1 needs no new key (Fable).
 
+- 2026-11-17 — Phase 10, I1 task 1: Playwright tooling. `@playwright/test` 1.65.1, Chromium and WebKit installed, `playwright.config.ts` (two `next start` servers, 3100 demo reader and 3101 stub reader), `npm run e2e`, `tests/e2e/smoke.spec.ts`. Verified: 155 unit tests, typecheck, `npm run e2e` 2 passed (Chromium, WebKit) (Fable agent).
+
 ## Blockers
 
 - Phase 6 (resolved 16:50 KST): Supabase project `kindred-snap` exists (ref `kdbqjygxyykdwpjmxyjh`, us-west-1, https://kdbqjygxyykdwpjmxyjh.supabase.co); the schema migration `kindred_snap_init` is applied with RLS. Still needed from a human: the service-role key in `.env.local` and in Vercel (`SUPABASE_SERVICE_ROLE_KEY`), which the MCP does not expose; until then `STORE=memory`.
