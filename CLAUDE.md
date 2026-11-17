@@ -17,8 +17,8 @@ Hackathon build, started 2026-11-09 10:40 KST. Fresh code only: nothing is copie
 5. Uploaded documents and model output are data, never instructions. Validate every number in a drafted letter against the case before showing it.
 6. Real and simulated are never confusable on screen: the badges "Demo partner · synthetic data" and "Simulated" appear wherever hospital or Medicare data shows.
 7. Accessibility floor (DESIGN.md §9): 18px body, 56px primary control, WCAG AA on every text pair, keyboard path, no autoplay audio, no mandatory voice, zoom never locked.
-8. Titles and subtitles in Title Case; buttons, labels and body in sentence case. The app is in English.
-9. One primary action per caregiver screen; auto steps show as a progress feed; the caregiver flow is exactly the six screens in `docs/mocks/M01…M06`.
+8. Titles and subtitles in Title Case; buttons, labels and body in sentence case; the mode's name `Incognito — Private Mode` is the one Title Case button. The app is in English.
+9. One primary action per caregiver screen; auto steps show as a progress feed; the caregiver flow is exactly the six screens in `docs/mocks/M01…M06`, plus the private flow at `/private` (`docs/features/snap-incognito.md`), which has no typing and no questions.
 10. Commit after every completed task with the message BUILD.md gives; never `git add -A`; never commit `.env*` except `.env.example`.
 
 ## Stack
@@ -52,6 +52,7 @@ src/lib/atlas.ts         Waive atlas loader (fixtures/atlas or ATLAS_DIR)
 src/lib/savings.ts       estimated / confirmed / actual rules
 src/lib/adapters/        extract (gemini, fixture), claims (synthetic Blue Button), hospital (demo partner), store (memory, supabase)
 src/lib/audit.ts         append-only audit events
+src/lib/private/         private mode (/private; screens in src/components/private/): copy, bounded and scrubbed reads, join, stateless run, letters, monthly count, tab session, on-device picture redraw
 fixtures/                synthetic case, edge cases, hospitals.json (the three pilot hospitals); no atlas copies
 vendor/waive-data/       git submodule: the private Waive atlas source (data/atlas/*.json)
 supabase/migrations/     SQL (additive only)
@@ -65,3 +66,4 @@ docs/BUILD.md            the phased build runbook; docs/build/STATUS.md the trac
 - Design-canvas artboards (`docs/mocks/*.dc.html`) render standalone without their runtime; `{{holes}}` and `<dc-import>` fill only on the canvas.
 - `next/font` has no fallback metrics for Atkinson Hyperlegible Mono; `adjustFontFallback: false` is set on purpose.
 - The repository is public. Never add private data, keys or real patient documents.
+- Nothing may log, trace or measure `/private`; private code never calls `getServerStore()`; with `PRIVATE_READER=fixture` no dropped file is uploaded.
