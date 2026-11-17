@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
-  ACTIONS, BODY, BUTTON_LABEL, CHIPS, ERASE, H1, H1_LINE, H2, LEFT_OUT, LETTERS, NOTICE_NAME, PROMISES as P, REFUSED, RESULT,
-  STAFF_REVIEW_SENTENCE, STEP_SUMMARIES, STEP_TITLES, STOP, fill, fillTerms, promisesFor,
+  ACTIONS, BODY, BUTTON_LABEL, CHIPS, COVER_SHEET, DISCOUNT, ERASE, GUESS_KEYS, H1, H1_LINE, H2, HELD, LEFT_OUT, LETTERS, LETTER_TITLES, NOTICE_NAME,
+  PRINT_FOOTER, PROMISES as P, REFUSED, RESULT, STAFF_REVIEW_SENTENCE, STEP_SUMMARIES, STEP_TITLES, STOP, TABLES, fill, fillTerms, promisesFor,
 } from "@/lib/private/copy";
 import { READER_TERMS, readerTermsComplete, type ReaderTerms } from "@/lib/private/readerTerms";
 
@@ -15,10 +15,15 @@ const terms: ReaderTerms = { provider: "Example Cloud", service: "Example Reader
 const EXAMPLES: Array<Record<string, string | number>> = [
   { amount: "$240.00", percent: 75, date: "Sep 14, 2026", n: "n", discounts: "75% and 50%", hospital: "Riverbend Community Hospital", city: "Tacoma", state: "WA" },
   { amount: "$466.00", date: "<date>" },
+  {}, // §2a writes its strings with their slots
 ];
 const strings = (v: unknown): string[] => (typeof v === "string" ? [v] : Object.values(v as object).flatMap(strings));
 const { insured_not_covered_medicare: medicareH2, ...h2 } = H2;
-const fixed = strings([BODY, ACTIONS, H1, H1_LINE, NOTICE_NAME, h2, STOP, REFUSED, STEP_TITLES, STEP_SUMMARIES, LEFT_OUT, CHIPS, RESULT, LETTERS, ERASE]);
+const fixed = strings([
+  BODY, ACTIONS, H1, H1_LINE, NOTICE_NAME, h2, STOP, REFUSED, STEP_TITLES, STEP_SUMMARIES, DISCOUNT, LEFT_OUT, HELD, CHIPS, RESULT, TABLES, LETTERS, LETTER_TITLES,
+  COVER_SHEET, PRINT_FOOTER, ERASE,
+]);
+const section2a = doc.slice(doc.indexOf("### 2a."), doc.indexOf("## 3."));
 const places = ["snap", "body", "details", "erased", "stop", "failed"] as const;
 
 describe("private copy", () => {
@@ -40,13 +45,29 @@ describe("private copy", () => {
     expect(medicareH2).toBe(H2.insured_not_covered.replace(/Insurance$/, "Medicare"));
   });
 
+  it("holds every string of the feature document's section 2a, slots as written", () => {
+    const { reading, ...rows } = STEP_SUMMARIES;
+    expect(doc).toContain(reading);
+    const settled = strings([rows, DISCOUNT, LEFT_OUT, HELD, TABLES, LETTER_TITLES, COVER_SHEET, PRINT_FOOTER]);
+    for (const s of settled) expect(section2a.includes(s), s).toBe(true);
+    // the other way round: nothing the section quotes is missing from copy.ts
+    const quoted = [...section2a.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+    expect(quoted.length).toBeGreaterThan(70);
+    for (const q of quoted) expect(fixed, q).toContain(q);
+  });
+
+  it("lists the guesses, which carry the chip Assumed, as section 2a does", () => {
+    expect(section2a).toContain(GUESS_KEYS.map((k) => "`" + k + "`").join(", "));
+  });
+
   it("carries no demo figure or name: amounts, percents, dates and hospitals are slots", () => {
     for (const s of [...fixed, ...Object.values(P), medicareH2]) expect(s).not.toMatch(/\$\d|\d%|Riverbend|Tacoma|Sep 14/);
   });
 
   it("fills slots and leaves a mark with no value as written", () => {
     expect(fill(H1.line_found, { amount: "$240.00" })).toBe("We Found $240.00 You May Not Owe");
-    expect(fill(RESULT.matched, { hospital: "A {city} Hospital", city: "Tacoma" })).toBe("Matched to A {city} Hospital, Tacoma, {state}");
+    expect(fill(RESULT.matched, { hospital: "A {city} Hospital", city: "Tacoma" })).toBe("Matched to A {city} Hospital, Tacoma, {state}.");
+    expect(fill(STEP_SUMMARIES.help.same_tier, { discount: fill(DISCOUNT.discount, { percent: 75 }) })).toBe("For households of one to four, the policy lists 75% off.");
     expect(fill("{constructor}", {})).toBe("{constructor}");
   });
 });

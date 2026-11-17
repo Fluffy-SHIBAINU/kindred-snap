@@ -1,10 +1,11 @@
 /**
  * Every fixed sentence private mode shows, held once and exactly as docs/features/snap-incognito.md writes it
- * (§1 promises, §2 screens, §4 left-out files, §6 chips, §7 result blocks); tests/private/copy.test.ts checks each
+ * (§1 promises, §2 and §2a screens, §4 left-out files, §6 chips, §7 result blocks); tests/private/copy.test.ts checks each
  * against that document. A `{slot}` is filled with `fill`: amounts already formatted, names from the atlas.
  * Nothing here carries a case's own figure. Object keys follow the unions of §5 (`outcome`, `help`, stop reasons).
  */
 import { READER_TERMS, type ReaderTerms } from "./readerTerms";
+import type { AssumptionKey, PrivateResult } from "./types";
 
 type PromiseId = "S1" | "S2" | "S3" | "S4" | "S5" | "S6" | "S7" | "S8" | "S9" | "S10" | "S11" | "S12" | "S13" | "S14" | "S15" | "S16";
 type Place = "snap" | "body" | "details" | "erased" | "stop" | "failed";
@@ -151,19 +152,61 @@ export const REFUSED = {
 
 export const STEP_TITLES = ["1. Read your files", "2. Notice or statement", "3. Compare lines", "4. Help program", "5. Write letters"] as const;
 
-/** The step summaries the feature document writes out; `reading` is the first row while the request runs. */
+/**
+ * The working rows' summaries (§2a), one group per row. `reading` is the first row while the request runs; `notice` is
+ * keyed by the kind of statement found, else by outcome; `compare` by `PrivateResult["outcome"]`; `help` by
+ * `PrivateResult["help"]`. `{discount}` is one of `DISCOUNT`.
+ */
 export const STEP_SUMMARIES = {
   reading: "Reading your files",
-  noNotice: "No notice in your files",
-  householdOfOne: "For a household of one, the policy lists {percent}% off. Assumed.",
-  lettersReady: "Letters ready to print.",
+  read: { one: "1 page read.", many: "{n} pages read." },
+  notice: {
+    msn: "Medicare notice found.",
+    eob: "Insurer's statement found.",
+    no_notice: "No notice in your files.",
+    notice_covered: "The notice's amounts are covered.",
+    notice_unmatched: "The notice lists more than one visit.",
+  },
+  compare: {
+    line_found: "Line {n} is {amount} the notice shows as not yours to pay.",
+    line_possible: "Line {n} may not be yours to pay. Assumed.",
+    amounts_differ: "The bill asks {amount} more than the notice shows.",
+    nothing_found: "Nothing to ask about.",
+    no_notice: "Nothing to compare yet.",
+    notice_covered: "Nothing to compare yet.",
+    notice_unmatched: "Nothing to compare yet.",
+  } satisfies Record<PrivateResult["outcome"], string>,
+  help: {
+    by_household: "For a household of one, the policy lists {discount}. Assumed.",
+    same_tier: "For households of one to four, the policy lists {discount}.",
+    ceilings: "The policy's income limits are listed.",
+    no_hospital: "We couldn't tell which hospital.",
+    insured_not_covered: "The policy may not cover patients who have insurance.",
+    no_thresholds: "We couldn't work out a discount.",
+  } satisfies Record<PrivateResult["help"], string>,
+  letters: { ready: "Letters ready to print.", none: "No letter to send." },
 };
 
-/** Files left out of a check (§4: T13, T18, T19), by `PrivateResult["leftOut"]` key, as written for one file. */
+/** How `{discount}` reads inside a sentence, by the tier's status. */
+export const DISCOUNT = { free: "free care", discount: "{percent}% off", none: "no discount" };
+
+/** Files left out of a check (§2a; §4: T13, T18, T19), by `PrivateResult["leftOut"]` key. */
 export const LEFT_OUT = {
-  other: "1 file wasn't a bill, a notice or an income letter. We left it out.",
-  unreadable: "1 file was too blurry to read. We left it out. Drop a clearer copy.",
+  other: {
+    one: "1 file wasn't a bill, a notice or an income letter. We left it out.",
+    many: "{n} files weren't a bill, a notice or an income letter. We left them out.",
+  },
+  unreadable: {
+    one: "1 file was too blurry to read. We left it out. Drop a clearer copy.",
+    many: "{n} files were too blurry to read. We left them out. Drop clearer copies.",
+  },
   secondStatement: "We left your insurer's statement out.",
+};
+
+/** Under a hard stop: the pages already dropped are kept for the next file. */
+export const HELD = {
+  one: "1 page is still on this phone. The next file adds to it.",
+  many: "{n} pages are still on this phone. The next file adds to them.",
 };
 
 /** One chip per block (§6). Money has the one label Estimated. */
@@ -186,15 +229,44 @@ export const RESULT = {
   partHelp: "Help listed for a household of one",
   dropHospital: "Drop a copy that shows the hospital's name.",
   aboveCeilings: "Above these amounts the policy lists {discounts} discounts. Drop an income letter to see the estimate.",
-  matched: "Matched to {hospital}, {city}, {state}",
+  matched: "Matched to {hospital}, {city}, {state}.",
+  matchedDemo: "Matched to {hospital}, {city}, {state} (demo hospital).",
+  income: { year: "Your income letter shows {amount} a year.", month: "Your income letter shows {amount} a month." },
   coverageNotStated: "The policy we read does not say whether it covers patients who have insurance. The hospital decides.",
+  excluded: "The hospital decides who its policy covers. We wrote no help application.",
+  excludedWithLetter: "The hospital decides who its policy covers. We wrote the letter about line {n} and no help application.",
   realPolicy: "Real hospital policy, checked {date}",
+  policySource: "{hospital}, financial assistance policy, checked {date}",
+  policySourceDemo: "{hospital}, {city}, {state} (demo hospital). Demo policy sentence.",
   otherConditions: "Other Conditions in the Policy",
   worked: "How we worked this out",
   assumed: "What we assumed ({n})",
+  nothingCovered: "Nothing we needed was covered in your files.",
+  neverRead: "We never read a name, an address or an ID number, covered or not. The letters leave blanks for them.",
+  due: "Bill due {date}.",
+  dueHold: "The letter asks the hospital to hold the account while it reviews.",
+  noLetter: "There is no letter to send.",
   whoCanHelp: "Who can help",
   medicarePhone: "For the notice, call 1-800-MEDICARE (1-800-633-4227).",
 };
+
+/** The household tables on the result and inside the row "How we worked this out" (§2a). A cell is keyed by the tier's status. */
+export const TABLES = {
+  people: "People at home",
+  lists: "The policy lists",
+  rowOne: "{a}",
+  rowRange: "{a} to {b}",
+  cell: { free: "Free care", discount: "{percent}% off", none: "No discount listed" },
+  ceiling: "Free care if yearly income is up to",
+  workedPeople: "People",
+  workedUpTo: "{percent}% off up to",
+  workedShare: "Share of the poverty guideline",
+  sharesNote: "Shares use the {year} poverty guideline for the 48 states and DC.",
+  ceilingsNote: "From the policy's tiers and the {year} poverty guideline for the 48 states and DC.",
+};
+
+/** The assumption keys that are guesses and carry the chip Assumed; every other key that applied is a plain line (§2a). */
+export const GUESS_KEYS: AssumptionKey[] = ["household_size", "coverage_type", "insurance_unknown", "same_visit", "hospital", "hospital_match", "line_charge", "notice_lines_sum", "income_added"];
 
 /** The letters screen and the packet's fixed pages (§2, §7). Letter wording itself is in `letters.ts`. */
 export const LETTERS = {
@@ -204,6 +276,34 @@ export const LETTERS = {
   keep: "Keep this page. Do not send it.",
   attach: "Attach a copy of the bill and the notice. Send it all to Patient Financial Services, at the address printed on the bill.",
 };
+
+/** The packet's document titles (§2a): the cover sheet, one per letter kind, and the page that is kept. */
+export const LETTER_TITLES = {
+  cover: LETTERS.coverSheet,
+  correction_request: "Ask Patient Financial Services to Review Line {n}",
+  information_request: "Ask Patient Financial Services for an Itemized Bill",
+  assistance_application: "Help Application",
+  assumed: LETTERS.assumed,
+};
+
+/** The cover sheet's three lists (§2a). `attachNoticeIfAny` is for a check with no notice; `demoContact` for the demo hospital. */
+export const COVER_SHEET = {
+  blankTitle: "Still blank, for you to fill in by hand",
+  blankLetters: "Patient name and account number, on each letter",
+  blankApplication: "Household size and total yearly household income, on the help application",
+  blankSigning: "The tick boxes, your name, the signatures and the date",
+  attachTitle: "Attach",
+  attachBill: "A copy of the bill",
+  attachNotice: "A copy of the notice",
+  attachNoticeIfAny: "A copy of the notice or statement, if you have one",
+  attachIncome: "Proof of income, if you send the help application",
+  whereTitle: "Where it goes",
+  where: "Patient Financial Services, at the address printed on the bill.",
+  demoContact: "The demo hospital has no phone number and no form link.",
+};
+
+/** On every printed page. */
+export const PRINT_FOOTER = "Prepared with Kindred Snap private mode. Fill in the blanks by hand before sending.";
 
 export const ERASE = {
   action: "Erase from this phone",
