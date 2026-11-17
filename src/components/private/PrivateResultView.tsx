@@ -21,6 +21,8 @@ type Sourced = { sourceUrl: string | null; checkedOn: string | null };
 
 // a figure never breaks across two lines
 export const MONO = "whitespace-nowrap font-mono [font-variant-numeric:tabular-nums]";
+// a link that stands alone on its line is a control: 48px tall (DESIGN.md §9)
+export const LINK = "inline-flex min-h-12 items-center";
 const DATE = /[A-Z][a-z]{2} \d{1,2}, \d{4}/;
 const FIGURE = new RegExp(`(\\$[\\d,]+\\.\\d{2}|${DATE.source})`);
 const TABLE = "w-full border-collapse text-left text-sm";
@@ -41,7 +43,8 @@ export function withMono(text: string): ReactNode[] {
 
 /** kit.css `.chip-src`: one per block, naming where the block comes from. */
 function Chip({ kind = "plain", children }: { kind?: keyof typeof CHIP; children: ReactNode }) {
-  return <span className={"inline-flex min-h-7 w-max items-center rounded-pill px-2.5 text-sm font-medium " + CHIP[kind]}>{children}</span>;
+  // on paper a chip is the size of the sentence it labels
+  return <span className={"inline-flex min-h-7 w-max items-center rounded-pill px-2.5 text-sm font-medium print:min-h-0 print:py-0.5 print:text-xs " + CHIP[kind]}>{children}</span>;
 }
 
 /** "the notice" reads by the statement that was used; Medicare is named only for a Medicare notice. */
@@ -154,6 +157,8 @@ type Props = {
   onLetters: () => void;
   /** the inline erase row */
   erase: ReactNode;
+  /** the status box, when a file added to this result was refused on the phone */
+  notice?: ReactNode;
 };
 
 /**
@@ -161,7 +166,7 @@ type Props = {
  * `copy.ts`, the outcome, the help case and amounts: nothing the pipeline wrote is printed. Whatever decides whether a
  * figure may show stays outside the two closed rows.
  */
-export function PrivateResultView({ result: r, reader, more, onLetters, erase }: Props) {
+export function PrivateResultView({ result: r, reader, more, onLetters, erase, notice }: Props) {
   const { outcome, help, policy: p } = r;
   const line = r.findings.find((f) => f.kind === "line_not_patient_responsibility");
   const shown = line ?? r.findings.find((f) => f.kind === "patient_owes_exceeds_notice");
@@ -174,6 +179,8 @@ export function PrivateResultView({ result: r, reader, more, onLetters, erase }:
 
   const tabled = help === "ceilings" || help === "by_household" || help === "same_tier";
   const households = tabled ? (r.households ?? []) : [];
+  // a policy with discount tiers and no free-care line has no ceilings to list
+  const ceilings = help === "ceilings" && households.some((h) => h.incomeUpToCents !== null);
   const rows = help === "ceilings" ? [] : tierRows(households);
   const tiers = p?.policy.tiers.value ?? [];
   const quotes = p ? [p.policy.freeCareMaxFpl, p.policy.tiers].filter((f) => f.quote) : [];
@@ -190,7 +197,8 @@ export function PrivateResultView({ result: r, reader, more, onLetters, erase }:
   const under = p && [
     fill(r.demo ? RESULT.matchedDemo : RESULT.matched, { hospital: p.name, city: p.city, state: p.state }),
     ...incomes,
-    help === "ceilings" && tiers.length ? fill(RESULT.aboveCeilings, { discounts: list(tiers.map((t) => `${t.discountPercent}%`)) }) : "",
+    // the line points at the table's amounts and asks for an income letter: it needs the table, and no income letter read
+    ceilings && tiers.length && !incomes.length ? fill(RESULT.aboveCeilings, { discounts: list(tiers.map((t) => `${t.discountPercent}%`)) }) : "",
     r.coverage === "not_stated" ? RESULT.coverageNotStated : "",
   ].filter(Boolean).join(" ");
 
@@ -203,7 +211,8 @@ export function PrivateResultView({ result: r, reader, more, onLetters, erase }:
   return (
     <>
       <div className="flex flex-col gap-4 px-6 pb-4">
-        <h1 tabIndex={-1} className="outline-none">{withMono(fill(H1[outcome], { amount }))}</h1>
+        {notice}
+        <h1 tabIndex={-1}>{withMono(fill(H1[outcome], { amount }))}</h1>
         {assumedHeading && <Chip kind="assumed">{CHIPS.assumed}</Chip>}
         {outcome !== "line_found" && <p>{withMono(named(fill(H1_LINE[outcome], { amount }), r.noticeKind))}</p>}
         {shown && (
@@ -237,14 +246,14 @@ export function PrivateResultView({ result: r, reader, more, onLetters, erase }:
             ))}
             {p.policy.phone.value && (
               <p>
-                <a href={`tel:${p.policy.phone.value.replace(/[^\d+]/g, "")}`} className={MONO}>
+                <a href={`tel:${p.policy.phone.value.replace(/[^\d+]/g, "")}`} className={MONO + " " + LINK}>
                   {p.policy.phone.value}
                 </a>
               </p>
             )}
           </>
         )}
-        {help === "ceilings" && households.some((h) => h.incomeUpToCents !== null) && (
+        {ceilings && (
           <table className={TABLE}>
             <thead>
               <tr>

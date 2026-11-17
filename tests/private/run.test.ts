@@ -204,6 +204,16 @@ describe("runStateless, what it never does", () => {
     for (const o of outcomes) for (const word of ["approval", "specialist", "on record", "entered", "Photograph", "Dorothy", "Hale", "undefined", "NaN"]) expect(JSON.stringify(o), word).not.toContain(word);
   });
 
+  it("leaves a possible duplicate out of the result: no reviewer exists here to send it to", async () => {
+    // two lines with the same code on the same day
+    const twice = lines(BILL, (l) => (l.n === 5 ? { code: "96374" } : {}));
+    expect((await ok([twice, MSN, INCOME])).findings.map((f) => f.kind)).toEqual(["patient_owes_exceeds_notice", "line_not_patient_responsibility"]);
+    // with nothing else to ask about, the two lines are not listed as unexplained evidence either
+    const nothing = await ok([{ ...twice, patientOwesCents: 22600 }, MSN, INCOME]);
+    expect(nothing.outcome).toBe("nothing_found");
+    expect(nothing.findings).toEqual([]);
+  });
+
   it("hands the pipeline documents with amounts, codes and dates only: no field, no description and no notice note", () => {
     // values no reader key carries, forced onto the reads
     const rogue = { description: "Dorothy M. Hale", note: "The facility may not bill you separately for it.", service: "CT scan" };

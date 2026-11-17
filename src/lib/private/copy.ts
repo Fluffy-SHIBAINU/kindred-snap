@@ -326,6 +326,11 @@ export const LETTERS = {
   assumed: "What We Assumed",
   keep: "Keep this page. Do not send it.",
   attach: "Attach a copy of the bill and the notice. Send it all to Patient Financial Services, at the address printed on the bill.",
+  // what a screen reader hears where the letter draws a square or a rule (§2a); never drawn, printed or copied
+  tickBox: "Tick box:",
+  blank: "blank",
+  blankFor: "blank for",
+  copyFailed: "Couldn't copy. Use Print or save as PDF.",
 };
 
 /**

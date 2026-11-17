@@ -263,6 +263,9 @@ describe("redaction tolerance (feature document section 4)", () => {
     const other = await ok([lines(BILL, (l) => (l.n === 5 ? { chargeCents: null } : {})), MSN, INCOME]);
     expect(other.outcome).toBe("amounts_differ");
     expect(other.findings.map((f) => f.kind)).toEqual(["patient_owes_exceeds_notice"]);
+    // the gap's evidence is the two totals: the pair on line 3 that explains it is not shown under "amounts differ"
+    expect(other.findings[0].billLine).toBeNull();
+    expect(other.findings[0].evidence).toEqual(["Bill, amount you owe $466.00", "Medicare notice, the most you may be billed $226.00"]);
     expect(kinds(other)).toEqual(["information_request", "assistance_application"]);
     for (const x of [r, other]) expect(x.estimate?.parts.map((p) => p.label)).toEqual([RESULT.partHelp]);
   });

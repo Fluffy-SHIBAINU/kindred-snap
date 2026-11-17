@@ -6,16 +6,20 @@ import { PRIMARY_CLASS } from "@/components/snap/PrimaryAction";
 import { TEXT_CLASS } from "@/components/snap/TextAction";
 import { SECONDARY_CLASS } from "@/components/snap/UploadForm";
 import { ACTIONS, COVER_SHEET, ERASE, H1, LETTERS, LETTER_TITLES, PRINT_FOOTER, PROMISES, RESULT, SCREEN, fill } from "@/lib/private/copy";
+import { PLACEHOLDERS } from "@/lib/private/letters";
 import type { PrivateResult } from "@/lib/private/types";
 import { Disclosure } from "./Disclosure";
-import { Assumed, MONO, withMono } from "./PrivateResultView";
+import { Assumed, LINK, MONO, withMono } from "./PrivateResultView";
 
 // kit.css `.blank`: a rule to write on
 const LINE = "border-b-[1.5px] border-ink ";
 const RULE = "inline-block h-[1.15em] max-w-full " + LINE;
-const PLACEHOLDER = /\[[A-Za-z][A-Za-z ]*\]/;
+// the letters' own placeholders and nothing else in brackets: a quoted policy sentence can carry "[link text](address)"
+const PLACEHOLDER = new RegExp(Object.values(PLACEHOLDERS).map((p) => p.replace(/[[\]]/g, "\\$&")).join("|"));
 const BLANKS = new RegExp(`(${PLACEHOLDER.source}|____)`);
 const BULLETS = "flex list-disc flex-col gap-0.5 pl-5";
+// a drawn blank or tick box says nothing to a screen reader: these words stand in for it, off screen and off paper
+const spoken = (words: string) => <span className="sr-only">{words} </span>;
 
 /** A closed row prints nothing, so every document is opened before the page goes to paper. */
 const openRows = (within: HTMLElement | null) =>
@@ -27,11 +31,18 @@ const openRows = (within: HTMLElement | null) =>
 const drawn = (text: string) =>
   text.split(BLANKS).map((part, i) =>
     part === "____" ? (
-      <span key={i} aria-hidden="true" className={RULE + "min-w-[150px] align-baseline"} />
+      <Fragment key={i}>
+        <span aria-hidden="true" className={RULE + "min-w-[150px] align-baseline"} />
+        {spoken(LETTERS.blank)}
+      </Fragment>
     ) : i % 2 ? (
       <span key={i} className="inline-flex max-w-full flex-col align-top">
-        <span aria-hidden="true" className={RULE + (/name/i.test(part) ? "w-[230px]" : "w-[150px]")} />
-        <span className="text-muted">{part[1].toUpperCase() + part.slice(2, -1)}</span>
+        {/* on a phone the shorter rule is as wide as its label at least, so "Re: account number ____," stays on one line */}
+        <span aria-hidden="true" className={RULE + (/name/i.test(part) ? "w-[230px]" : "min-w-[120px] print:min-w-[150px]")} />
+        <span className="text-muted">
+          {spoken(LETTERS.blankFor)}
+          {part[1].toUpperCase() + part.slice(2, -1)}
+        </span>
       </span>
     ) : (
       <Fragment key={i}>{withMono(part)}</Fragment>
@@ -51,7 +62,10 @@ function DraftLine({ line, signing }: { line: string; signing: boolean }) {
         {labels.map((label) => (
           <span key={label} className="flex items-start gap-2">
             <span aria-hidden="true" className="mt-[0.15em] size-[18px] shrink-0 rounded-[3px] border-[1.5px] border-ink bg-white" />
-            {label}
+            <span>
+              {spoken(LETTERS.tickBox)}
+              {label}
+            </span>
           </span>
         ))}
       </div>
@@ -63,7 +77,10 @@ function DraftLine({ line, signing }: { line: string; signing: boolean }) {
     return (
       <div className="flex flex-col pt-1.5">
         <span aria-hidden="true" className={"h-8 w-full " + LINE} />
-        <span className="text-muted">{signed[1]}</span>
+        <span className="text-muted">
+          {spoken(LETTERS.blankFor)}
+          {signed[1]}
+        </span>
       </div>
     );
   }
@@ -105,18 +122,18 @@ function Cover({ result: r }: { result: PrivateResult }) {
       </ul>
       <p className="font-bold">{COVER_SHEET.whereTitle}</p>
       <p>
-        {[COVER_SHEET.where, p && fill(RESULT.matched, { hospital: p.name, city: p.city, state: p.state }), p && r.demo && COVER_SHEET.demoContact].filter(Boolean).join(" ")}
+        {[COVER_SHEET.where, p && fill(r.demo ? RESULT.matchedDemo : RESULT.matched, { hospital: p.name, city: p.city, state: p.state }), p && r.demo && COVER_SHEET.demoContact].filter(Boolean).join(" ")}
       </p>
       {!r.demo && phone && (
         <p>
-          <a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className={MONO}>
+          <a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className={MONO + " " + LINK}>
             {phone}
           </a>
         </p>
       )}
       {!r.demo && form && /^https?:\/\//.test(form) && (
         <p>
-          <a href={form} target="_blank" rel="noreferrer" className="break-all">
+          <a href={form} target="_blank" rel="noreferrer" className={"break-all " + LINK}>
             {form}
           </a>
         </p>
@@ -155,7 +172,8 @@ type Props = {
  * lays out one document a page.
  */
 export function PrivateLetters({ result: r, onCopied, erase }: Props) {
-  const [copied, setCopied] = useState(false);
+  // what the last tap on `Copy the text` came to, for the status line
+  const [copyNote, setCopyNote] = useState("");
   const rows = useRef<HTMLDivElement>(null);
 
   // the browser's own print command opens the rows too
@@ -167,19 +185,22 @@ export function PrivateLetters({ result: r, onCopied, erase }: Props) {
 
   const text = r.letters.map((l) => `${l.title}\n\n${l.draft}`).join("\n\n\n");
   const canShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
+  // no clipboard in an in-app browser or off a secure origin: the button is left out, as `Share` is
+  const canCopy = typeof navigator !== "undefined" && typeof navigator.clipboard?.writeText === "function";
   const copy = () =>
-    navigator.clipboard?.writeText(text).then(
+    navigator.clipboard.writeText(text).then(
       () => {
-        setCopied(true);
+        setCopyNote(SCREEN.copied);
         onCopied();
       },
-      () => {},
+      () => setCopyNote(LETTERS.copyFailed),
     );
   const docs: Array<{ title: string; note?: string; body: ReactNode }> = [
     { title: LETTER_TITLES.cover, body: <Cover result={r} /> },
     ...r.letters.map((l) => {
       const lines = l.draft.split("\n").map((line, i) => ({ line, i }));
-      // the signature block is whatever follows the last tick boxes; on paper it takes two columns (mock PM4b), which keeps a letter to one page
+      // the signature block is whatever follows the last tick boxes; on paper it takes two columns, the name beside the
+      // date and the two signatures under them (mock PM4b), which keeps a letter to one page
       const ticks = lines.map(({ line }) => line.includes("[ ]")).lastIndexOf(true);
       const draw = (part: typeof lines, signing: boolean) => part.map(({ line, i }) => (line.trim() ? <DraftLine key={i} line={line} signing={signing} /> : null));
       return {
@@ -187,7 +208,7 @@ export function PrivateLetters({ result: r, onCopied, erase }: Props) {
         body: (
           <>
             {draw(lines.slice(0, ticks + 1), false)}
-            <div className="flex flex-col gap-2 print:grid print:auto-cols-fr print:grid-flow-col print:grid-rows-2 print:gap-x-10 print:break-inside-avoid">{draw(lines.slice(ticks + 1), true)}</div>
+            <div className="flex flex-col gap-2 print:grid print:grid-cols-2 print:gap-x-10 print:break-inside-avoid print:[&>:not(:first-child):not(:last-child)]:order-1">{draw(lines.slice(ticks + 1), true)}</div>
           </>
         ),
       };
@@ -198,7 +219,7 @@ export function PrivateLetters({ result: r, onCopied, erase }: Props) {
   return (
     <>
       <div className="flex flex-col gap-4 px-6 pb-4 print:block print:p-0">
-        <h1 tabIndex={-1} className="outline-none print:hidden">{H1.letters}</h1>
+        <h1 tabIndex={-1} className="print:hidden">{H1.letters}</h1>
         <p className="print:hidden">{PROMISES.S12}</p>
         <div ref={rows} className="flex flex-col gap-2 print:block">
           {docs.map((d, i) => (
@@ -229,23 +250,28 @@ export function PrivateLetters({ result: r, onCopied, erase }: Props) {
           className={PRIMARY_CLASS}
           onClick={() => {
             openRows(rows.current);
-            window.print();
+            // an in-app browser can lack it: the rows are open, and nothing is thrown
+            if (typeof window.print === "function") window.print();
           }}
         >
           {ACTIONS.print}
         </button>
-        <div className="flex gap-2">
-          {canShare && (
-            <button type="button" className={TEXT_CLASS} onClick={() => void navigator.share({ text }).catch(() => {})}>
-              {ACTIONS.share}
-            </button>
-          )}
-          <button type="button" className={TEXT_CLASS} onClick={copy}>
-            {ACTIONS.copyText}
-          </button>
-        </div>
-        <p role="status" className={copied ? "text-center text-sm text-muted" : "sr-only"}>
-          {copied ? SCREEN.copied : ""}
+        {(canShare || canCopy) && (
+          <div className="flex gap-2">
+            {canShare && (
+              <button type="button" className={TEXT_CLASS} onClick={() => void navigator.share({ text }).catch(() => {})}>
+                {ACTIONS.share}
+              </button>
+            )}
+            {canCopy && (
+              <button type="button" className={TEXT_CLASS} onClick={copy}>
+                {ACTIONS.copyText}
+              </button>
+            )}
+          </div>
+        )}
+        <p role="status" className={copyNote ? "text-center text-sm text-muted" : "sr-only"}>
+          {copyNote}
         </p>
         {erase}
       </ActionBar>

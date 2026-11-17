@@ -9,6 +9,26 @@ export function CheckIcon({ size = 16 }: { size?: number }) {
   );
 }
 
+/** The tick in a circle, InfoIcon's partner for a status that stands alone (mock PM5). */
+export function CheckCircleIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} {...stroke} aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M8 12.5l3 3 5-6" />
+    </svg>
+  );
+}
+
+/** A step that has not started (mock PM2). */
+export function ClockIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} {...stroke} aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </svg>
+  );
+}
+
 export function CalendarIcon() {
   return (
     <svg viewBox="0 0 24 24" width={24} height={24} {...stroke} aria-hidden="true">

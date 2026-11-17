@@ -26,11 +26,9 @@ export default async function SnapPage({ searchParams }: Props) {
         <h1>Take a Photo of the Bill</h1>
         <p>Lay it flat, whole page in the box, good light.</p>
         {demoOnly && <p className="text-sm text-muted">Demo only: use the demo bill; do not upload a real bill.</p>}
-        {/* the guide is kept small so the private mode link sits inside the first screen of a 390 by 844 phone */}
+        {/* the guide is kept small, with the camera glyph of mocks M01 and PM0, so the private mode link and the row under it sit inside the first screen of a 390 by 844 phone */}
         <div role="img" aria-label="Camera view with a page guide" className="flex flex-col items-center gap-2 rounded-card bg-paper-3 p-4">
-          <svg viewBox="0 0 200 240" width="80" height="96" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="6 6" className="text-muted" aria-hidden="true">
-            <rect x="8" y="8" width="184" height="224" rx="6" />
-          </svg>
+          <CameraIcon size={40} />
           <p className="text-sm text-muted">Fit the whole page inside this box</p>
         </div>
         <UploadForm action={createCaseFromUpload} className={SECONDARY_CLASS} pendingText="Reading the document…">

@@ -171,10 +171,14 @@ export async function runStateless(
     balanceCents: j.bill.patientOwesCents,
     dueDate: j.bill.dueDate,
     noticeKind: j.notice?.kind ?? null,
-    // no explanation text: the pipeline's sentences speak of things that do not exist in this mode
+    // no explanation text: the pipeline's sentences speak of things that do not exist in this mode. A possible duplicate
+    // is not pointed out (no reviewer exists here), and without a single line in the heading the gap's evidence is the two totals only.
     findings: all
-      .filter((f) => single || f.kind !== "line_not_patient_responsibility")
-      .map((f) => ({ kind: f.kind, amountCents: f.amountCents, confidence: f.confidence, billLine: f.evidence.find((e) => e.documentId === BILL_ID && e.line !== undefined)?.line ?? null, evidence: scrub(f.evidence.map((e) => e.quote)) })),
+      .filter((f) => f.kind !== "possible_duplicate" && (single || f.kind !== "line_not_patient_responsibility"))
+      .map((f) => {
+        const evidence = single ? f.evidence : f.evidence.filter((e) => e.line === undefined);
+        return { kind: f.kind, amountCents: f.amountCents, confidence: f.confidence, billLine: evidence.find((e) => e.documentId === BILL_ID && e.line !== undefined)?.line ?? null, evidence: scrub(evidence.map((e) => e.quote)) };
+      }),
     policy: shown,
     coverage,
     help,
