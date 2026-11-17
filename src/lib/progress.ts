@@ -14,7 +14,7 @@ export const STEP_TITLES: Record<StepKey, string> = {
 export type StepSummaries = Partial<Record<StepKey, string>>;
 
 /** The mock writes the status into the title: "1. Read the bill: done", "5. Write letters: working". */
-const SUFFIX: Record<StepStatus, string> = { done: ": done", active: ": working", needs_you: ": needs you", waiting: "" };
+export const SUFFIX: Record<StepStatus, string> = { done: ": done", active: ": working", needs_you: ": needs you", waiting: "" };
 
 /** Which step the case is on and how that row reads. Earlier steps are done, later ones waiting. */
 function position(state: CaseState, s: StepSummaries): { at: number; status: StepStatus } {

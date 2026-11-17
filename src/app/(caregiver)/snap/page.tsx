@@ -1,9 +1,12 @@
+import { Disclosure } from "@/components/private/Disclosure";
 import { ActionBar } from "@/components/snap/ActionBar";
 import { CameraIcon } from "@/components/snap/icons";
 import { PRIMARY_CLASS } from "@/components/snap/PrimaryAction";
 import { TalkToPerson } from "@/components/snap/TalkToPerson";
 import { TextAction, TEXT_CLASS } from "@/components/snap/TextAction";
 import { SECONDARY_CLASS, UploadForm } from "@/components/snap/UploadForm";
+import { BODY, BUTTON_LABEL, promisesFor } from "@/lib/private/copy";
+import { privateReader } from "@/lib/server/flags";
 import { createCaseFromUpload } from "./actions";
 
 type Props = { searchParams: Promise<{ unreadable?: string }> };
@@ -23,8 +26,9 @@ export default async function SnapPage({ searchParams }: Props) {
         <h1>Take a Photo of the Bill</h1>
         <p>Lay it flat, whole page in the box, good light.</p>
         {demoOnly && <p className="text-sm text-muted">Demo only: use the demo bill; do not upload a real bill.</p>}
+        {/* the guide is kept small so the private mode link sits inside the first screen of a 390 by 844 phone */}
         <div role="img" aria-label="Camera view with a page guide" className="flex flex-col items-center gap-2 rounded-card bg-paper-3 p-4">
-          <svg viewBox="0 0 200 240" width="160" height="192" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="6 6" className="text-muted" aria-hidden="true">
+          <svg viewBox="0 0 200 240" width="80" height="96" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="6 6" className="text-muted" aria-hidden="true">
             <rect x="8" y="8" width="184" height="224" rx="6" />
           </svg>
           <p className="text-sm text-muted">Fit the whole page inside this box</p>
@@ -32,6 +36,14 @@ export default async function SnapPage({ searchParams }: Props) {
         <UploadForm action={createCaseFromUpload} className={SECONDARY_CLASS} pendingText="Reading the document…">
           Pick a PDF or photo instead
         </UploadForm>
+        <a href="/private" className={SECONDARY_CLASS}>
+          {BUTTON_LABEL}
+        </a>
+        <Disclosure summary={BODY.snapSummary}>
+          {promisesFor("snap", privateReader()).map((sentence) => (
+            <p key={sentence}>{sentence}</p>
+          ))}
+        </Disclosure>
         <form action={createCaseFromUpload}>
           <input type="hidden" name="demo" value="main" />
           <TextAction type="submit">Use the demo bill</TextAction>

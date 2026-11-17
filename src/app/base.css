@@ -23,3 +23,12 @@ button, input, select, textarea { font: inherit; }
 @media (prefers-reduced-motion: reduce) { *:not(.keep-motion), *:not(.keep-motion)::before, *:not(.keep-motion)::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }
 /* photographs: natural sat=-15 con=-6 */
 [data-slot] > img { filter: saturate(0.85) contrast(0.94); }
+/* Paper, for private mode's letters only (`:has` keeps every other screen printing as it did). The caregiver shell is one
+   screen tall with an inner scroller and a phone-width column: printed, the letters run on at page width without the header
+   and action bar, one document a page. !important because this file is the base layer, under the utilities. */
+@media print {
+  [data-shell]:has([data-print-page]), [data-shell]:has([data-print-page]) > div, [data-shell]:has([data-print-page]) main { display: block !important; height: auto !important; max-width: none !important; overflow: visible !important; border: 0 !important; }
+  [data-shell]:has([data-print-page]) :is(header, [data-action-bar]) { display: none !important; }
+  [data-print-page] { break-after: page; }
+  [data-print-page]:last-of-type { break-after: auto; }
+}

@@ -18,20 +18,29 @@ export function CalendarIcon() {
   );
 }
 
-export function InfoIcon() {
+export function InfoIcon({ size = 16 }: { size?: number }) {
   return (
-    <svg viewBox="0 0 24 24" width={16} height={16} {...stroke} aria-hidden="true">
+    <svg viewBox="0 0 24 24" width={size} height={size} {...stroke} aria-hidden="true">
       <circle cx="12" cy="12" r="9" />
       <path d="M12 11v5M12 8v.5" />
     </svg>
   );
 }
 
-export function CameraIcon() {
+export function CameraIcon({ size = 24 }: { size?: number }) {
   return (
-    <svg viewBox="0 0 24 24" width={24} height={24} {...stroke} aria-hidden="true">
+    <svg viewBox="0 0 24 24" width={size} height={size} {...stroke} aria-hidden="true">
       <path d="M4 8h3l2-3h6l2 3h3v12H4z" />
       <circle cx="12" cy="13" r="3.5" />
+    </svg>
+  );
+}
+
+/** Points down; a disclosure row turns it when open. */
+export function ChevronIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width={20} height={20} {...stroke} aria-hidden="true">
+      <path d="M6 9l6 6 6-6" />
     </svg>
   );
 }

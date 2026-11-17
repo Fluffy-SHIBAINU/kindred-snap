@@ -10,7 +10,7 @@ export const instant = false;
 
 export default function CaregiverLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex h-dvh justify-center bg-paper text-ink">
+    <div data-shell className="flex h-dvh justify-center bg-paper text-ink">
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-10 focus:rounded-input focus:bg-white focus:px-4 focus:py-3">
         Skip to content
       </a>

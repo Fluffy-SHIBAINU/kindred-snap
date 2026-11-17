@@ -5,9 +5,12 @@ import { useFormStatus } from "react-dom";
 
 const ACCEPT = "image/*,application/pdf";
 
-/** kit.css `.btn-secondary`: white, rule ring, 3px drop. */
+/**
+ * kit.css `.btn-secondary`: white, rule ring, 3px drop. `no-underline` is for a link that wears it (Snap's private mode
+ * link); it stays in this string because a server page receives the export as a client reference and cannot add to it.
+ */
 export const SECONDARY_CLASS =
-  "flex min-h-14 w-full items-center justify-center gap-2.5 rounded-input bg-white px-5 font-medium text-ink " +
+  "flex min-h-14 w-full items-center justify-center gap-2.5 rounded-input bg-white px-5 font-medium text-ink no-underline " +
   "shadow-[inset_0_1px_0_rgb(255_255_255/0.25),0_0_0_1px_var(--color-rule),0_3px_0_var(--color-rule)] " +
   "transition-transform duration-[120ms] ease-out active:translate-y-[3px] active:shadow-[inset_0_1px_0_rgb(255_255_255/0.25),0_0_0_1px_var(--color-rule)]";
 

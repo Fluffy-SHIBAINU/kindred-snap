@@ -224,9 +224,12 @@ export const CHIPS = {
   estimated: "Estimated",
 };
 
-/** The result's blocks (§2, §7) and the estimate's part labels (§5). */
+const READING = "Our reading, not a copy of the pages.";
+
+/** The result's blocks (§2, §7) and the estimate's part labels (§5). `reading` captions evidence that did not pair on code and date. */
 export const RESULT = {
-  clippingCaption: "Same code and date, {date}. Our reading, not a copy of the pages.",
+  clippingCaption: "Same code and date, {date}. " + READING,
+  reading: READING,
   moneyTitle: "What could come off the {amount} bill",
   moneyNote: "Estimated. The hospital decides.",
   ifOnePerson: "If the household is one person.",
@@ -367,4 +370,17 @@ export const ERASE = {
   action: "Erase from this phone",
   ask: "Erase this check from this browser? You can't get it back.",
   confirm: "Erase it",
+};
+
+/**
+ * Strings the screens need that the feature document does not quote, so the test does not look for them there: the
+ * guide box and the list's name are the mocks' (PM1a, PM2), the no-script line is docs/BUILD.md's, and `copied` is in
+ * no document (a tap on `Copy the text` shows nothing otherwise).
+ */
+export const SCREEN = {
+  guide: "Fit the whole page inside this box",
+  guideLabel: "Camera view with a page guide",
+  stepsLabel: "Five steps",
+  noScript: "Private mode needs JavaScript.",
+  copied: "Copied.",
 };

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { formatUsd } from "@/lib/money";
 import { CheckIcon, InfoIcon } from "./icons";
 
@@ -6,17 +7,19 @@ type Props = {
   /** The three money labels never merge (CLAUDE.md rule 4). */
   kind: "estimated" | "confirmed" | "actual";
   /** heading above the amount, e.g. "Confirmed Nov 21" */
-  label?: string;
+  label?: ReactNode;
   /** badge text for `confirmed`, default "Confirmed by the hospital" */
   badge?: string;
   /** small muted line beneath, e.g. "$240.00 removed + $169.50 off $226.00" */
   note?: string;
+  /** the badge sits beside the amount, not under it (private mode's result, mock PM3a); off for every other screen */
+  beside?: boolean;
 };
 
 const AMOUNT = "font-mono text-2xl font-medium tracking-[-0.01em] [font-variant-numeric:tabular-nums]";
 
 /** DESIGN.md §6 `.money`: estimated (dashed badge), confirmed (accent stamp) or actual (ink band). */
-export function MoneyBlock({ amountCents, kind, label, badge, note }: Props) {
+export function MoneyBlock({ amountCents, kind, label, badge, note, beside }: Props) {
   if (kind === "actual") {
     return (
       <div className="flex flex-col gap-1 rounded-card bg-ink px-4 py-3 text-paper">
@@ -26,9 +29,11 @@ export function MoneyBlock({ amountCents, kind, label, badge, note }: Props) {
       </div>
     );
   }
+  // beside: the label and the note keep a row each, the amount and its badge share one
+  const row = beside ? " basis-full" : "";
   return (
-    <div className="flex flex-col gap-1">
-      {label && <span className="font-medium">{label}</span>}
+    <div className={beside ? "flex flex-wrap items-center gap-x-3 gap-y-1" : "flex flex-col gap-1"}>
+      {label && <span className={"font-medium" + row}>{label}</span>}
       <span className={AMOUNT}>{formatUsd(amountCents)}</span>
       {kind === "estimated" ? (
         <span className="inline-flex min-h-7 w-max items-center gap-1.5 rounded-pill border border-dashed border-ink-2 px-2.5 text-sm font-medium text-ink-2">
@@ -41,7 +46,7 @@ export function MoneyBlock({ amountCents, kind, label, badge, note }: Props) {
           {badge ?? "Confirmed by the hospital"}
         </span>
       )}
-      {note && <span className="text-sm text-muted">{note}</span>}
+      {note && <span className={"text-sm text-muted" + row}>{note}</span>}
     </div>
   );
 }
