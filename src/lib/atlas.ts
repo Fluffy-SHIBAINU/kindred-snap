@@ -1,5 +1,6 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import type { PrivatePolicy } from "@/lib/private/types";
 import type { Policy, PolicyField } from "@/lib/types";
 
 /** The shape of one Waive atlas sheet, as exported (fields we read; the file holds more). */
@@ -8,7 +9,13 @@ export type AtlasSheet = {
   hospital: { ccn: string; name: string; city: string; state: string; website_domain?: string | null };
   version: number;
   status: string;
-  eligibility: { free_care_max_fpl?: AtlasField<string | number>; discount_tiers?: AtlasField<Array<{ min_fpl_exclusive?: string | number; max_fpl_inclusive: string | number; discount_percent: number }>> };
+  eligibility: {
+    free_care_max_fpl?: AtlasField<string | number>;
+    discount_tiers?: AtlasField<Array<{ min_fpl_exclusive?: string | number; max_fpl_inclusive: string | number; discount_percent: number }>>;
+    insured_patients_covered?: AtlasField<boolean>;
+    asset_test?: AtlasField<boolean>;
+    residency?: AtlasField<unknown>;
+  };
   apply: { form_url?: AtlasField<string>; window_days_from_first_bill?: AtlasField<string | number> };
   contacts: { phone?: AtlasField<string> };
   sources: Array<{ id: string; url: string | null; title?: string; fetched_on?: string }>;
@@ -59,14 +66,58 @@ export function findHospital(query: { ccn?: string; name?: string }, sheets: Atl
   return null;
 }
 
-/** Thresholds, tiers, window and contact, each with the quote and dated source the sheet carries. */
-export function policyOf(sheet: AtlasSheet): Policy {
+/**
+ * The one sheet a hospital read off a page points to (private mode). Null unless name and state were both read. The sheets in
+ * that state with the same name; else, when the city was read, those in that city where one name contains the other, which is
+ * shown but not asserted (`exact: false`). Two candidates are no match.
+ */
+export function matchHospital(h: { name: string; city: string | null; state: string | null } | null, sheets: AtlasSheet[] = loadSheets()): { sheet: AtlasSheet; exact: boolean } | null {
+  const name = normName(h?.name ?? ""), state = normName(h?.state ?? ""), city = normName(h?.city ?? "");
+  if (!name || !state) return null;
+  const inState = sheets.filter((s) => normName(s.hospital.state) === state);
+  const equal = inState.filter((s) => normName(s.hospital.name) === name);
+  const contains = (s: AtlasSheet) => { const n = normName(s.hospital.name); return !!n && (n.includes(name) || name.includes(n)); };
+  const candidates = equal.length || !city ? equal : inState.filter((s) => normName(s.hospital.city) === city && contains(s));
+  return candidates.length === 1 ? { sheet: candidates[0], exact: equal.length === 1 } : null;
+}
+
+/** Maps one field of a sheet to its value with the quote and dated source the sheet carries for it. */
+function fieldOf(sheet: AtlasSheet) {
   const src = new Map(sheet.sources.map((s) => [s.id, s]));
-  const field = <T, U>(f: AtlasField<T> | undefined, map: (v: T) => U, empty: U): PolicyField<U> => {
+  return <T, U>(f: AtlasField<T> | undefined, map: (v: T) => U, empty: U): PolicyField<U> => {
     if (!f) return { value: empty, quote: null, sourceUrl: null, checkedOn: null };
     const s = f.source_id ? src.get(f.source_id) : undefined;
     return { value: map(f.value), quote: f.quote ?? null, sourceUrl: s?.url ?? null, checkedOn: f.checked_on ?? null };
   };
+}
+
+/**
+ * A sheet as private mode shows it: the policy, whether it covers patients who have insurance, and any asset or residency rule.
+ * A rule is carried as the policy's own sentence only; its value is never interpreted.
+ */
+export function privatePolicyOf(sheet: AtlasSheet, exact: boolean): PrivatePolicy {
+  const field = fieldOf(sheet);
+  const policy = policyOf(sheet);
+  const e = sheet.eligibility;
+  const condition = (label: "Assets" | "Where the patient lives", f: AtlasField | undefined) => {
+    const { quote, sourceUrl, checkedOn } = field(f, () => null, null);
+    return quote ? [{ label, quote, sourceUrl, checkedOn }] : [];
+  };
+  return {
+    ccn: sheet.hospital.ccn,
+    name: policy.hospitalName,
+    city: titleCase(sheet.hospital.city),
+    state: sheet.hospital.state,
+    exact,
+    policy,
+    insuredCovered: field(e.insured_patients_covered, (v) => (typeof v === "boolean" ? v : null), null),
+    otherConditions: [...(e.asset_test?.value === true ? condition("Assets", e.asset_test) : []), ...condition("Where the patient lives", e.residency)],
+  };
+}
+
+/** Thresholds, tiers, window and contact, each with the quote and dated source the sheet carries. */
+export function policyOf(sheet: AtlasSheet): Policy {
+  const field = fieldOf(sheet);
   const num = (v: string | number | null | undefined) => (v == null || v === "" ? null : Number(v));
   return {
     basis: "atlas",
