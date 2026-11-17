@@ -42,6 +42,8 @@ Updated by whoever completes a task (human, Fable or Opus via `/build-next`). On
 
 - 2026-11-17 — Phase 10, I1 task 1: Playwright tooling. `@playwright/test` 1.65.1, Chromium and WebKit installed, `playwright.config.ts` (two `next start` servers, 3100 demo reader and 3101 stub reader), `npm run e2e`, `tests/e2e/smoke.spec.ts`. Verified: 155 unit tests, typecheck, `npm run e2e` 2 passed (Chromium, WebKit) (Fable agent).
 
+- 2026-11-17 — Phase 10, I1 task 2: flags, reader terms, copy. `privateReader()` and the private checks in `assertFlagsSafe` (stub refused in production without ALLOW_DEMO=1; gemini refused until I3), `PRIVATE_READER` in `.env.example`, `src/lib/private/readerTerms.ts` (ships empty), `src/lib/private/copy.ts` (S1 to S16, `promisesFor`, every fixed string of the feature document, each test-checked verbatim against it). Open for later tasks: the feature document writes only four step summaries, the left-out sentences only for one file, and no rule for which sentences take the `NOTICE_NAME` reading; strings that exist only in the PM mocks are not in `copy.ts`. Verified: 172 unit tests, typecheck, `npm run e2e` 2 passed (Fable agent).
+
 ## Blockers
 
 - Phase 6 (resolved 16:50 KST): Supabase project `kindred-snap` exists (ref `kdbqjygxyykdwpjmxyjh`, us-west-1, https://kdbqjygxyykdwpjmxyjh.supabase.co); the schema migration `kindred_snap_init` is applied with RLS. Still needed from a human: the service-role key in `.env.local` and in Vercel (`SUPABASE_SERVICE_ROLE_KEY`), which the MCP does not expose; until then `STORE=memory`.
