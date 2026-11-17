@@ -152,83 +152,77 @@ svg{display:block}
 .cover-bar{display:inline-block;height:1.05em;border-radius:2px;background:var(--color-ink);vertical-align:middle}
 .statusbox{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:var(--radius-card);background:var(--color-white);box-shadow:inset 0 0 0 2px var(--color-ink)}
 </style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;700;800&family=Atkinson+Hyperlegible+Mono:wght@400;500&display=swap"></helmet>
-<div class="phone" style="height:2941px">
+<div class="phone" style="height:1507px">
   <header class="appbar">
     <span class="wordmark">Kindred Snap</span>
   </header>
   <main class="screen">
     <h1>We Found <span class="mono">$240.00</span> You May Not Owe</h1>
-    <div class="evidence">
-      <div class="clip">
-        <p style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><span>Bill line 3, <span class="mono">Q9967</span></span><span class="mono hl">$240.00</span></p>
-        <div class="src">Our reading of line 3, not a copy of the page</div>
-        <span class="chip-src">Read from your file</span>
-      </div>
-      <div class="clip">
-        <p style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><span>Medicare notice, <span class="mono">Q9967</span>, you may be billed</span><span class="mono hl">$0.00</span></p>
-        <div class="src">Our reading of the notice line, not a copy of the page. Same code and date as bill line 3: <span class="mono">Sep 14, 2026</span>.</div>
-        <span class="chip-src">Read from your file</span>
-      </div>
+    <div class="clip">
+      <p style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><span>Bill line 3, <span class="mono">Q9967</span></span><span class="mono hl">$240.00</span></p>
+      <p style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><span>Medicare notice, you may be billed</span><span class="mono hl">$0.00</span></p>
+      <div class="src">Same code and date, <span class="mono">Sep 14, 2026</span>. Our reading, not a copy of the pages.</div>
     </div>
-    <section aria-label="Estimate" style="display:flex;flex-direction:column;gap:8px">
-      <div class="money" style="flex-direction:row;flex-wrap:wrap;align-items:center;gap:4px 12px">
-        <span class="amount">$409.50</span><span class="badge badge--estimated"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/></svg>Estimated</span>
-        <span class="small muted" style="flex-basis:100%">Estimated. The hospital decides. If the household is one person.</span>
-      </div>
-      <ul class="small" style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px">
-        <li style="display:flex;justify-content:space-between;gap:12px"><span>Line the notice shows as not yours to pay</span><span class="mono">$240.00</span></li>
-        <li style="display:flex;justify-content:space-between;gap:12px"><span>Help listed for a household of one</span><span class="mono">$169.50</span></li>
-      </ul>
+    <section aria-label="Estimate" class="money" style="flex-direction:row;flex-wrap:wrap;align-items:center;gap:4px 12px">
+      <span style="flex-basis:100%">What could come off the <span class="mono">$466.00</span> bill</span>
+      <span class="amount">$409.50</span><span class="badge badge--estimated"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/></svg>Estimated</span>
+      <span class="small muted" style="flex-basis:100%">Estimated. The hospital decides. If the household is one person.</span>
     </section>
     <h2 style="margin-top:8px">The Policy's Discount Depends on Household Size</h2>
-    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">
-      <p>Matched to Riverbend Community Hospital, Tacoma, WA</p>
-      <span class="chip-src">We worked this out</span>
-    </div>
-    <div class="clip">
-      <p class="small">“Households with income at or below 200% of the federal poverty guideline receive a 100% discount on hospital charges.”</p>
-      <p class="small">“Households with income between 201% and 300% of the federal poverty guideline receive a 75% discount; households between 301% and 400% receive a 50% discount.”</p>
-      <div class="src">Riverbend Community Hospital, financial assistance policy</div>
-      <div style="display:flex;flex-wrap:wrap;gap:6px"><span class="chip-src chip-src--quoted">Quoted</span><span class="chip-src">Demo files</span></div>
-    </div>
-    <p class="small">The policy we read does not say whether it covers patients who have insurance. The hospital decides.</p>
-    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">
-      <p>Your income letter shows <span class="mono">$37,560.00</span> a year.</p>
-      <span class="chip-src">Read from your file</span>
-    </div>
     <table class="hh-table">
       <thead>
-        <tr><th scope="col">People in the home</th><th scope="col">Share of the poverty guideline</th><th scope="col">What the policy lists</th></tr>
+        <tr><th scope="col">People at home</th><th scope="col">The policy lists</th></tr>
       </thead>
       <tbody>
-        <tr class="is-assumed"><td><span style="display:flex;flex-direction:column;align-items:flex-start;gap:4px"><span>1</span><span class="chip-src chip-src--assumed">Assumed</span></span></td><td class="mono">235.3%</td><td>75% off</td></tr>
-        <tr><td>2</td><td class="mono">173.6%</td><td>Free care</td></tr>
-        <tr><td>3</td><td class="mono">137.5%</td><td>Free care</td></tr>
-        <tr><td>4</td><td class="mono">113.8%</td><td>Free care</td></tr>
+        <tr class="is-assumed"><td><span style="display:inline-flex;align-items:center;gap:8px"><span>1</span><span class="chip-src chip-src--assumed">Assumed</span></span></td><td>75% off</td></tr>
+        <tr><td>2 to 4</td><td>Free care</td></tr>
       </tbody>
     </table>
-    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">
-      <p class="small muted">Shares use the 2026 poverty guideline for the 48 states and DC.</p>
-      <span class="chip-src">We worked this out</span>
+    <p class="small">Matched to Riverbend Community Hospital, Tacoma, WA (demo hospital). Your income letter shows <span class="mono">$37,560.00</span> a year. The policy we read does not say whether it covers patients who have insurance. The hospital decides.</p>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <details class="disclosure">
+        <summary><span>How we worked this out</span><svg style="flex:0 0 20px" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <div class="body">
+          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px">
+            <li style="display:flex;justify-content:space-between;gap:12px"><span>Line the notice shows as not yours to pay</span><span class="mono">$240.00</span></li>
+            <li style="display:flex;justify-content:space-between;gap:12px"><span>Help listed for a household of one</span><span class="mono">$169.50</span></li>
+          </ul>
+          <p>“Households with income at or below 200% of the federal poverty guideline receive a 100% discount on hospital charges.”</p>
+          <p>“Households with income between 201% and 300% of the federal poverty guideline receive a 75% discount; households between 301% and 400% receive a 50% discount.”</p>
+          <p class="muted">Riverbend Community Hospital, financial assistance policy</p>
+          <div style="display:flex;flex-wrap:wrap;gap:6px"><span class="chip-src chip-src--quoted">Quoted</span><span class="chip-src">Demo files</span></div>
+          <table class="hh-table">
+            <thead>
+              <tr><th scope="col">People at home</th><th scope="col">Share of the poverty guideline</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td class="mono">235.3%</td></tr>
+              <tr><td>2</td><td class="mono">173.6%</td></tr>
+              <tr><td>3</td><td class="mono">137.5%</td></tr>
+              <tr><td>4</td><td class="mono">113.8%</td></tr>
+            </tbody>
+          </table>
+          <p class="muted">Shares use the 2026 poverty guideline for the 48 states and DC.</p>
+        </div>
+      </details>
+      <details class="disclosure">
+        <summary><span>What we assumed (2)</span><svg style="flex:0 0 20px" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <div class="body">
+          <p>Where your files didn't show something, we made a best guess and marked it Assumed. Nothing assumed is written in a letter as a fact.</p>
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:4px">
+            <span class="chip-src chip-src--assumed">Assumed</span>
+            <p>One person lives in the home.</p>
+            <p class="muted">If two to four people live there, the policy lists free care. The letter leaves household size blank and asks the hospital which tier applies.</p>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:4px">
+            <span class="chip-src chip-src--assumed">Assumed</span>
+            <p>We took this to be Original Medicare, because you dropped a Medicare notice.</p>
+            <p class="muted">The letters name the notice, never the coverage.</p>
+          </div>
+          <p>Nothing we needed was covered in your files. We never read a name, an address or an ID number, covered or not. The letters leave blanks for them.</p>
+        </div>
+      </details>
     </div>
-    <h2 style="margin-top:8px">What We Assumed</h2>
-    <p>Where your files didn't show something, we made a best guess and marked it Assumed. Nothing assumed is written in a letter as a fact.</p>
-    <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px">
-      <li style="display:flex;flex-direction:column;align-items:flex-start;gap:4px">
-        <span class="chip-src chip-src--assumed">Assumed</span>
-        <p>One person lives in the home.</p>
-        <p class="small muted">If two to four people live there, the policy lists free care. The letter leaves household size blank and asks the hospital which tier applies.</p>
-      </li>
-      <li style="display:flex;flex-direction:column;align-items:flex-start;gap:4px">
-        <span class="chip-src chip-src--assumed">Assumed</span>
-        <p>We took this to be Original Medicare, because you dropped a Medicare notice.</p>
-        <p class="small muted">The letters name the notice, never the coverage.</p>
-      </li>
-      <li style="display:flex;flex-direction:column;align-items:flex-start;gap:4px">
-        <p>Nothing we needed was covered in your files.</p>
-        <p class="small muted">We never read a name, an address or an ID number, covered or not. The letters leave blanks for them.</p>
-      </li>
-    </ul>
     <div class="alert alert--warn">
       <span class="icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
       <p>Bill due <span class="mono">Nov 30, 2026</span>. The letter asks the hospital to hold the account while it reviews.</p>
@@ -249,6 +243,6 @@ svg{display:block}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":2941}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1507}}'>
 class Component extends DCLogic { renderVals() { return {}; } }
 </script></body></html>

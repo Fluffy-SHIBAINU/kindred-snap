@@ -237,7 +237,7 @@
    "x": 3710,
    "y": 9032,
    "w": 390,
-   "h": 2941,
+   "h": 1507,
    "title": "We Found $240.00 You May Not Owe",
    "is_interactive": true
   },
@@ -245,7 +245,7 @@
    "x": 4180,
    "y": 9032,
    "w": 390,
-   "h": 2581,
+   "h": 1411,
    "title": "We Need the Notice or Statement to Check the Charges",
    "is_interactive": true
   },
@@ -253,7 +253,7 @@
    "x": 4650,
    "y": 9032,
    "w": 390,
-   "h": 2049,
+   "h": 1456,
    "title": "This Hospital's Policy May Not Cover Patients Who Have Medicare",
    "is_interactive": true
   },
@@ -261,7 +261,7 @@
    "x": 5120,
    "y": 9032,
    "w": 390,
-   "h": 3569,
+   "h": 933,
    "title": "Your Letters",
    "is_interactive": true
   },
