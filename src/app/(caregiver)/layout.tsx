@@ -16,7 +16,8 @@ export default function CaregiverLayout({ children }: { children: ReactNode }) {
       </a>
       <div className="flex h-full w-full max-w-[430px] flex-col md:min-w-[390px] md:border-x md:border-rule">
         <header className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-6 pt-5 pb-2">
-          <Link href="/" className="text-lg font-extrabold tracking-[-0.02em] no-underline">
+          {/* no prefetch: it would fetch the start page under a query string from every screen, and private mode puts nothing in a URL */}
+          <Link href="/" prefetch={false} className="text-lg font-extrabold tracking-[-0.02em] no-underline">
             Kindred Snap
           </Link>
           </header>
