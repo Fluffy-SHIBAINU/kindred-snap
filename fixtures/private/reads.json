@@ -1,0 +1,478 @@
+{
+  "bill-main": {
+    "sha256": "7fdd09aba5bc9f9ba2db4c4f2f77c2bb31d48142131be6a7fa5839a16270da95",
+    "read": {
+      "kind": "bill",
+      "hospital": {
+        "name": "Riverbend Community Hospital",
+        "city": "Tacoma",
+        "state": "WA"
+      },
+      "lines": [
+        {
+          "n": 1,
+          "code": "99284",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$1,480.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        },
+        {
+          "n": 2,
+          "code": "74177",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$2,950.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        },
+        {
+          "n": 3,
+          "code": "Q9967",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$240.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        },
+        {
+          "n": 4,
+          "code": "96374",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$310.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        },
+        {
+          "n": 5,
+          "code": "71046",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$380.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        }
+      ],
+      "patientOwesCents": "$466.00",
+      "noticeMaxCents": null,
+      "claimCount": null,
+      "statementDate": "2026-10-20",
+      "dueDate": "2026-11-30",
+      "income": null,
+      "covered": []
+    }
+  },
+  "msn-main": {
+    "sha256": "5ea8e07d2caa13e1bb5aba8e20fa2b24101c344b199205c1b311091b3cae7838",
+    "read": {
+      "kind": "msn",
+      "hospital": {
+        "name": "Riverbend Community Hospital",
+        "city": null,
+        "state": null
+      },
+      "lines": [
+        {
+          "n": 1,
+          "code": "99284",
+          "serviceDate": "2026-09-14",
+          "chargeCents": null,
+          "billedCents": "$1,480.00",
+          "youMayBeBilledCents": "$84.00"
+        },
+        {
+          "n": 2,
+          "code": "74177",
+          "serviceDate": "2026-09-14",
+          "chargeCents": null,
+          "billedCents": "$2,950.00",
+          "youMayBeBilledCents": "$93.00"
+        },
+        {
+          "n": 3,
+          "code": "Q9967",
+          "serviceDate": "2026-09-14",
+          "chargeCents": null,
+          "billedCents": "$240.00",
+          "youMayBeBilledCents": "$0.00"
+        },
+        {
+          "n": 4,
+          "code": "96374",
+          "serviceDate": "2026-09-14",
+          "chargeCents": null,
+          "billedCents": "$310.00",
+          "youMayBeBilledCents": "$30.00"
+        },
+        {
+          "n": 5,
+          "code": "71046",
+          "serviceDate": "2026-09-14",
+          "chargeCents": null,
+          "billedCents": "$380.00",
+          "youMayBeBilledCents": "$19.00"
+        }
+      ],
+      "patientOwesCents": null,
+      "noticeMaxCents": "$226.00",
+      "claimCount": 1,
+      "statementDate": null,
+      "dueDate": null,
+      "income": null,
+      "covered": []
+    }
+  },
+  "income-letter": {
+    "sha256": "9dc37c5343eb9ffa6629af3daf7c87405f6545dc44c612d9dce3efb2ab191685",
+    "read": {
+      "kind": "income",
+      "hospital": null,
+      "lines": [],
+      "patientOwesCents": null,
+      "noticeMaxCents": null,
+      "claimCount": null,
+      "statementDate": "2026-01-05",
+      "dueDate": null,
+      "income": {
+        "cents": "$37,560.00",
+        "period": "year"
+      },
+      "covered": []
+    }
+  },
+  "bill-main-covered": {
+    "sha256": "16cc29495d3d87679e869586e8f2177de4b641e2b302f3164da863bff525aa6c",
+    "read": {
+      "kind": "bill",
+      "hospital": {
+        "name": "Riverbend Community Hospital",
+        "city": "Tacoma",
+        "state": "WA"
+      },
+      "lines": [
+        {
+          "n": 1,
+          "code": "99284",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$1,480.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        },
+        {
+          "n": 2,
+          "code": "74177",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$2,950.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        },
+        {
+          "n": 3,
+          "code": "Q9967",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$240.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        },
+        {
+          "n": 4,
+          "code": "96374",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$310.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        },
+        {
+          "n": 5,
+          "code": "71046",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$380.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        }
+      ],
+      "patientOwesCents": "$466.00",
+      "noticeMaxCents": null,
+      "claimCount": null,
+      "statementDate": "2026-10-20",
+      "dueDate": "2026-11-30",
+      "income": null,
+      "covered": []
+    }
+  },
+  "msn-main-covered": {
+    "sha256": "9c682189078987a9df1174d63d7816a6ec26934f38754bd811184c9ec4b9aae4",
+    "read": {
+      "kind": "msn",
+      "hospital": {
+        "name": "Riverbend Community Hospital",
+        "city": null,
+        "state": null
+      },
+      "lines": [
+        {
+          "n": 1,
+          "code": "99284",
+          "serviceDate": "2026-09-14",
+          "chargeCents": null,
+          "billedCents": "$1,480.00",
+          "youMayBeBilledCents": "$84.00"
+        },
+        {
+          "n": 2,
+          "code": "74177",
+          "serviceDate": "2026-09-14",
+          "chargeCents": null,
+          "billedCents": "$2,950.00",
+          "youMayBeBilledCents": "$93.00"
+        },
+        {
+          "n": 3,
+          "code": "Q9967",
+          "serviceDate": "2026-09-14",
+          "chargeCents": null,
+          "billedCents": "$240.00",
+          "youMayBeBilledCents": "$0.00"
+        },
+        {
+          "n": 4,
+          "code": "96374",
+          "serviceDate": "2026-09-14",
+          "chargeCents": null,
+          "billedCents": "$310.00",
+          "youMayBeBilledCents": "$30.00"
+        },
+        {
+          "n": 5,
+          "code": "71046",
+          "serviceDate": "2026-09-14",
+          "chargeCents": null,
+          "billedCents": "$380.00",
+          "youMayBeBilledCents": "$19.00"
+        }
+      ],
+      "patientOwesCents": null,
+      "noticeMaxCents": "$226.00",
+      "claimCount": 1,
+      "statementDate": null,
+      "dueDate": null,
+      "income": null,
+      "covered": []
+    }
+  },
+  "income-letter-covered": {
+    "sha256": "0cdf64263414981c8fb97d7a824c7c5aef9b7f2e1449fd4bf9f2a9a195b93af4",
+    "read": {
+      "kind": "income",
+      "hospital": null,
+      "lines": [],
+      "patientOwesCents": null,
+      "noticeMaxCents": null,
+      "claimCount": null,
+      "statementDate": "2026-01-05",
+      "dueDate": null,
+      "income": {
+        "cents": "$37,560.00",
+        "period": "year"
+      },
+      "covered": []
+    }
+  },
+  "bill-main-partly": {
+    "sha256": "d3dc09b4f4d14a39d7673fb70d08af143eadc75ca06375c22c8200f7aae29d9f",
+    "read": {
+      "kind": "bill",
+      "hospital": {
+        "name": "Riverbend Community Hospital",
+        "city": "Tacoma",
+        "state": "WA"
+      },
+      "lines": [
+        {
+          "n": 1,
+          "code": "99284",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$1,480.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        },
+        {
+          "n": 2,
+          "code": "74177",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$2,950.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        },
+        {
+          "n": 3,
+          "code": "Q9967",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$240.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        },
+        {
+          "n": 4,
+          "code": "96374",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$310.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        },
+        {
+          "n": 5,
+          "code": "71046",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$380.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        }
+      ],
+      "patientOwesCents": "$466.00",
+      "noticeMaxCents": null,
+      "claimCount": null,
+      "statementDate": "2026-10-20",
+      "dueDate": "2026-11-30",
+      "income": null,
+      "covered": []
+    }
+  },
+  "msn-main-partly": {
+    "sha256": "ecc0e93acaf42ae8b3b7824395640cb8ee4c47efd317ad2e7c41ae55c0aad2a7",
+    "read": {
+      "kind": "msn",
+      "hospital": {
+        "name": "Riverbend Community Hospital",
+        "city": null,
+        "state": null
+      },
+      "lines": [
+        {
+          "n": 1,
+          "code": "99284",
+          "serviceDate": "2026-09-14",
+          "chargeCents": null,
+          "billedCents": "$1,480.00",
+          "youMayBeBilledCents": "$84.00"
+        },
+        {
+          "n": 2,
+          "code": "74177",
+          "serviceDate": "2026-09-14",
+          "chargeCents": null,
+          "billedCents": "$2,950.00",
+          "youMayBeBilledCents": "$93.00"
+        },
+        {
+          "n": 3,
+          "code": "Q9967",
+          "serviceDate": "2026-09-14",
+          "chargeCents": null,
+          "billedCents": "$240.00",
+          "youMayBeBilledCents": "$0.00"
+        },
+        {
+          "n": 4,
+          "code": "96374",
+          "serviceDate": "2026-09-14",
+          "chargeCents": null,
+          "billedCents": "$310.00",
+          "youMayBeBilledCents": "$30.00"
+        },
+        {
+          "n": 5,
+          "code": "71046",
+          "serviceDate": "2026-09-14",
+          "chargeCents": null,
+          "billedCents": "$380.00",
+          "youMayBeBilledCents": "$19.00"
+        }
+      ],
+      "patientOwesCents": null,
+      "noticeMaxCents": "$226.00",
+      "claimCount": 1,
+      "statementDate": null,
+      "dueDate": null,
+      "income": null,
+      "covered": []
+    }
+  },
+  "income-letter-partly": {
+    "sha256": "99990d36600c59cedf7a80c30397a972a9209d31f695c07dc5e8e230e12f7475",
+    "read": {
+      "kind": "income",
+      "hospital": null,
+      "lines": [],
+      "patientOwesCents": null,
+      "noticeMaxCents": null,
+      "claimCount": null,
+      "statementDate": "2026-01-05",
+      "dueDate": null,
+      "income": {
+        "cents": "$37,560.00",
+        "period": "year"
+      },
+      "covered": []
+    }
+  },
+  "bill-main-amount-covered": {
+    "sha256": "854703389ab0557cf7085f13f3509ac5537316b42256aea2c3a05d650be2c834",
+    "read": {
+      "kind": "bill",
+      "hospital": {
+        "name": "Riverbend Community Hospital",
+        "city": "Tacoma",
+        "state": "WA"
+      },
+      "lines": [
+        {
+          "n": 1,
+          "code": "99284",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$1,480.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        },
+        {
+          "n": 2,
+          "code": "74177",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$2,950.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        },
+        {
+          "n": 3,
+          "code": "Q9967",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$240.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        },
+        {
+          "n": 4,
+          "code": "96374",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$310.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        },
+        {
+          "n": 5,
+          "code": "71046",
+          "serviceDate": "2026-09-14",
+          "chargeCents": "$380.00",
+          "billedCents": null,
+          "youMayBeBilledCents": null
+        }
+      ],
+      "patientOwesCents": null,
+      "noticeMaxCents": null,
+      "claimCount": null,
+      "statementDate": "2026-10-20",
+      "dueDate": "2026-11-30",
+      "income": null,
+      "covered": [
+        "patient_owes"
+      ]
+    }
+  }
+}

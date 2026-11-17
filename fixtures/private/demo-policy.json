@@ -1,0 +1,11 @@
+{
+  "city": "Tacoma",
+  "state": "WA",
+  "insuredCovered": {
+    "value": true,
+    "quote": "Patients with insurance, including Medicare, may apply for help with the amount they owe after insurance.",
+    "sourceUrl": null,
+    "checkedOn": null
+  },
+  "otherConditions": []
+}

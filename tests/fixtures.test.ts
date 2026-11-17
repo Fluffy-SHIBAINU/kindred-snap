@@ -84,6 +84,60 @@ describe("document images", () => {
   });
 });
 
+describe("private mode's demo files", () => {
+  const raw = readFileSync("fixtures/private/reads.json", "utf8");
+  const reads = JSON.parse(raw) as Record<string, { sha256: string; read: { kind: string } }>;
+  const index = JSON.parse(readFileSync("fixtures/documents/index.json", "utf8")) as Array<{ sha256: string; file: string }>;
+  const html = (name: string) => readFileSync(`fixtures/documents/html/${name}.html`, "utf8");
+  const main = ["bill-main", "msn-main", "income-letter"];
+
+  it("reads.json has the three sets and the amount-covered bill, each hash matching its file", () => {
+    expect(Object.keys(reads)).toEqual([...main, ...main.map((n) => n + "-covered"), ...main.map((n) => n + "-partly"), "bill-main-amount-covered"]);
+    for (const [name, r] of Object.entries(reads)) expect(createHash("sha256").update(readFileSync(`fixtures/documents/${name}.png`)).digest("hex"), name).toBe(r.sha256);
+    expect(new Set(Object.values(reads).map((r) => r.sha256)).size).toBe(10);
+    // the uncovered set is the regular demo's own three files, byte for byte
+    for (const name of main) expect(index.find((e) => e.file === `${name}.png`)?.sha256).toBe(reads[name].sha256);
+    expect(Object.values(reads).map((r) => r.read.kind)).toEqual(["bill", "msn", "income", "bill", "msn", "income", "bill", "msn", "income", "bill"]);
+  });
+
+  it("reads.json carries no name and no number of the fixture patient", () => {
+    const medicare = (JSON.parse(readFileSync("fixtures/case-synthetic.json", "utf8")) as { patient: { medicare_id_masked: string } }).patient.medicare_id_masked;
+    expect(medicare).toMatch(/^1EG4/);
+    for (const s of ["Dorothy", "Hale", "4821", medicare, medicare.slice(0, 4)]) expect(raw.includes(s), s).toBe(false);
+  });
+
+  it("a covered value is gone from the page's HTML, not hidden", () => {
+    for (const name of main) expect(html(name)).toMatch(/Dorothy M\. Hale/);
+    for (const name of [...main.map((n) => n + "-covered"), ...main.map((n) => n + "-partly")]) {
+      expect(html(name), name).not.toMatch(/Dorothy|Hale/);
+      expect(html(name), name).toContain('<span class="cover"');
+      expect(html(name), name).not.toMatch(/display:\s*none|visibility|opacity|color:\s*transparent/);
+    }
+    expect(html("bill-main-covered")).not.toContain("4821");
+    expect(html("bill-main-partly")).toContain("4821");
+    expect(html("bill-main-amount-covered")).not.toContain("$466.00");
+    expect(html("bill-main-amount-covered")).toContain("Dorothy M. Hale");
+  });
+
+  it("bill-main-exif.jpg is a JPEG whose first segment is EXIF with a GPS block", () => {
+    const jpg = readFileSync("fixtures/documents/bill-main-exif.jpg");
+    expect([...jpg.subarray(0, 4)]).toEqual([0xff, 0xd8, 0xff, 0xe1]);
+    expect(jpg.subarray(6, 12).toString("latin1")).toBe("Exif\0\0");
+    const exif = jpg.subarray(4, 4 + jpg.readUInt16BE(4));
+    expect(exif.includes(Buffer.from([0x88, 0x25]))).toBe(true);
+    // the page itself follows untouched: a second marker right after the EXIF segment
+    expect(jpg[4 + jpg.readUInt16BE(4)]).toBe(0xff);
+  });
+
+  it("the demo policy adds a city, a state and the sentence on insured patients", () => {
+    expect(JSON.parse(readFileSync("fixtures/private/demo-policy.json", "utf8"))).toEqual({
+      city: "Tacoma", state: "WA",
+      insuredCovered: { value: true, quote: "Patients with insurance, including Medicare, may apply for help with the amount they owe after insurance.", sourceUrl: null, checkedOn: null },
+      otherConditions: [],
+    });
+  });
+});
+
 describe("the demo-partner policy", () => {
   it("is the synthetic 200 / 75 / 50 policy with its own sentences", () => {
     const p = JSON.parse(readFileSync("fixtures/policies/riverbend.json", "utf8")) as Policy;
