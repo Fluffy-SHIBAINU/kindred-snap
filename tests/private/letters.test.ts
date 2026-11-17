@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { formatUsd } from "@/lib/money";
 import { coverageOf, join } from "@/lib/private/join";
 import { PLACEHOLDERS, privateDrafts } from "@/lib/private/letters";
+import { demoMatch, runStateless } from "@/lib/private/run";
 import { boundRead } from "@/lib/private/scrub";
 import type { Joined, PrivatePolicy, PrivateRead } from "@/lib/private/types";
 import { numberTokens, type CaseFacts } from "@/lib/templates/facts";
@@ -198,6 +199,26 @@ describe("privateDrafts, which letters exist", () => {
 });
 
 describe("privateDrafts, the rule of section 6", () => {
+  it("(a) a household of one and of four get identical letters, character for character, also above the one-person top tier", async () => {
+    const run = async (reads: PrivateRead[], size: 1 | 4) => {
+      const out = await runStateless(reads, { match: demoMatch, today: TODAY, demo: true }, size);
+      if (out.status !== "ok") throw new Error(`not ok: ${out.status}`);
+      return out.result;
+    };
+    const rich = [BILL, MSN, income(8000000, "year", 3)];
+    for (const reads of [[BILL, MSN, INCOME], rich, [BILL, INCOME], [BILL, EOB, income(313000, "month", 3)]]) {
+      const [one, four] = [await run(reads, 1), await run(reads, 4)];
+      expect(one.letters.length).toBeGreaterThan(0);
+      expect(JSON.stringify(four.letters)).toBe(JSON.stringify(one.letters));
+      // the guess is real: it moves the estimate, and only the estimate
+      expect(four.estimate).not.toEqual(one.estimate);
+      expect({ ...four, estimate: null }).toEqual({ ...one, estimate: null });
+    }
+    expect((await run([BILL, MSN, INCOME], 1)).estimate?.cents).toBe(40950);
+    expect((await run([BILL, MSN, INCOME], 4)).estimate?.cents).toBe(46600);
+    expect((await run(rich, 1)).letters.map((l) => l.kind)).toEqual(["correction_request", "assistance_application"]);
+  });
+
   it("every letter passes validateDraft with its own facts", () => {
     for (const c of ALL) for (const d of c.drafts) expect(validateDraft(d.draft, d.facts), `${c.name}: ${d.title}`).toEqual({ ok: true, unknownNumbers: [] });
   });

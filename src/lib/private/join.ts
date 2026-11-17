@@ -30,10 +30,17 @@ const sameName = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "")
 const differ = (values: Array<string | number | null>) => new Set(values.filter((v) => v !== null)).size > 1;
 const first = <T>(values: Array<T | null>): T | null => values.find((v) => v !== null) ?? null;
 
-/** The lines of several pages in page order. A page whose line numbers repeat an earlier page's continues the count instead. */
+const sameLine = (a: ReadLine, b: ReadLine) =>
+  a.n === b.n && a.code === b.code && a.serviceDate === b.serviceDate && a.chargeCents === b.chargeCents && a.billedCents === b.billedCents && a.youMayBeBilledCents === b.youMayBeBilledCents;
+
+/**
+ * The lines of several pages in page order. A page whose line numbers repeat an earlier page's continues the count instead.
+ * Another copy of a page already taken (every line the same, say with the amount owed showing this time) adds no lines.
+ */
 function inPageOrder(pages: PrivateRead[]): ReadLine[] {
   const out: ReadLine[] = [];
   for (const p of pages) {
+    if (p.lines.every((l) => out.some((o) => sameLine(o, l)))) continue;
     const top = Math.max(0, ...out.map((l) => l.n));
     const clash = p.lines.some((l) => out.some((o) => o.n === l.n));
     out.push(...p.lines.map((l, i) => (clash ? { ...l, n: top + i + 1 } : l)));

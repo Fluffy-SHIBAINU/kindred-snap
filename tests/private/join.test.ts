@@ -97,6 +97,16 @@ describe("join", () => {
     expect(joined([front, renumbered]).bill.lines.map((l) => [l.n, l.code])).toEqual(j.bill.lines.map((l) => [l.n, l.code]));
   });
 
+  it("takes another copy of a page once: the same lines, with a value showing that the first copy had covered", () => {
+    const j = joined([demo("bill-main-amount-covered", 1), MSN, { ...BILL, page: 3 }]);
+    expect(j.bill.lines.map((l) => l.n)).toEqual([1, 2, 3, 4, 5]);
+    expect(j.bill.patientOwesCents).toBe(46600);
+    // a notice dropped twice, the first time with its maximum covered
+    const notice = joined([BILL, { ...MSN, noticeMaxCents: null, covered: ["notice_max"] }, { ...MSN, page: 3 }]).notice;
+    expect(notice).toMatchObject({ maxCents: 22600, maxFrom: "printed" });
+    expect(notice?.lines.map((l) => l.n)).toEqual([1, 2, 3, 4, 5]);
+  });
+
   it("stops at two bills when pages differ in the amount owed, the statement date or the hospital", () => {
     const other = (over: Partial<PrivateRead>): PrivateRead => ({ ...BILL, page: 2, lines: [], ...over });
     expect(join([BILL, other({ patientOwesCents: 12000 })])).toEqual({ stop: "two_bills" });
