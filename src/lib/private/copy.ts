@@ -5,7 +5,7 @@
  * Nothing here carries a case's own figure. Object keys follow the unions of §5 (`outcome`, `help`, stop reasons).
  */
 import { READER_TERMS, type ReaderTerms } from "./readerTerms";
-import type { AssumptionKey, PrivateResult } from "./types";
+import type { Assumption, AssumptionKey, PrivateResult } from "./types";
 
 type PromiseId = "S1" | "S2" | "S3" | "S4" | "S5" | "S6" | "S7" | "S8" | "S9" | "S10" | "S11" | "S12" | "S13" | "S14" | "S15" | "S16";
 type Place = "snap" | "body" | "details" | "erased" | "stop" | "failed";
@@ -267,6 +267,41 @@ export const TABLES = {
 
 /** The assumption keys that are guesses and carry the chip Assumed; every other key that applied is a plain line (§2a). */
 export const GUESS_KEYS: AssumptionKey[] = ["household_size", "coverage_type", "insurance_unknown", "same_visit", "hospital", "hospital_match", "line_charge", "notice_lines_sum", "income_added"];
+
+/** How the coverage reads in the `coverage_type` statement, by the kind of statement dropped. Only a Medicare notice names Medicare. */
+export const COVERAGE_WORDS = {
+  msn: { coverage: "Original Medicare", notice: "a Medicare notice" },
+  eob: { coverage: "an insurance plan", notice: "an insurer's statement" },
+};
+
+const BLANK_FOR_IT = "Any letter leaves a blank for it.";
+
+/**
+ * One rule per gap in what the files show (§6): what we took to be so, and what the letters do instead of stating it.
+ * `coverage_type` takes its slots from `COVERAGE_WORDS` and `hospital_match` from the matched sheet. `join.ts` decides
+ * which apply to a run (`assume`).
+ */
+export const ASSUMPTIONS: Record<AssumptionKey, { statement: string; ifWrong: string; inLetter: Assumption["inLetter"] }> = {
+  household_size: { statement: "One person lives in the home.", ifWrong: "The letter leaves household size blank and asks the hospital which tier applies.", inLetter: "blank" },
+  coverage_type: { statement: "We took this to be {coverage}, because you dropped {notice}.", ifWrong: "The letters name the notice, never the coverage.", inLetter: "left_out" },
+  insurance_unknown: { statement: "We couldn't tell whether the patient has insurance.", ifWrong: "The letter has tick boxes to mark by hand: a notice or statement is attached, or none was received.", inLetter: "blank" },
+  same_visit: { statement: "We took the notice to be for the same visit as the bill.", ifWrong: "A letter that relies on the match asks the hospital to confirm the notice covers the same visit.", inLetter: "asks" },
+  hospital: { statement: "We couldn't tell which hospital.", ifWrong: "The letters leave a blank for the hospital's name, and we wrote no help application.", inLetter: "blank" },
+  hospital_match: { statement: RESULT.matched, ifWrong: "If this is not your hospital, ignore the help program and the phone number here.", inLetter: "blank" },
+  service_date: { statement: "A service date wasn't shown, so we matched lines without it.", ifWrong: "A letter that names the line leaves its date blank.", inLetter: "blank" },
+  line_code: { statement: "A service code wasn't shown, so we matched that line by its amount.", ifWrong: "A letter that names the line gives its number and charge, not a code.", inLetter: "left_out" },
+  line_charge: { statement: "A charge was covered, so we left that line out of the comparison.", ifWrong: "No letter points to a single line. If the amounts differ, the letter asks the hospital to go through the bill.", inLetter: "asks" },
+  line_patient: { statement: "An amount on the notice wasn't shown, so we left that line out.", ifWrong: "No letter rests on that line.", inLetter: "left_out" },
+  statement_date: { statement: "The statement date wasn't shown.", ifWrong: BLANK_FOR_IT, inLetter: "blank" },
+  due_date: { statement: "The due date wasn't shown, so there is no reminder of it here.", ifWrong: BLANK_FOR_IT, inLetter: "blank" },
+  no_notice: { statement: "We had no notice or statement we could use, so we didn't check the charges.", ifWrong: "The letter asks the hospital for an itemized bill.", inLetter: "asks" },
+  notice_lines_sum: { statement: "We added up the lines we could match.", ifWrong: "A letter lists the lines by number and prints no total.", inLetter: "left_out" },
+  no_income: { statement: "No income was shown in your files.", ifWrong: "Any help application leaves the yearly household income blank.", inLetter: "blank" },
+  income_period: { statement: "The income shown is not by month or by year, so we didn't use it.", ifWrong: "Any help application prints the figure as shown and leaves the yearly total blank.", inLetter: "blank" },
+  income_added: { statement: "Your income letters show different amounts, so we added them together.", ifWrong: "Any help application prints each figure as shown and no sum.", inLetter: "left_out" },
+  second_statement: { statement: LEFT_OUT.secondStatement, ifWrong: "The letters refer to the Medicare notice only.", inLetter: "left_out" },
+  guideline_region: { statement: "We only have the poverty guideline for the 48 states and DC, so we worked out no percent for this hospital.", ifWrong: "No letter states a share of the guideline.", inLetter: "left_out" },
+};
 
 /** The letters screen and the packet's fixed pages (§2, §7). Letter wording itself is in `letters.ts`. */
 export const LETTERS = {

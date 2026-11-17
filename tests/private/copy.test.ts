@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
-  ACTIONS, BODY, BUTTON_LABEL, CHIPS, COVER_SHEET, DISCOUNT, ERASE, GUESS_KEYS, H1, H1_LINE, H2, HELD, LEFT_OUT, LETTERS, LETTER_TITLES, NOTICE_NAME,
+  ACTIONS, ASSUMPTIONS, BODY, BUTTON_LABEL, CHIPS, COVERAGE_WORDS, COVER_SHEET, DISCOUNT, ERASE, GUESS_KEYS, H1, H1_LINE, H2, HELD, LEFT_OUT, LETTERS, LETTER_TITLES, NOTICE_NAME,
   PRINT_FOOTER, PROMISES as P, REFUSED, RESULT, STAFF_REVIEW_SENTENCE, STEP_SUMMARIES, STEP_TITLES, STOP, TABLES, fill, fillTerms, promisesFor,
 } from "@/lib/private/copy";
 import { READER_TERMS, readerTermsComplete, type ReaderTerms } from "@/lib/private/readerTerms";
@@ -60,8 +60,28 @@ describe("private copy", () => {
     expect(section2a).toContain(GUESS_KEYS.map((k) => "`" + k + "`").join(", "));
   });
 
+  it("holds a statement and an if-wrong sentence for every assumption key, as section 6 writes them", () => {
+    const keys = doc.match(/type AssumptionKey = ([^;]+);/)![1].split(" | ").map((k) => k.replace(/"/g, ""));
+    expect(Object.keys(ASSUMPTIONS)).toEqual(keys);
+    for (const k of GUESS_KEYS) expect(keys).toContain(k);
+    const section6 = doc.slice(doc.indexOf("## 6. Assumptions"), doc.indexOf("## 7."));
+    for (const [key, a] of Object.entries(ASSUMPTIONS)) {
+      const statements = key === "coverage_type" ? Object.values(COVERAGE_WORDS).map((w) => fill(a.statement, w)) : [a.statement];
+      for (const s of [...statements, a.ifWrong]) expect(section6.includes(s) || section2a.includes(s), `${key}: ${s}`).toBe(true);
+      expect(["blank", "asks", "left_out"], key).toContain(a.inLetter);
+    }
+  });
+
+  it("names Medicare in an assumption only where a Medicare notice was dropped", () => {
+    const { coverage_type, second_statement, ...rest } = ASSUMPTIONS;
+    expect(JSON.stringify(rest)).not.toContain("Medicare");
+    expect(fill(coverage_type.statement, COVERAGE_WORDS.eob) + coverage_type.ifWrong).not.toContain("Medicare");
+    expect(fill(coverage_type.statement, COVERAGE_WORDS.msn)).toBe("We took this to be Original Medicare, because you dropped a Medicare notice.");
+    expect(second_statement.ifWrong).toContain("Medicare");
+  });
+
   it("carries no demo figure or name: amounts, percents, dates and hospitals are slots", () => {
-    for (const s of [...fixed, ...Object.values(P), medicareH2]) expect(s).not.toMatch(/\$\d|\d%|Riverbend|Tacoma|Sep 14/);
+    for (const s of [...fixed, ...strings(ASSUMPTIONS), ...Object.values(P), medicareH2]) expect(s).not.toMatch(/\$\d|\d%|Riverbend|Tacoma|Sep 14/);
   });
 
   it("fills slots and leaves a mark with no value as written", () => {
