@@ -243,6 +243,7 @@ export const RESULT = {
   assumed: "What we assumed ({n})",
   nothingCovered: "Nothing we needed was covered in your files.",
   neverRead: "We never read a name, an address or an ID number, covered or not. The letters leave blanks for them.",
+  ifPeople: "If {people} people live there, the policy lists {discount}.",
   due: "Bill due {date}.",
   dueHold: "The letter asks the hospital to hold the account while it reviews.",
   noLetter: "There is no letter to send.",
@@ -310,6 +311,16 @@ export const LETTERS = {
   assumed: "What We Assumed",
   keep: "Keep this page. Do not send it.",
   attach: "Attach a copy of the bill and the notice. Send it all to Patient Financial Services, at the address printed on the bill.",
+};
+
+/**
+ * The notice tick boxes a letter prints for a pen (§6): `medicare` or `insurance`, then `none`. The first box names
+ * Medicare only when a Medicare notice was among the files, so no other letter contains the word.
+ */
+export const TICK_BOXES = {
+  medicare: "[ ] The Medicare notice or insurer's statement for this visit is attached",
+  insurance: "[ ] The notice or statement from my insurance for this visit is attached",
+  none: "[ ] I have not received one",
 };
 
 /** The packet's document titles (§2a): the cover sheet, one per letter kind, and the page that is kept. */

@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   ACTIONS, ASSUMPTIONS, BODY, BUTTON_LABEL, CHIPS, COVERAGE_WORDS, COVER_SHEET, DISCOUNT, ERASE, GUESS_KEYS, H1, H1_LINE, H2, HELD, LEFT_OUT, LETTERS, LETTER_TITLES, NOTICE_NAME,
-  PRINT_FOOTER, PROMISES as P, REFUSED, RESULT, STAFF_REVIEW_SENTENCE, STEP_SUMMARIES, STEP_TITLES, STOP, TABLES, fill, fillTerms, promisesFor,
+  PRINT_FOOTER, PROMISES as P, REFUSED, RESULT, STAFF_REVIEW_SENTENCE, STEP_SUMMARIES, STEP_TITLES, STOP, TABLES, TICK_BOXES, fill, fillTerms, promisesFor,
 } from "@/lib/private/copy";
 import { READER_TERMS, readerTermsComplete, type ReaderTerms } from "@/lib/private/readerTerms";
 
@@ -21,7 +21,7 @@ const strings = (v: unknown): string[] => (typeof v === "string" ? [v] : Object.
 const { insured_not_covered_medicare: medicareH2, ...h2 } = H2;
 const fixed = strings([
   BODY, ACTIONS, H1, H1_LINE, NOTICE_NAME, h2, STOP, REFUSED, STEP_TITLES, STEP_SUMMARIES, DISCOUNT, LEFT_OUT, HELD, CHIPS, RESULT, TABLES, LETTERS, LETTER_TITLES,
-  COVER_SHEET, PRINT_FOOTER, ERASE,
+  COVER_SHEET, PRINT_FOOTER, ERASE, TICK_BOXES,
 ]);
 const section2a = doc.slice(doc.indexOf("### 2a."), doc.indexOf("## 3."));
 const places = ["snap", "body", "details", "erased", "stop", "failed"] as const;
