@@ -12,10 +12,17 @@ import { buildSteps, type StepKey, type StepSummaries } from "@/lib/progress";
 import { estimateOpportunity } from "@/lib/savings";
 import { assistanceDraft, correctionDraft, validateDraft, type CaseFacts } from "@/lib/templates";
 import { formatDate, numberTokens } from "@/lib/templates/facts";
-import type { Action, BillLine, BillTotals, Case, Document, Eligibility, MsnLine, MsnTotals, Policy } from "@/lib/types";
+import type { Action, ActionKind, BillLine, BillTotals, Case, Document, Eligibility, Finding, MsnLine, MsnTotals, Policy } from "@/lib/types";
 
-export type PipelineDeps = { claims: ClaimsConnector; policyFor: (c: Case) => Promise<Policy | null>; now: () => string };
-export type PipelineOpts = { delayMs?: number };
+export type PipelineDeps = {
+  claims: ClaimsConnector;
+  policyFor: (c: Case) => Promise<Policy | null>;
+  now: () => string;
+  /** When given, it alone decides which letters exist (the correction and assistance templates are not used); each letter is checked against the facts it returns. */
+  drafts?: (ctx: { facts: CaseFacts; findings: Finding[]; eligibility: Eligibility; policy: Policy | null }) => Array<{ kind: ActionKind; title: string; draft: string; facts: CaseFacts }>;
+};
+/** `tolerant` (pages with covered values): a missing notice and a finding that would need review do not park the case. */
+export type PipelineOpts = { delayMs?: number; tolerant?: boolean };
 
 type ReadableBill = Document & { billLines: BillLine[]; billTotals: BillTotals };
 type ReadableMsn = Document & { msnLines: MsnLine[]; msnTotals: MsnTotals };
@@ -36,7 +43,8 @@ export async function defaultPolicyFor(c: Case): Promise<Policy | null> {
 /**
  * Runs the whole investigation inside the caller and persists the case (state and steps) after every step:
  * read bill → Medicare notice → compare → help program → letters → `ready_to_send`.
- * Stops in `unreadable`, `needs_notice`, `connector_unavailable` or `needs_review` when the case needs a person.
+ * Stops in `unreadable`, `needs_notice`, `connector_unavailable` or `needs_review` when the case needs a person
+ * (a `tolerant` run stops only in `unreadable` or `connector_unavailable`).
  */
 export async function runInvestigation(store: Store, caseId: string, deps: PipelineDeps, opts: PipelineOpts = {}): Promise<Case> {
   const run = await load(store, caseId, deps, opts);
@@ -57,7 +65,7 @@ export async function runInvestigation(store: Store, caseId: string, deps: Pipel
 
   await pause(opts.delayMs);
   const msn = await fetchNotice(run);
-  if (!msn) return run.c;
+  if (msn === "parked") return run.c;
   return compareAndFinish(run, bill, msn);
 }
 
@@ -73,7 +81,7 @@ export async function resumeInvestigation(store: Store, caseId: string, deps: Pi
   const onFile = readableMsn((await store.documentsFor(caseId)).find((d) => d.kind === "msn") ?? null);
   if (!onFile && run.c.state === "needs_notice") return run.c;
   const msn = onFile ?? (await fetchNotice(run));
-  if (!msn) return run.c;
+  if (msn === "parked") return run.c;
   return compareAndFinish(run, bill, msn);
 }
 
@@ -108,8 +116,11 @@ function readableMsn(d: Document | null): ReadableMsn | null {
   return d && d.status === "readable" && d.msnLines && d.msnTotals ? (d as ReadableMsn) : null;
 }
 
-/** Asks the connector; parks the case in `connector_unavailable` or `needs_notice` (when that move is legal) and returns null. */
-async function fetchNotice(run: Run): Promise<ReadableMsn | null> {
+/**
+ * Asks the connector; parks the case in `connector_unavailable` or `needs_notice` (when that move is legal) and returns "parked".
+ * Null only on a `tolerant` run: there is no notice and the run goes on without one.
+ */
+async function fetchNotice(run: Run): Promise<ReadableMsn | null | "parked"> {
   run.summaries.fetch_notice = "Asking Medicare for the notice";
   await save(run);
   let doc: Document | null;
@@ -119,25 +130,28 @@ async function fetchNotice(run: Run): Promise<ReadableMsn | null> {
     if (!(e instanceof ConnectorUnavailable)) throw e;
     run.summaries.fetch_notice = "Medicare's connection isn't responding. Try again, or photograph the paper notice.";
     await save(run, "connector_unavailable");
-    return null;
+    return "parked";
   }
   const msn = readableMsn(doc);
+  if (!msn && run.opts.tolerant) return null;
   if (!msn) {
     run.summaries.fetch_notice = "Medicare has no notice on record for this visit yet. Photograph the paper notice when it arrives.";
     await save(run, "needs_notice");
-    return null;
+    return "parked";
   }
   await run.store.documents.put(msn);
   return msn;
 }
 
-function noticeSummary(msn: ReadableMsn): string {
+function noticeSummary(msn: ReadableMsn | null): string {
+  if (!msn) return "No notice to compare with";
   const visit = msn.msnLines[0]?.serviceDate;
   const processed = /processed (\d{4}-\d{2}-\d{2})/.exec(msn.msnTotals.period)?.[1];
   return (visit ? `${shortDate(visit)} visit` : "Notice received") + (processed ? `, processed ${shortDate(processed)}` : "");
 }
 
-async function compareAndFinish(run: Run, bill: ReadableBill, msn: ReadableMsn): Promise<Case> {
+/** `msn` is null only on a `tolerant` run with no notice: the comparison is then "insufficient information" and the help program and letters still run. */
+async function compareAndFinish(run: Run, bill: ReadableBill, msn: ReadableMsn | null): Promise<Case> {
   const { store, deps, opts } = run;
   run.summaries.fetch_notice = noticeSummary(msn);
 
@@ -145,11 +159,11 @@ async function compareAndFinish(run: Run, bill: ReadableBill, msn: ReadableMsn):
   run.summaries.compare = "Comparing each line with the notice";
   await save(run, "comparing");
   await pause(opts.delayMs);
-  const findings = findDiscrepancies({ caseId: run.c.id, bill: { lines: bill.billLines, totals: bill.billTotals }, msn: { lines: msn.msnLines, totals: msn.msnTotals } });
+  const findings = findDiscrepancies({ caseId: run.c.id, bill: { lines: bill.billLines, totals: bill.billTotals }, msn: msn && { lines: msn.msnLines, totals: msn.msnTotals }, tolerant: opts.tolerant });
   // shortcut: finding ids are deterministic per case, so a rerun overwrites but never removes a stale finding; add a remove when reruns matter
   for (const f of findings) await store.findings.put(f);
   const n = bill.billLines.length;
-  if (findings.some((f) => f.requiresReview)) {
+  if (!opts.tolerant && findings.some((f) => f.requiresReview)) {
     run.summaries.compare = "A billing specialist needs to check this bill before anything is asked.";
     await save(run, "needs_review");
     return run.c;
@@ -159,6 +173,8 @@ async function compareAndFinish(run: Run, bill: ReadableBill, msn: ReadableMsn):
   const gap = findings.filter((f) => f.kind === "patient_owes_exceeds_notice").reduce((a, f) => a + (f.amountCents ?? 0), 0);
   run.summaries.compare = line
     ? `${n - 1} of ${n} match. Line ${line.n}, ${formatUsd(line.chargeCents)}, needs asking`
+    // only a tolerant run gets here without the two agreeing: no notice, a gap no line explains, or a possible duplicate
+    : opts.tolerant && !findings.some((f) => f.kind === "no_discrepancy") ? "The lines could not all be checked against a notice"
     : `${n} of ${n} match. The bill agrees with the notice`;
 
   // 4. help program
@@ -176,14 +192,18 @@ async function compareAndFinish(run: Run, bill: ReadableBill, msn: ReadableMsn):
   // 5. write letters
   const wantCorrection = gap > 0;
   const wantAssistance = eligibility.status !== "none";
-  run.summaries.draft = wantCorrection && wantAssistance ? "Drafting the correction letter and the help application" : wantCorrection ? "Drafting the correction letter" : "Drafting the help application";
+  // the regular run writes its own two letters and words its summaries around them; anything else gets a neutral summary
+  const regular = !deps.drafts && !opts.tolerant;
+  run.summaries.draft = !regular ? "Drafting the letters" : wantCorrection && wantAssistance ? "Drafting the correction letter and the help application" : wantCorrection ? "Drafting the correction letter" : "Drafting the help application";
   await save(run, "drafting");
   await pause(opts.delayMs);
   const facts = factsFor(run.c, bill, msn, line, gap, eligibility, policy);
-  const drafts = [...(wantCorrection ? [correctionDraft(facts)] : []), ...(wantAssistance ? [assistanceDraft(facts)] : [])];
+  const drafts = deps.drafts
+    ? deps.drafts({ facts, findings, eligibility, policy })
+    : [...(wantCorrection ? [correctionDraft(facts)] : []), ...(wantAssistance ? [assistanceDraft(facts)] : [])].map((d) => ({ ...d, facts }));
   const failed: string[] = [];
   for (const d of drafts) {
-    if (!validateDraft(d.draft, facts).ok) { failed.push(d.title); continue; }
+    if (!validateDraft(d.draft, d.facts).ok) { failed.push(d.title); continue; }
     const a: Action = {
       id: `${run.c.id}-${d.kind}`, caseId: run.c.id, kind: d.kind, title: d.title, draft: d.draft, status: "drafted",
       validatedNumbers: [...new Set(numberTokens(d.draft).filter((t) => t.startsWith("$")))],
@@ -199,7 +219,8 @@ async function compareAndFinish(run: Run, bill: ReadableBill, msn: ReadableMsn):
     return run.c;
   }
   run.summaries.draft =
-    drafts.length === 2 ? "Correction letter and help application ready for your approval"
+    !regular ? `Letters ready: ${drafts.length}`
+    : drafts.length === 2 ? "Correction letter and help application ready for your approval"
     : wantCorrection ? "Correction letter ready for your approval"
     : wantAssistance ? "Help application ready for your approval"
     : "Nothing to send. The bill agrees with the notice.";
@@ -222,9 +243,9 @@ function assistanceSummary(e: Eligibility, hasIncome: boolean): string {
   }
 }
 
-function factsFor(c: Case, bill: ReadableBill, msn: ReadableMsn, line: BillLine | undefined, gap: number, e: Eligibility, policy: Policy | null): CaseFacts {
+function factsFor(c: Case, bill: ReadableBill, msn: ReadableMsn | null, line: BillLine | undefined, gap: number, e: Eligibility, policy: Policy | null): CaseFacts {
   const t = bill.billTotals;
-  const note = line ? msn.msnLines.find((m) => m.code === line.code && m.serviceDate === line.serviceDate)?.note : undefined;
+  const note = line ? msn?.msnLines.find((m) => m.code === line.code && m.serviceDate === line.serviceDate)?.note : undefined;
   return {
     patientName: c.patientName,
     helperName: c.helperName,
@@ -233,7 +254,7 @@ function factsFor(c: Case, bill: ReadableBill, msn: ReadableMsn, line: BillLine 
     statementDate: t.statementDate,
     dueDate: t.dueDate,
     askedCents: t.patientOwesCents,
-    noticeMaxCents: msn.msnTotals.maxYouMayBeBilledCents,
+    noticeMaxCents: msn?.msnTotals.maxYouMayBeBilledCents,
     removedLine: line ? { n: line.n, code: line.code, description: line.description, chargeCents: line.chargeCents, noticeNote: note } : undefined,
     gapCents: gap > 0 ? gap : undefined,
     incomeAnnualCents: c.income?.annualCents,

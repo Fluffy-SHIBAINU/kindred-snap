@@ -148,6 +148,89 @@ describe("runInvestigation", () => {
   });
 });
 
+describe("runInvestigation, tolerant (pages with covered values)", () => {
+  const tolerant = { tolerant: true };
+  const noNotice: PipelineDeps = { ...deps, claims: { kind: "dropped_document", state: async () => "connected", fetchNotice: async () => null } };
+
+  it("goes on without a notice: ready to send with an insufficient_information finding", async () => {
+    const store = await setup("edge-missing-notice", { income });
+    const c = await runInvestigation(store, "edge-missing-notice", noNotice, tolerant);
+    expect(c.state).toBe("ready_to_send");
+    expect(c.steps.map((s) => s.status)).toEqual(["done", "done", "done", "done", "done"]);
+    expect(c.steps[1].summary).toBe("No notice to compare with");
+    expect(c.steps[2].summary).not.toMatch(/agrees|match/);
+    const findings = await store.findingsFor("edge-missing-notice");
+    expect(findings.map((f) => [f.kind, f.amountCents, f.requiresReview])).toEqual([["insufficient_information", null, false]]);
+    // the help program and its letter still run, on the whole balance; no correction letter without a notice
+    expect(c.eligibility).toMatchObject({ status: "discount", discountPercent: 75 });
+    expect((await store.actionsFor("edge-missing-notice")).map((a) => a.kind)).toEqual(["assistance_application"]);
+    expect((await store.resolutions.get("edge-missing-notice"))!.estimatedOpportunityCents).toBe(34950);
+    expect((await store.documentsFor("edge-missing-notice")).some((d) => d.kind === "msn")).toBe(false);
+    await expectDraftsGrounded(store, "edge-missing-notice");
+    // off by default: the same connector parks the regular run
+    const regular = await setup("edge-missing-notice", { income });
+    expect((await runInvestigation(regular, "edge-missing-notice", noNotice)).state).toBe("needs_notice");
+  });
+
+  it("does not park the duplicate-EKG case", async () => {
+    const store = await setup("edge-needs-review", { income });
+    const c = await runInvestigation(store, "edge-needs-review", deps, tolerant);
+    expect(c.state).toBe("ready_to_send");
+    const findings = await store.findingsFor("edge-needs-review");
+    expect(findings.map((f) => f.kind)).toEqual(["possible_duplicate"]);
+    expect(findings[0].requiresReview).toBe(true);
+    expect(c.steps[2].summary).not.toMatch(/agrees/);
+    expect((await store.actionsFor("edge-needs-review")).map((a) => a.kind)).toEqual(["assistance_application"]);
+  });
+
+  it("still parks when the connector is down", async () => {
+    const store = await setup("edge-connector-down", { income });
+    expect((await runInvestigation(store, "edge-connector-down", deps, tolerant)).state).toBe("connector_unavailable");
+  });
+});
+
+describe("runInvestigation with deps.drafts", () => {
+  type Ctx = Parameters<NonNullable<PipelineDeps["drafts"]>>[0];
+
+  it("calls it once even when the income is above every tier, and it alone decides which letters exist", async () => {
+    const store = await setup("demo", { income: { ...income, annualCents: 20000000 } });
+    const seen: Ctx[] = [];
+    const drafts = (ctx: Ctx) => {
+      seen.push(ctx);
+      return [{ kind: "information_request" as const, title: "Ask", draft: `The statement asks for ${formatUsd(ctx.facts.askedCents)}.`, facts: ctx.facts }];
+    };
+    const c = await runInvestigation(store, "demo", { ...deps, drafts });
+    expect(seen).toHaveLength(1);
+    expect(seen[0].eligibility.status).toBe("none");
+    expect(seen[0].policy?.basis).toBe("synthetic_policy");
+    expect(seen[0].findings.map((f) => f.kind).sort()).toEqual(["line_not_patient_responsibility", "patient_owes_exceeds_notice"]);
+    expect(seen[0].facts).toMatchObject({ askedCents: 46600, noticeMaxCents: 22600, gapCents: 24000 });
+    expect(c.state).toBe("ready_to_send");
+    // the templates would have written a correction letter here
+    const actions = await store.actionsFor("demo");
+    expect(actions.map((a) => [a.kind, a.title, a.validatedNumbers])).toEqual([["information_request", "Ask", ["$466.00"]]]);
+
+    const none = await setup("demo", { income });
+    expect((await runInvestigation(none, "demo", { ...deps, drafts: () => [] })).state).toBe("ready_to_send");
+    expect(await none.actionsFor("demo")).toEqual([]);
+  });
+
+  it("checks each letter against the facts it returns: a number its own facts do not allow leaves the case in drafting", async () => {
+    const store = await setup("demo", { income });
+    const text = "The enclosed income letter shows $3,130.00 a month.";
+    const c = await runInvestigation(store, "demo", {
+      ...deps,
+      drafts: ({ facts }) => [
+        { kind: "assistance_application", title: "Apply", draft: text, facts: { ...facts, extraCents: [313000] } },
+        { kind: "information_request", title: "Ask", draft: text, facts },
+      ],
+    });
+    expect(c.state).toBe("drafting");
+    expect(c.steps[4]).toMatchObject({ title: "5. Write letters: needs you", status: "needs_you" });
+    expect((await store.actionsFor("demo")).map((a) => a.kind)).toEqual(["assistance_application"]);
+  });
+});
+
 describe("defaultPolicyFor", () => {
   it("uses the demo partner's policy when the case has no CCN and nothing when an unknown CCN is given", async () => {
     const c = (await setup("demo").then((s) => s.cases.get("demo")))!;
