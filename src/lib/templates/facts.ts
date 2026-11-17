@@ -9,7 +9,10 @@ export type CaseFacts = {
   statementDate: string;
   dueDate: string;
   askedCents: number;
-  noticeMaxCents: number;
+  /** absent when no notice was read (private mode); the regular letters always have one */
+  noticeMaxCents?: number;
+  /** other amounts printed on a page of the case, such as a monthly income */
+  extraCents?: number[];
   removedLine?: { n: number; code: string; description: string; chargeCents: number; noticeNote?: string };
   gapCents?: number;
   incomeAnnualCents?: number;
@@ -23,8 +26,9 @@ export type CaseFacts = {
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-/** "2026-11-30" -> "Nov 30, 2026" (string arithmetic only, so no timezone shift). */
+/** "2026-11-30" -> "Nov 30, 2026" (string arithmetic only, so no timezone shift). Anything else, such as "[due date]", comes back unchanged. */
 export function formatDate(iso: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return iso;
   const [y, m, d] = iso.split("-");
   return `${MONTHS[Number(m) - 1]} ${Number(d)}, ${y}`;
 }
@@ -53,7 +57,8 @@ export function numberTokens(text: string): string[] {
 /** Every number a letter about these facts may contain, formatted as the templates format it. */
 export function allowedTokens(f: CaseFacts): Set<string> {
   const out = new Set<string>();
-  const cents = [f.askedCents, f.noticeMaxCents, f.correctedCents, f.askedCents - f.noticeMaxCents, f.gapCents, f.incomeAnnualCents, f.removedLine?.chargeCents];
+  const difference = f.noticeMaxCents != null ? f.askedCents - f.noticeMaxCents : undefined;
+  const cents = [f.askedCents, f.noticeMaxCents, f.correctedCents, difference, f.gapCents, f.incomeAnnualCents, f.removedLine?.chargeCents, ...(f.extraCents ?? [])];
   for (const c of cents) if (c != null) out.add(formatUsd(c));
   for (const p of [f.fplPercent, f.tierPercent]) if (p != null) out.add(formatPercent(p));
   for (const d of [f.statementDate, f.dueDate]) { out.add(d); out.add(formatDate(d)); }

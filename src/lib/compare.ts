@@ -1,27 +1,36 @@
 import type { BillLine, BillTotals, Finding, MsnLine, MsnTotals, SourceRef } from "@/lib/types";
 
-export type Match = { bill?: BillLine; msn?: MsnLine; how: "code_date" | "description" | "unmatched" };
+export type Match = { bill?: BillLine; msn?: MsnLine; how: "code_date" | "code_amount" | "amount_order" | "description" | "unmatched" };
 export type ArithmeticCheck = { check: string; ok: boolean; expectedCents: number; actualCents: number };
 
 const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+const blank = (s: string) => !s.trim();
 
-/** Pair bill lines with notice lines: same code and service date first, then a description match, else unmatched. */
-export function matchLines(bill: BillLine[], msn: MsnLine[]): Match[] {
+type Rung = { how: Match["how"]; ok: (b: BillLine, m: MsnLine) => boolean };
+// two blank dates are not "the same date", and an empty description is contained in every other one: neither is a match
+const CODE_DATE: Rung = { how: "code_date", ok: (b, m) => !blank(b.code) && !blank(b.serviceDate) && m.code === b.code && m.serviceDate === b.serviceDate };
+const DESCRIPTION: Rung = { how: "description", ok: (b, m) => { const nb = norm(b.description), nm = norm(m.service); return !!nb && !!nm && (nm === nb || nm.includes(nb) || nb.includes(nm)); } };
+const CODE_AMOUNT: Rung = { how: "code_amount", ok: (b, m) => !blank(b.code) && m.code === b.code && m.billedCents === b.chargeCents };
+const AMOUNT_ORDER: Rung = { how: "amount_order", ok: (b, m) => m.billedCents === b.chargeCents };
+
+/**
+ * Pair bill lines with notice lines: same code and service date first, then a description match, else unmatched.
+ * `tolerant` (pages with covered values) replaces the description match with same code and equal amount, then equal amount in order.
+ */
+export function matchLines(bill: BillLine[], msn: MsnLine[], opts: { tolerant?: boolean } = {}): Match[] {
   const left = [...msn];
-  const out: Match[] = [];
-  for (const b of bill) {
-    let i = left.findIndex((m) => m.code === b.code && m.serviceDate === b.serviceDate);
-    let how: Match["how"] = "code_date";
-    if (i < 0) {
-      const nb = norm(b.description);
-      i = left.findIndex((m) => { const nm = norm(m.service); return nm === nb || nm.includes(nb) || nb.includes(nm); });
-      how = "description";
+  const out: Match[] = bill.map((b) => ({ bill: b, how: "unmatched" }));
+  const pair = (i: number, rungs: Rung[]) => {
+    if (out[i].msn) return;
+    for (const r of rungs) {
+      const j = left.findIndex((m) => r.ok(bill[i], m));
+      if (j >= 0) { out[i] = { bill: bill[i], msn: left.splice(j, 1)[0], how: r.how }; return; }
     }
-    if (i < 0) out.push({ bill: b, how: "unmatched" });
-    else out.push({ bill: b, msn: left.splice(i, 1)[0], how });
-  }
-  for (const m of left) out.push({ msn: m, how: "unmatched" });
-  return out;
+  };
+  // tolerant: one rung over every line before the next rung, so a weaker rung never takes a notice line a stronger one would pair
+  if (opts.tolerant) for (const r of [CODE_DATE, CODE_AMOUNT, AMOUNT_ORDER]) bill.forEach((_, i) => pair(i, [r]));
+  else bill.forEach((_, i) => pair(i, [CODE_DATE, DESCRIPTION]));
+  return [...out, ...left.map((m): Match => ({ msn: m, how: "unmatched" }))];
 }
 
 /** Deterministic checks on the bill's own figures. Never a judgement, only sums. */
@@ -38,8 +47,10 @@ export function findDiscrepancies(input: {
   caseId: string;
   bill: { lines: BillLine[]; totals: BillTotals };
   msn: { lines: MsnLine[]; totals: MsnTotals } | null;
+  /** pages with covered values: tolerant line matching, and nothing concluded from a blank code or date */
+  tolerant?: boolean;
 }): Finding[] {
-  const { caseId, bill, msn } = input;
+  const { caseId, bill, msn, tolerant } = input;
   let n = 0;
   const id = () => `${caseId}-f${++n}`;
   const findings: Finding[] = [];
@@ -47,6 +58,7 @@ export function findDiscrepancies(input: {
   // (b) duplicate-looking lines: same code, same day. May be legitimate; a person decides.
   const seen = new Map<string, BillLine>();
   for (const l of bill.lines) {
+    if (tolerant && (blank(l.code) || blank(l.serviceDate))) continue;
     const k = `${l.code}|${l.serviceDate}`;
     const prev = seen.get(k);
     if (prev) {
@@ -69,17 +81,19 @@ export function findDiscrepancies(input: {
 
   const gap = bill.totals.patientOwesCents - msn.totals.maxYouMayBeBilledCents;
   if (gap > 0) {
-    const matches = matchLines(bill.lines, msn.lines);
+    const matches = matchLines(bill.lines, msn.lines, { tolerant });
     const culprit = matches.find((m) => m.bill && m.msn && m.bill.chargeCents === gap && m.msn.youMayBeBilledCents === 0);
     const evidence: SourceRef[] = [bill.totals.source, msn.totals.source];
     if (culprit?.bill && culprit.msn) {
+      // a pair made without code and date may not be the same service
+      const confidence = tolerant && culprit.how !== "code_date" ? "possible" : "likely";
       findings.push({
-        id: id(), caseId, kind: "patient_owes_exceeds_notice", amountCents: gap, confidence: "likely", requiresReview: false,
+        id: id(), caseId, kind: "patient_owes_exceeds_notice", amountCents: gap, confidence, requiresReview: false,
         explanation: `The bill asks the patient for ${usd(bill.totals.patientOwesCents)}; Medicare's notice says the most the patient may be billed is ${usd(msn.totals.maxYouMayBeBilledCents)}. The ${usd(gap)} gap equals line ${culprit.bill.n} exactly.`,
         evidence: [...evidence, culprit.bill.source, culprit.msn.source],
       });
       findings.push({
-        id: id(), caseId, kind: "line_not_patient_responsibility", amountCents: culprit.bill.chargeCents, confidence: "likely", requiresReview: false,
+        id: id(), caseId, kind: "line_not_patient_responsibility", amountCents: culprit.bill.chargeCents, confidence, requiresReview: false,
         explanation: `Line ${culprit.bill.n} (${culprit.bill.code}) appears on the bill at ${usd(culprit.bill.chargeCents)}, while the notice shows ${usd(0)} the patient may be billed for the same service${culprit.msn.note ? ` and says: "${culprit.msn.note}"` : ""}. A later corrected claim could change this.`,
         evidence: [culprit.bill.source, culprit.msn.source],
       });

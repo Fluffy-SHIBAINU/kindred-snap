@@ -4,7 +4,8 @@ import { formatDate, reLine, signature, type CaseFacts } from "./facts";
 
 /** Asks Patient Financial Services to review one line and hold the account. Never asserts an overbilling. */
 export function draft(f: CaseFacts): { kind: ActionKind; title: string; draft: string } {
-  const gap = formatUsd(f.gapCents ?? f.askedCents - f.noticeMaxCents);
+  const max = f.noticeMaxCents!; // a correction letter is only drafted from a notice
+  const gap = formatUsd(f.gapCents ?? f.askedCents - max);
   const line = f.removedLine;
   const lineBlock = line
     ? [
@@ -20,7 +21,7 @@ export function draft(f: CaseFacts): { kind: ActionKind; title: string; draft: s
     `To: Patient Financial Services, ${f.hospitalName}`,
     reLine(f),
     ``,
-    `The statement asks for ${formatUsd(f.askedCents)}. Medicare's Summary Notice for the same visit says the most the patient may be billed is ${formatUsd(f.noticeMaxCents)}.`,
+    `The statement asks for ${formatUsd(f.askedCents)}. Medicare's Summary Notice for the same visit says the most the patient may be billed is ${formatUsd(max)}.`,
     ...lineBlock,
     ``,
     `Please hold the account while you review, so that no collection activity or late fee occurs before the ${formatDate(f.dueDate)} due date. If you believe the charge is correct, please explain why in writing.`,

@@ -64,3 +64,71 @@ describe("edge cases", () => {
     expect(gap?.requiresReview).toBe(true);
   });
 });
+
+describe("blank values", () => {
+  it("two lines with blank dates do not pair as code_date", () => {
+    const m = matchLines([{ ...billLines[0], serviceDate: "" }], [{ ...msnLines[0], serviceDate: "" }]);
+    expect(m.map((x) => x.how)).toEqual(["description"]);
+    // nor do two blank codes on the same day
+    expect(matchLines([{ ...billLines[0], code: "" }], [{ ...msnLines[0], code: "" }])[0].how).toBe("description");
+  });
+  it("an empty description pairs with nothing", () => {
+    const m = matchLines([{ ...billLines[0], code: "", description: "" }], msnLines);
+    expect(m).toHaveLength(6);
+    expect(m.every((x) => x.how === "unmatched")).toBe(true);
+    const n = matchLines([{ ...billLines[0], code: "X0000" }], [{ ...msnLines[1], service: " - " }]);
+    expect(n.map((x) => x.how)).toEqual(["unmatched", "unmatched"]);
+  });
+});
+
+describe("tolerant matching (pages with covered values)", () => {
+  const tolerant = { tolerant: true };
+  const noDates = billLines.map((l) => ({ ...l, serviceDate: "" }));
+
+  it("pairs on code and date when both are there", () => {
+    expect(matchLines(billLines, msnLines, tolerant).map((x) => x.how)).toEqual(Array(5).fill("code_date"));
+  });
+  it("pairs on code and equal amount when the date is covered, never as code_date", () => {
+    const m = matchLines(noDates, msnLines, tolerant);
+    expect(m.map((x) => x.how)).toEqual(Array(5).fill("code_amount"));
+    expect(m.map((x) => x.msn?.n)).toEqual([1, 2, 3, 4, 5]);
+  });
+  it("pairs on equal amount, in order, when the code is covered too", () => {
+    const bill = billLines.map((l) => (l.n === 3 ? { ...l, code: "" } : l));
+    const m = matchLines(bill, msnLines, tolerant);
+    expect(m.map((x) => x.how)).toEqual(["code_date", "code_date", "amount_order", "code_date", "code_date"]);
+    expect(m[2].msn?.n).toBe(3);
+    // two notice lines with that amount: the first one left is taken
+    const twice = matchLines([{ ...billLines[2], code: "" }], [{ ...msnLines[0], billedCents: 24000 }, msnLines[2]], tolerant);
+    expect(twice[0]).toMatchObject({ how: "amount_order", msn: { n: 1 } });
+  });
+  it("lets a line with its code and date keep its notice line ahead of an earlier covered line", () => {
+    const bill = [{ ...billLines[0], code: "", chargeCents: 24000 }, billLines[2]];
+    const msn = [msnLines[2], { ...msnLines[0], billedCents: 24000 }];
+    const m = matchLines(bill, msn, tolerant);
+    expect(m.map((x) => [x.how, x.msn?.n])).toEqual([["amount_order", 1], ["code_date", 3]]);
+  });
+  it("skips the description fallback", () => {
+    const bill = [{ ...billLines[0], code: "", chargeCents: 1 }];
+    expect(matchLines(bill, msnLines)[0].how).toBe("description");
+    expect(matchLines(bill, msnLines, tolerant)[0].how).toBe("unmatched");
+  });
+  it("calls a line paired without code and date possible, not likely, and still not for review", () => {
+    const input = { caseId: "c6", bill: { lines: noDates, totals: billTotals }, msn: { lines: msnLines, totals: msnTotals } };
+    const f = findDiscrepancies({ ...input, tolerant: true });
+    expect(f.map((x) => [x.kind, x.amountCents, x.confidence, x.requiresReview])).toEqual([
+      ["patient_owes_exceeds_notice", 24000, "possible", false],
+      ["line_not_patient_responsibility", 24000, "possible", false],
+    ]);
+    const exact = findDiscrepancies({ ...input, bill: { lines: billLines, totals: billTotals }, tolerant: true });
+    expect(exact.map((x) => x.confidence)).toEqual(["likely", "likely"]);
+  });
+  it("does not call two lines duplicates when their date or code is covered", () => {
+    const ekg = (n: number) => ({ ...billLines[0], n, code: "93005", serviceDate: "", chargeCents: 16500 });
+    const totals = { ...billTotals, totalChargesCents: 33000, adjustmentsCents: 24000, insurancePaidCents: 7200, patientOwesCents: 1800 };
+    const msn = { lines: [{ ...msnLines[0], n: 1, code: "93005", billedCents: 33000, youMayBeBilledCents: 1800 }], totals: { ...msnTotals, maxYouMayBeBilledCents: 1800 } };
+    const input = { caseId: "c7", bill: { lines: [ekg(1), ekg(2)], totals }, msn };
+    expect(findDiscrepancies(input).map((x) => x.kind)).toEqual(["possible_duplicate"]);
+    expect(findDiscrepancies({ ...input, tolerant: true }).map((x) => x.kind)).toEqual(["no_discrepancy"]);
+  });
+});

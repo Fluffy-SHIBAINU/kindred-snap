@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { allowedTokens, type CaseFacts } from "@/lib/templates/facts";
+import { allowedTokens, formatDate, type CaseFacts } from "@/lib/templates/facts";
 import { draft as correction } from "@/lib/templates/correction";
 import { draft as assistance } from "@/lib/templates/assistance";
 import { draft as information } from "@/lib/templates/information";
@@ -67,5 +67,31 @@ describe("validateDraft", () => {
     const r = validateDraft("You owe 12.5% by 2027-01-01, that is Jan 1, 2027, within 30 days.", main);
     expect(r.ok).toBe(false);
     expect(r.unknownNumbers).toEqual(["12.5%", "2027-01-01", "Jan 1, 2027", "30"]);
+  });
+});
+
+describe("facts from pages with covered values", () => {
+  it("formatDate leaves anything that is not an ISO date as it is", () => {
+    expect(formatDate("[due date]")).toBe("[due date]");
+    expect(formatDate("")).toBe("");
+    expect(formatDate("2026-11-30")).toBe("Nov 30, 2026");
+  });
+
+  it("a draft printing an extraCents amount validates", () => {
+    const text = "The enclosed income letter shows $3,130.00 a month.";
+    expect(validateDraft(text, main)).toEqual({ ok: false, unknownNumbers: ["$3,130.00"] });
+    expect(validateDraft(text, { ...main, extraCents: [313000] })).toEqual({ ok: true, unknownNumbers: [] });
+  });
+
+  it("facts without a notice maximum validate, and admit neither a maximum nor a difference", () => {
+    const noMax: CaseFacts = { ...main, noticeMaxCents: undefined, gapCents: undefined, removedLine: undefined, correctedCents: main.askedCents, dueDate: "[due date]" };
+    const allowed = allowedTokens(noMax);
+    for (const t of ["$226.00", "$240.00"]) expect(allowed.has(t)).toBe(false);
+    expect([...allowed].some((t) => /NaN|undefined/.test(t))).toBe(false);
+    for (const d of [assistance(noMax), information(noMax)]) {
+      expect(validateDraft(d.draft, noMax)).toEqual({ ok: true, unknownNumbers: [] });
+      expect(d.draft).not.toMatch(/NaN|undefined/);
+    }
+    expect(information(noMax).draft).toContain("due [due date].");
   });
 });
