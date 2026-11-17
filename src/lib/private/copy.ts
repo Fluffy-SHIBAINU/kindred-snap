@@ -122,7 +122,10 @@ export const H1_LINE = {
 /** How "the notice" reads on the result, by what was dropped; Medicare is named only for a Medicare notice. */
 export const NOTICE_NAME = { msn: "the Medicare notice", eob: "your insurer's statement", none: "the notice or statement" };
 
-/** The help program's h2 by `PrivateResult["help"]`; the Medicare variant is for a dropped Medicare notice. */
+/**
+ * The help program's h2 by `PrivateResult["help"]`; the Medicare variant is for a dropped Medicare notice, and
+ * `same_tier` reads by the shared tier's status: a discount, `_free` or `_none`.
+ */
 export const H2 = {
   no_hospital: "We Couldn't Tell Which Hospital, So We Didn't Check Its Help Program",
   insured_not_covered: "This Hospital's Policy May Not Cover Patients Who Have Insurance",
@@ -131,6 +134,8 @@ export const H2 = {
   ceilings: "What This Hospital's Policy Lists, by Household Size",
   by_household: "The Policy's Discount Depends on Household Size",
   same_tier: "The Policy Lists {percent}% Off for Households of One to Four",
+  same_tier_free: "The Policy Lists Free Care for Households of One to Four",
+  same_tier_none: "The Policy Lists No Discount for Households of One to Four",
 };
 
 /** The hard stop and the all-unreadable stop, by reason (§2). An error on our side is S16. */
@@ -265,6 +270,13 @@ export const TABLES = {
   sharesNote: "Shares use the {year} poverty guideline for the 48 states and DC.",
   ceilingsNote: "From the policy's tiers and the {year} poverty guideline for the 48 states and DC.",
 };
+
+const PEOPLE_WORDS = { 1: "one", 2: "two", 3: "three", 4: "four" };
+
+/** The `{people}` slot of `RESULT.ifPeople`: one row of the household table in words ("two", "two to four"), shaped like its row label. */
+export function peopleWords(a: 1 | 2 | 3 | 4, b: 1 | 2 | 3 | 4 = a): string {
+  return a === b ? PEOPLE_WORDS[a] : fill(TABLES.rowRange, { a: PEOPLE_WORDS[a], b: PEOPLE_WORDS[b] });
+}
 
 /** The assumption keys that are guesses and carry the chip Assumed; every other key that applied is a plain line (§2a). */
 export const GUESS_KEYS: AssumptionKey[] = ["household_size", "coverage_type", "insurance_unknown", "same_visit", "hospital", "hospital_match", "line_charge", "notice_lines_sum", "income_added"];

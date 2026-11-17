@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   ACTIONS, ASSUMPTIONS, BODY, BUTTON_LABEL, CHIPS, COVERAGE_WORDS, COVER_SHEET, DISCOUNT, ERASE, GUESS_KEYS, H1, H1_LINE, H2, HELD, LEFT_OUT, LETTERS, LETTER_TITLES, NOTICE_NAME,
-  PRINT_FOOTER, PROMISES as P, REFUSED, RESULT, STAFF_REVIEW_SENTENCE, STEP_SUMMARIES, STEP_TITLES, STOP, TABLES, TICK_BOXES, fill, fillTerms, promisesFor,
+  PRINT_FOOTER, PROMISES as P, REFUSED, RESULT, STAFF_REVIEW_SENTENCE, STEP_SUMMARIES, STEP_TITLES, STOP, TABLES, TICK_BOXES, fill, fillTerms, peopleWords, promisesFor,
 } from "@/lib/private/copy";
 import { READER_TERMS, readerTermsComplete, type ReaderTerms } from "@/lib/private/readerTerms";
 
@@ -54,6 +54,17 @@ describe("private copy", () => {
     const quoted = [...section2a.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
     expect(quoted.length).toBeGreaterThan(70);
     for (const q of quoted) expect(fixed, q).toContain(q);
+  });
+
+  it("holds the same-tier heading for a discount, for free care and for no discount, as section 2 lists them", () => {
+    const row = doc.split("\n").find((l) => l.startsWith("| The same tier for one to four |"))!;
+    expect(row).toContain(`| ${fill(H2.same_tier, { percent: 75 })} (or "${H2.same_tier_free}", or "${H2.same_tier_none}") |`);
+  });
+
+  it("writes a household row in words for the line about the other household sizes, as section 2a does", () => {
+    expect(section2a).toContain("`{people}` in words: " + [peopleWords(2), peopleWords(2, 4), peopleWords(3, 4)].join(", "));
+    expect([peopleWords(1), peopleWords(3), peopleWords(4), peopleWords(2, 3)]).toEqual(["one", "three", "four", "two to three"]);
+    expect(fill(RESULT.ifPeople, { people: peopleWords(2, 4), discount: DISCOUNT.free })).toBe("If two to four people live there, the policy lists free care.");
   });
 
   it("lists the guesses, which carry the chip Assumed, as section 2a does", () => {
