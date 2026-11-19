@@ -1,0 +1,47 @@
+# Publishes docs/ as it is to GitHub Pages: https://fluffy-shibainu.github.io/kindred-snap/
+# (the mock gallery is /mocks/). Static files only: no build step, no Jekyll.
+name: Publish docs to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+# pages and id-token are what actions/deploy-pages requires; contents is for the checkout.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time. A newer push waits; a deployment in progress is never cancelled.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out without submodules
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # vendor/waive-data is a private submodule; checking it out is what broke the built-in Pages build.
+          submodules: false
+          persist-credentials: false
+
+      - name: Upload docs/ as the Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: docs
+          # The action drops dotfiles by default; this keeps docs/.nojekyll at its path. Jekyll never runs here either way.
+          include-hidden-files: true
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

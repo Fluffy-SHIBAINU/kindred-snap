@@ -66,4 +66,5 @@ docs/BUILD.md            the phased build runbook; docs/build/STATUS.md the trac
 - Design-canvas artboards (`docs/mocks/*.dc.html`) render standalone without their runtime; `{{holes}}` and `<dc-import>` fill only on the canvas.
 - `next/font` has no fallback metrics for Atkinson Hyperlegible Mono; `adjustFontFallback: false` is set on purpose.
 - The repository is public. Never add private data, keys or real patient documents.
+- The public mock gallery is published by `.github/workflows/pages.yml` from `docs/`, without submodules (the private one broke the built-in Pages build); a claim that the gallery is updated must be checked by fetching it.
 - Nothing may log, trace or measure `/private`; private code never calls `getServerStore()`; with `PRIVATE_READER=fixture` no dropped file is uploaded.
