@@ -1,7 +1,11 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
-import { pixelsOnly, sha256Hex, toForm } from "@/lib/private/hygiene";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { pixelsOnly, prepare, sha256Hex, toForm, type Held } from "@/lib/private/hygiene";
+
+// pdf.js is stood in for: opening and drawing a real PDF takes a browser (tests/e2e/private-pdf.spec.ts)
+const pdfjs = vi.hoisted(() => ({ getDocument: vi.fn(), destroy: vi.fn(async () => {}) }));
+vi.mock("pdfjs-dist/legacy/build/pdf.mjs", () => ({ GlobalWorkerOptions: {}, VerbosityLevel: { ERRORS: 0 }, getDocument: pdfjs.getDocument }));
 
 // The parts of hygiene.ts that need no canvas. The redraw itself runs in a browser: tests/e2e/private-upload.spec.ts.
 const exif = new Uint8Array(readFileSync("fixtures/documents/bill-main-exif.jpg"));
@@ -61,6 +65,68 @@ describe("sha256Hex", () => {
     const png = new Uint8Array(readFileSync("fixtures/documents/bill-main-covered.png"));
     expect(await sha256Hex(new Blob([png]))).toBe(createHash("sha256").update(png).digest("hex"));
     expect(await sha256Hex(new Blob([png]))).toBe(table["bill-main-covered"].sha256);
+  });
+});
+
+describe("prepare, a PDF", () => {
+  const stub = { reader: "stub" as const, demoHashes: {} };
+  const pdf = (lead = "") => new File([lead + "%PDF-1.7\n1 0 obj\n<< >>\nendobj\n"], "bill.pdf");
+  const holding = (n: number): Held => ({ pages: Array.from({ length: n }, () => new Blob(["page"])), demoIds: [] });
+  // a PDF that opens with `numPages` Letter pages, each drawn to a canvas that encodes as a small JPEG with a comment in it
+  const jpeg = new Uint8Array([0xff, 0xd8, 0xff, 0xfe, 0, 4, 1, 2, 0xff, 0xdb, 0, 4, 1, 2, 0xff, 0xda, 1, 2, 3, 0xff, 0xd9]);
+  const canvas = { width: 0, height: 0, toBlob: (done: (b: Blob) => void) => done(new Blob([jpeg], { type: "image/jpeg" })) };
+  const page = { getViewport: ({ scale }: { scale: number }) => ({ width: 612 * scale, height: 792 * scale }), render: vi.fn(() => ({ promise: Promise.resolve() })), cleanup: vi.fn() };
+  const opens = (numPages: number) => pdfjs.getDocument.mockImplementation(() => ({ promise: Promise.resolve({ numPages, getPage: async () => page }), destroy: pdfjs.destroy }));
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.stubGlobal("document", { createElement: () => canvas });
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("that does not open is refused as `pdf`, never sent as it is, and what pdf.js held is let go", async () => {
+    pdfjs.getDocument.mockImplementation(() => ({ promise: Promise.reject(new Error("locked with a password")), destroy: pdfjs.destroy }));
+    expect(await prepare([pdf()], holding(1), stub)).toEqual({ refused: "pdf" });
+    expect(pdfjs.destroy).toHaveBeenCalledTimes(1);
+    // everything pdf.js fetches is asked of our own origin, and it writes nothing to the console
+    expect(pdfjs.getDocument.mock.calls[0][0]).toMatchObject({ cMapUrl: "/pdf/cmaps/", standardFontDataUrl: "/pdf/standard_fonts/", iccUrl: "/pdf/iccs/", wasmUrl: "/pdf/wasm/", verbosity: 0 });
+    // pdf.js itself failing to load is the same refusal
+    pdfjs.getDocument.mockImplementation(() => {
+      throw new Error("no worker");
+    });
+    expect(await prepare([pdf()], holding(0), stub)).toEqual({ refused: "pdf" });
+  });
+
+  it("with more than three pages is refused as `pdf` before a page is drawn", async () => {
+    opens(4);
+    expect(await prepare([pdf()], holding(0), stub)).toEqual({ refused: "pdf" });
+    expect(page.render).not.toHaveBeenCalled();
+    expect(pdfjs.destroy).toHaveBeenCalledTimes(1);
+  });
+
+  it("that opens adds one picture a page, long edge 2000 px, pixels only, and lets go of the canvas and of pdf.js", async () => {
+    opens(3);
+    const sizes: number[][] = [];
+    page.render.mockImplementation(() => (sizes.push([canvas.width, canvas.height]), { promise: Promise.resolve() }));
+    const out = await prepare([pdf("\n")], holding(7), stub);
+    if (!("held" in out)) throw new Error("refused");
+    expect(out.held.pages).toHaveLength(10);
+    expect(sizes).toEqual([[1545, 2000], [1545, 2000], [1545, 2000]]);
+    // the comment the encoder wrote is gone: a page goes through the same step as a photo
+    expect([...new Uint8Array(await out.held.pages[9].arrayBuffer())]).toEqual([0xff, 0xd8, 0xff, 0xdb, 0, 4, 1, 2, 0xff, 0xda, 1, 2, 3, 0xff, 0xd9]);
+    expect(page.cleanup).toHaveBeenCalledTimes(3);
+    expect([canvas.width, canvas.height]).toEqual([0, 0]);
+    expect(pdfjs.destroy).toHaveBeenCalledTimes(1);
+  });
+
+  it("counts its pages toward the ten: eight held and three more are too many", async () => {
+    opens(3);
+    expect(await prepare([pdf()], holding(8), stub)).toEqual({ refused: "too_many" });
+  });
+
+  it("with the demo reader is refused as demo only and never opened", async () => {
+    expect(await prepare([pdf()], holding(0), { reader: "fixture", demoHashes: {} })).toEqual({ refused: "demo_only" });
+    expect(pdfjs.getDocument).not.toHaveBeenCalled();
   });
 });
 

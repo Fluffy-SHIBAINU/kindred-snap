@@ -239,7 +239,7 @@ describe("redaction tolerance (feature document section 4)", () => {
     expect(JSON.stringify(out)).toBe(JSON.stringify({ status: "ok", result: base }));
   });
 
-  it("T15: a PDF is refused on the phone, so no read ever holds its hidden text (tests/e2e/private-upload.spec.ts; from I2, private-pdf.spec.ts)", async () => {
+  it("T15: a PDF's pages are drawn as pictures on the phone, or it is refused there, so no read ever holds its hidden text (tests/e2e/private-pdf.spec.ts, private-upload.spec.ts)", async () => {
     const pdf = new TextEncoder().encode("%PDF-1.7 Dorothy M. Hale, account 4821033");
     // demo mode reads demo ids only: bytes are refused, whatever they are
     await expect(new FixturePrivateReader().read({ bytes: pdf })).rejects.toBeInstanceOf(DemoOnly);

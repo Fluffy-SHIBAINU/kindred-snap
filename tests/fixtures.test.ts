@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
+import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { describe, expect, it } from "vitest";
 import { arithmetic } from "@/lib/compare";
 import { listCaseFixtures, loadCaseFixture } from "@/lib/fixtures";
@@ -127,6 +128,30 @@ describe("private mode's demo files", () => {
     expect(exif.includes(Buffer.from([0x88, 0x25]))).toBe(true);
     // the page itself follows untouched: a second marker right after the EXIF segment
     expect(jpg[4 + jpg.readUInt16BE(4)]).toBe(0xff);
+  });
+
+  it("bill-main-boxed.pdf is one page whose text still holds what its boxes cover, and four-pages.pdf has four", async () => {
+    const read = async (name: string) => {
+      const raw = readFileSync(`fixtures/documents/${name}.pdf`);
+      const task = getDocument({ data: new Uint8Array(raw), verbosity: 0 });
+      const pdf = await task.promise;
+      let text = "";
+      for (let n = 1; n <= pdf.numPages; n++) text += (await (await pdf.getPage(n)).getTextContent()).items.map((item) => ("str" in item ? item.str : "")).join(" ");
+      const pages = pdf.numPages;
+      await task.destroy();
+      return { pages, text, raw: raw.toString("latin1") };
+    };
+    const boxed = await read("bill-main-boxed");
+    const four = await read("four-pages");
+    // one page, or the stub reader of the e2e spec would take a second page for the notice
+    expect(boxed.pages).toBe(1);
+    expect(four.pages).toBe(4);
+    // live text: anyone who opens the file reads the name and the account number the page shows as black boxes,
+    // which is what tests/e2e/private-pdf.spec.ts shows never leaves the phone
+    for (const hidden of ["Dorothy M. Hale", "****4821"]) expect(boxed.text, hidden).toContain(hidden);
+    expect(boxed.text).toContain("$466.00");
+    // and nothing of the machine that printed them
+    for (const { text, raw } of [boxed, four]) expect(text + raw).not.toMatch(/file:|\/Users\//);
   });
 
   it("the demo policy adds a city, a state and the sentence on insured patients", () => {

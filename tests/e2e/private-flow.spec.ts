@@ -205,17 +205,20 @@ test("the hard stop: a covered amount owed stops the check, keeps the page, and 
   await expect(needsNotice(page)).toBeVisible();
 });
 
-test("a file that is not a demo file makes no request", async ({ page, requests }) => {
-  await page.goto("/private");
-  await page.waitForLoadState("networkidle");
-  const loaded = requests.length;
-  await pick(page).setInputFiles(DOCS + "bill-ekg.png");
-  await expect(page.getByRole("status")).toContainText(PROMISES.S8);
-  await expect(drop(page)).toBeVisible();
-  await clean(page, "refused");
-  await page.waitForTimeout(1000);
-  expect(requests.slice(loaded)).toEqual([]);
-});
+// a PDF among them: with the demo reader it is not opened either, so not even pdf.js is fetched (T15)
+for (const file of ["bill-ekg.png", "bill-main-boxed.pdf"]) {
+  test(`a file that is not a demo file makes no request: ${file}`, async ({ page, requests }) => {
+    await page.goto("/private");
+    await page.waitForLoadState("networkidle");
+    const loaded = requests.length;
+    await pick(page).setInputFiles(DOCS + file);
+    await expect(page.getByRole("status")).toContainText(PROMISES.S8);
+    await expect(drop(page)).toBeVisible();
+    await clean(page, "refused");
+    await page.waitForTimeout(1000);
+    expect(requests.slice(loaded)).toEqual([]);
+  });
+}
 
 test("keyboard only, from the drop screen to Print or save as PDF", async ({ page, browserName }) => {
   // Safari moves through links and buttons with Option-Tab; Tab alone stops at form fields

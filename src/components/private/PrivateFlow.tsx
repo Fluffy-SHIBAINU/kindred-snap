@@ -286,7 +286,6 @@ export function PrivateFlow({ reader, demoHashes, demoSet, terms }: Props) {
             ) : (
               body.map((sentence) => <p key={sentence}>{sentence}</p>)
             )}
-            <p>{BODY.pdfsLater}</p>
             <Disclosure summary={BODY.detailsSummary}>
               {promisesFor("details", reader, terms).map((sentence) => (
                 <p key={sentence}>{sentence}</p>

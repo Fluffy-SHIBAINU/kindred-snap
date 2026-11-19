@@ -1,7 +1,8 @@
 // Renders fixtures/documents/html/*.html to fixtures/documents/<name>.png with headless Chrome
 // and writes fixtures/documents/index.json = [{ sha256, kind, fixtureKey, file, unreadable? }].
 // For private mode it also renders the covered, partly covered and amount-covered pages, and writes
-// fixtures/private/reads.json (what the private demo reader answers, by file) and fixtures/documents/bill-main-exif.jpg.
+// fixtures/private/reads.json (what the private demo reader answers, by file), fixtures/documents/bill-main-exif.jpg,
+// and the two PDFs bill-main-boxed.pdf and four-pages.pdf.
 // No npm dependency: run `node scripts/make-fixture-images.mjs` from the repo root (macOS: Chrome and sips).
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -102,6 +103,19 @@ const plain = readFileSync(jpg);
 if (plain[0] !== 0xff || plain[1] !== 0xd8) throw new Error("sips did not write a JPEG");
 writeFileSync(jpg, Buffer.concat([plain.subarray(0, 2), exifGps([12, 34, 56], "N", [123, 45, 6], "W"), plain.subarray(2)]));
 console.log("bill-main-exif.jpg", createHash("sha256").update(readFileSync(jpg)).digest("hex").slice(0, 12));
+
+// PDFs for the test that the phone turns a PDF's pages into pictures: the bill with the name and account number as
+// live text under black boxes (the words are in the file, which is the point), and four pages, one more than a PDF may have.
+// Chrome writes the time into a PDF, so these two change on every run; no table keeps their hashes.
+for (const name of ["bill-main-boxed", "four-pages"]) {
+  const out = join(DIR, `${name}.pdf`);
+  const r = spawnSync(CHROME, [
+    "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
+    `--print-to-pdf=${out}`, `file://${join(DIR, "html", `${name}.html`)}`,
+  ], { stdio: "pipe", timeout: 60_000 });
+  if (r.status !== 0) throw new Error(`Chrome failed on ${name}.pdf: ${r.stderr}`);
+  console.log(`${name}.pdf`);
+}
 
 /** An APP1 EXIF segment holding only a GPS position (degrees, minutes, seconds), big-endian TIFF. */
 function exifGps(lat, latRef, lon, lonRef) {

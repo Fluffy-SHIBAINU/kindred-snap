@@ -70,14 +70,11 @@ export function promisesFor(place: Place, reader: Reader, t: ReaderTerms = READE
   }
 }
 
-const PDFS_LATER = "PDFs come next. For now, drop a photo or a screenshot.";
-
 /** Body text and disclosure summaries of the Snap button, the drop screen and the working screen (§2). */
 export const BODY = {
   snapSummary: "What is private mode?",
   drop: "The hospital bill and, if you have them, the Medicare notice or your insurer's statement, and an income letter. One page per photo.",
   whenLive: "When real bills are switched on:",
-  pdfsLater: PDFS_LATER,
   detailsSummary: "What happens to my files",
   working: "Nothing for you to do yet. This page updates on its own.",
 };
@@ -147,10 +144,10 @@ export const STOP = {
   too_dark: "The numbers are too blurry to trust, so we won't use them.",
 };
 
-/** Refused on the phone, with no request (§2). */
+/** Refused on the phone, with nothing sent (§2). */
 export const REFUSED = {
   demo_only: PROMISES.S8,
-  pdf: PDFS_LATER,
+  pdf: "We couldn't open this PDF, or it has more than 3 pages. Drop a photo or a screenshot of each page instead.",
   format: "This phone saved the photo in a format we can't open here. Take a screenshot of it and drop that.",
   too_many: "Up to 10 pages in one check. Drop fewer.",
 };

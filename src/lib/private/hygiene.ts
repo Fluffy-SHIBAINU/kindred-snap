@@ -1,9 +1,10 @@
 /**
- * What the phone does to a dropped file before anything is sent (docs/features/snap-incognito.md §8, layer one).
+ * What the phone does to a dropped file before anything is sent (docs/features/snap-incognito.md §8, layers one and two).
  * Browser only: canvas, `createImageBitmap` and `crypto.subtle`. A client component imports it; server code never does.
  * With the demo reader a file is hashed and named by its demo id, and is neither drawn nor sent. With any other reader
- * every picture is drawn to a canvas and encoded again as a JPEG, so only pixels travel: the original file, its name
- * and its hidden details (time, place, device, preview, leftover data) stay on the phone.
+ * every picture, and every page of a PDF, is drawn to a canvas and encoded again as a JPEG, so only pixels travel: the
+ * original file, its name, its hidden details (time, place, device, preview, leftover data) and the text a PDF keeps
+ * under a cover box stay on the phone.
  */
 
 /** The limits of one check; `runPrivate` holds the same two for what arrives. */
@@ -35,13 +36,74 @@ export async function reencode(file: File, quality = 0.8): Promise<Blob | null> 
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
-    // a browser that cannot write a JPEG answers with a PNG, which is not sent
-    return blob && blob.type === "image/jpeg" ? await pixelsOnly(blob) : null;
+    return await jpegOf(canvas, quality);
   } catch {
     return null;
   } finally {
     bitmap.close();
+  }
+}
+
+/** What is on a canvas as a JPEG of pixels only, or null. */
+async function jpegOf(canvas: HTMLCanvasElement, quality: number): Promise<Blob | null> {
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+  // a browser that cannot write a JPEG answers with a PNG, which is not sent
+  return blob && blob.type === "image/jpeg" ? pixelsOnly(blob) : null;
+}
+
+// pdf.js's worker and what the worker fetches (fonts, character maps, image decoders, colour profile), all from our own
+// origin: scripts/copy-private-assets.mjs puts them there before every build
+const PDF_FILES = "/pdf/";
+
+/**
+ * Every page of a PDF as a JPEG drawn on the phone (§8, layer two), so the text a PDF keeps under a cover box never
+ * leaves it: only the pixels of the page as it looks travel. Null when the PDF does not open (broken, locked with a
+ * password, or pdf.js itself did not load) or has more than `max` pages; the PDF is never sent instead. pdf.js is
+ * loaded only here, when a PDF is picked, and what it holds is let go whether the pages come out or not.
+ */
+export async function rasterise(file: File, max = 3): Promise<Blob[] | null> {
+  let opening: { destroy(): Promise<void> } | undefined;
+  let canvas: HTMLCanvasElement | undefined;
+  try {
+    // the legacy build: it brings what an older phone's browser lacks
+    const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+    pdfjs.GlobalWorkerOptions.workerSrc = PDF_FILES + "pdf.worker.min.mjs";
+    const task = pdfjs.getDocument({
+      data: await file.arrayBuffer(),
+      cMapUrl: PDF_FILES + "cmaps/",
+      standardFontDataUrl: PDF_FILES + "standard_fonts/",
+      iccUrl: PDF_FILES + "iccs/",
+      wasmUrl: PDF_FILES + "wasm/",
+      // pdf.js writes its warnings to the console; nothing on the private path logs
+      verbosity: pdfjs.VerbosityLevel.ERRORS,
+    });
+    opening = task;
+    // no `onPassword` is set, so a locked PDF fails to open here and nobody is asked for anything
+    const pdf = await task.promise;
+    if (pdf.numPages > max) return null;
+    const pages: Blob[] = [];
+    canvas = document.createElement("canvas");
+    for (let n = 1; n <= pdf.numPages; n++) {
+      const page = await pdf.getPage(n);
+      const size = page.getViewport({ scale: 1 });
+      // a PDF page has no pixels of its own: it is drawn with its long edge at 2000 px, the size a photo is brought down to
+      const viewport = page.getViewport({ scale: LONG_EDGE / Math.max(size.width, size.height) });
+      canvas.width = Math.round(viewport.width);
+      canvas.height = Math.round(viewport.height);
+      // pdf.js paints the white ground itself
+      await page.render({ canvas, viewport }).promise;
+      const jpeg = await jpegOf(canvas, 0.8);
+      page.cleanup();
+      if (!jpeg) return null;
+      pages.push(jpeg);
+    }
+    return pages;
+  } catch {
+    return null;
+  } finally {
+    // a phone gives canvases little memory, and holds on to one until its size is set to nothing
+    if (canvas) canvas.width = canvas.height = 0;
+    await opening?.destroy().catch(() => {});
   }
 }
 
@@ -88,9 +150,10 @@ async function smaller(page: Blob): Promise<Blob> {
 /**
  * Adds newly picked files to what is held, or refuses the whole pick and leaves `held` as it was; it never throws.
  * Demo reader: each file must be a demo file, known by its hash (`demo_only` otherwise); no canvas is touched.
- * Other readers: a PDF is refused (`pdf`), each picture is redrawn, one that does not decode is refused (`format`),
- * more than 10 pages is `too_many`, and when the pages pass 4 MB together each is redrawn once at a lower quality
- * before that is `too_many` as well. Pages are drawn one at a time: a phone's memory holds few full-size photos.
+ * Other readers: each page of a PDF is drawn as a picture (`pdf` when it does not open or has more than 3 pages), each
+ * picture is redrawn, one that does not decode is refused (`format`), more than 10 pages is `too_many`, and when the
+ * pages pass 4 MB together each is redrawn once at a lower quality before that is `too_many` as well. Pages are drawn
+ * one at a time: a phone's memory holds few full-size photos.
  */
 export async function prepare(
   files: File[],
@@ -111,11 +174,19 @@ export async function prepare(
     if (held.pages.length + files.length > MAX_PAGES) return { refused: "too_many" };
     let pages = [...held.pages];
     for (const file of files) {
-      if ((await file.slice(0, 5).text()) === "%PDF-") return { refused: "pdf" };
+      // a PDF is known by its opening bytes, which the format lets sit anywhere in the first 1024
+      if ((await file.slice(0, 1024).text()).includes("%PDF-")) {
+        const drawn = await rasterise(file);
+        if (!drawn) return { refused: "pdf" };
+        pages.push(...drawn);
+        continue;
+      }
       const page = await reencode(file);
       if (!page) return { refused: "format" };
       pages.push(page);
     }
+    // a PDF can add up to three pages
+    if (pages.length > MAX_PAGES) return { refused: "too_many" };
     if (bytesOf(pages) > MAX_BYTES) {
       const redrawn: Blob[] = [];
       for (const page of pages) redrawn.push(await smaller(page));

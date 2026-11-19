@@ -22,6 +22,10 @@
 # production
 /build
 
+# private mode's browser files, copied from node_modules by scripts/copy-private-assets.mjs
+/public/pdf/
+/public/ocr/
+
 # misc
 .DS_Store
 *.pem
