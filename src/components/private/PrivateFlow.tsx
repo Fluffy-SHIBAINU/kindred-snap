@@ -35,14 +35,17 @@ const USES = ["pointerdown", "keydown", "click", "focusin"] as const;
 // at twice the text size, or with the phone on its side, a bar that sticks would cover the page: there it scrolls with it
 const SHORT = "[@media(max-height:500px)]:[&_[data-action-bar]]:static";
 const FOCUS = " cursor-pointer has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus";
+// while a pick is being prepared the control waits, and looks as a disabled button does
+const WAITING = " has-[:disabled]:cursor-default has-[:disabled]:opacity-60";
 
 /** A file input whose label is the visible control, as in Snap's UploadForm but with no form: the files go straight to `onFiles`. */
-function FilePick({ onFiles, camera, className, children }: { onFiles: (files: File[]) => void; camera?: boolean; className: string; children: ReactNode }) {
+function FilePick({ onFiles, camera, disabled, className, children }: { onFiles: (files: File[]) => void; camera?: boolean; disabled: boolean; className: string; children: ReactNode }) {
   return (
-    <label className={className + FOCUS}>
+    <label className={className + FOCUS + WAITING}>
       <input
         type="file"
         className="sr-only"
+        disabled={disabled}
         accept={camera ? "image/*" : "image/*,application/pdf"}
         capture={camera ? "environment" : undefined}
         multiple={!camera}
@@ -68,6 +71,9 @@ export function PrivateFlow({ reader, demoHashes, demoSet, terms }: Props) {
   const [result, setResult] = useState<PrivateResult | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
   const [heldCount, setHeldCount] = useState(0);
+  // from a pick until its files are prepared on the phone: drawing a PDF's pages takes a moment, and a second pick in
+  // that time would replace the first without a word
+  const [preparing, setPreparing] = useState(false);
   const [, startTransition] = useTransition();
   const held = useRef<Held>(NOTHING);
   // a check that was erased or timed out while its request ran is dropped when it answers
@@ -82,6 +88,7 @@ export function PrivateFlow({ reader, demoHashes, demoSet, terms }: Props) {
     forget();
     held.current = NOTHING;
     setHeldCount(0);
+    setPreparing(false);
     setResult(null);
     setNotice(to);
     setScreen("drop");
@@ -182,9 +189,14 @@ export function PrivateFlow({ reader, demoHashes, demoSet, terms }: Props) {
   /** One check: the files are prepared on the phone, and once the pick is accepted the working rows show and the single request follows. */
   function check(pick: () => Promise<Awaited<ReturnType<typeof prepare>>>) {
     const id = ++run.current;
+    setPreparing(true);
+    // the line that says so stands where a reason would, above the heading
+    root.current?.closest("main")?.scrollTo(0, 0);
     startTransition(async () => {
       const prepared = await pick();
       if (id !== run.current) return;
+      // in one step with what follows, so the box that takes the line's place is there when focus looks for it
+      setPreparing(false);
       // refused on the phone: nothing was sent and the held pages are as they were, so the screen stays, a result included, with the reason above it
       if ("refused" in prepared) return setNotice({ lines: [REFUSED[prepared.refused]] });
       held.current = prepared.held;
@@ -211,7 +223,7 @@ export function PrivateFlow({ reader, demoHashes, demoSet, terms }: Props) {
   }
 
   const onFiles = (files: File[]) => {
-    if (files.length) check(() => prepare(files, held.current, { reader, demoHashes }));
+    if (files.length && !preparing) check(() => prepare(files, held.current, { reader, demoHashes }));
   };
   const erase = (
     <Erase
@@ -226,8 +238,13 @@ export function PrivateFlow({ reader, demoHashes, demoSet, terms }: Props) {
   const demo = reader === "fixture";
   const body = promisesFor("body", reader, terms);
   const rows: Step[] = result?.steps ?? STEP_KEYS.map((key, i) => ({ key, title: STEP_TITLES[i], status: i ? "waiting" : "active", summary: i ? "" : STEP_SUMMARIES.reading }));
-  // why the check stopped, or that it was erased: above the drop screen's heading, or above a result that a refused file left standing
-  const box = notice && (
+  // why the check stopped, or that it was erased: above the drop screen's heading, or above a result that a refused file left standing.
+  // While a pick is prepared, the one line that says so stands there instead: never two status boxes at once.
+  const box = preparing ? (
+    <p role="status" className="rounded-card bg-paper-3 px-4 py-3">
+      {STEP_SUMMARIES.reading}
+    </p>
+  ) : notice && (
     <div role="status" tabIndex={-1} data-notice className="flex flex-col gap-2">
       <div className="flex items-start gap-3 rounded-card bg-white px-4 py-3.5 shadow-[inset_0_0_0_2px_var(--color-ink)]">
         <span className="shrink-0">{notice.erased ? <CheckCircleIcon size={24} /> : <InfoIcon size={24} />}</span>
@@ -293,15 +310,15 @@ export function PrivateFlow({ reader, demoHashes, demoSet, terms }: Props) {
             </Disclosure>
           </div>
           <ActionBar>
-            <FilePick camera onFiles={onFiles} className={PRIMARY_CLASS}>
+            <FilePick camera onFiles={onFiles} disabled={preparing} className={PRIMARY_CLASS}>
               <CameraIcon />
               {ACTIONS.takePhoto}
             </FilePick>
-            <FilePick onFiles={onFiles} className={SECONDARY_CLASS}>
+            <FilePick onFiles={onFiles} disabled={preparing} className={SECONDARY_CLASS}>
               {ACTIONS.pick}
             </FilePick>
             {demo && (
-              <button type="button" className={TEXT_CLASS} onClick={() => check(async () => ({ held: { pages: [], demoIds: [...demoSet] } }))}>
+              <button type="button" className={TEXT_CLASS} disabled={preparing} onClick={() => check(async () => ({ held: { pages: [], demoIds: [...demoSet] } }))}>
                 {ACTIONS.demoFiles}
               </button>
             )}
@@ -338,7 +355,7 @@ export function PrivateFlow({ reader, demoHashes, demoSet, terms }: Props) {
           erase={erase}
           more={(className) =>
             heldCount > 0 ? (
-              <FilePick onFiles={onFiles} className={className}>
+              <FilePick onFiles={onFiles} disabled={preparing} className={className}>
                 {ACTIONS.addFile}
               </FilePick>
             ) : (

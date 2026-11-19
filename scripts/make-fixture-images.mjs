@@ -2,7 +2,7 @@
 // and writes fixtures/documents/index.json = [{ sha256, kind, fixtureKey, file, unreadable? }].
 // For private mode it also renders the covered, partly covered and amount-covered pages, and writes
 // fixtures/private/reads.json (what the private demo reader answers, by file), fixtures/documents/bill-main-exif.jpg,
-// and the two PDFs bill-main-boxed.pdf and four-pages.pdf.
+// and the two PDFs bill-main-boxed.pdf and four-pages.pdf. The hand-made PDFs come from scripts/make-fixture-pdfs.mjs, run at the end.
 // No npm dependency: run `node scripts/make-fixture-images.mjs` from the repo root (macOS: Chrome and sips).
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -116,6 +116,8 @@ for (const name of ["bill-main-boxed", "four-pages"]) {
   if (r.status !== 0) throw new Error(`Chrome failed on ${name}.pdf: ${r.stderr}`);
   console.log(`${name}.pdf`);
 }
+// the PDFs typed out by hand (covers.pdf, field-under-box.pdf, three-pages.pdf): the same bytes on every run
+await import("./make-fixture-pdfs.mjs");
 
 /** An APP1 EXIF segment holding only a GPS position (degrees, minutes, seconds), big-endian TIFF. */
 function exifGps(lat, latRef, lon, lonRef) {

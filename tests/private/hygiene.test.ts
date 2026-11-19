@@ -75,11 +75,22 @@ describe("prepare, a PDF", () => {
   // a PDF that opens with `numPages` Letter pages, each drawn to a canvas that encodes as a small JPEG with a comment in it
   const jpeg = new Uint8Array([0xff, 0xd8, 0xff, 0xfe, 0, 4, 1, 2, 0xff, 0xdb, 0, 4, 1, 2, 0xff, 0xda, 1, 2, 3, 0xff, 0xd9]);
   const canvas = { width: 0, height: 0, toBlob: (done: (b: Blob) => void) => done(new Blob([jpeg], { type: "image/jpeg" })) };
-  const page = { getViewport: ({ scale }: { scale: number }) => ({ width: 612 * scale, height: 792 * scale }), render: vi.fn(() => ({ promise: Promise.resolve() })), cleanup: vi.fn() };
-  const opens = (numPages: number) => pdfjs.getDocument.mockImplementation(() => ({ promise: Promise.resolve({ numPages, getPage: async () => page }), destroy: pdfjs.destroy }));
+  const page = {
+    getViewport: ({ scale }: { scale: number }) => ({ width: 612 * scale, height: 792 * scale }),
+    render: vi.fn(() => ({ promise: Promise.resolve() })),
+    cleanup: vi.fn(),
+    getAnnotations: vi.fn(async () => [] as Array<{ subtype: string }>),
+    // what pdf.js holds for a page once it is drawn: its pictures by id, null for one that did not decode
+    objs: [] as Array<[string, unknown]>,
+    commonObjs: [] as Array<[string, unknown]>,
+  };
+  const getPage = vi.fn(async (n: number) => (n > 0 ? page : null));
+  const opens = (numPages: number) => pdfjs.getDocument.mockImplementation(() => ({ promise: Promise.resolve({ numPages, getPage }), destroy: pdfjs.destroy }));
 
   beforeEach(() => {
     vi.clearAllMocks();
+    page.objs = [];
+    page.commonObjs = [];
     vi.stubGlobal("document", { createElement: () => canvas });
   });
   afterEach(() => vi.unstubAllGlobals());
@@ -111,6 +122,8 @@ describe("prepare, a PDF", () => {
     const out = await prepare([pdf("\n")], holding(7), stub);
     if (!("held" in out)) throw new Error("refused");
     expect(out.held.pages).toHaveLength(10);
+    // each page once and in the file's order, never the first page three times
+    expect(getPage.mock.calls).toEqual([[1], [2], [3]]);
     expect(sizes).toEqual([[1545, 2000], [1545, 2000], [1545, 2000]]);
     // the comment the encoder wrote is gone: a page goes through the same step as a photo
     expect([...new Uint8Array(await out.held.pages[9].arrayBuffer())]).toEqual([0xff, 0xd8, 0xff, 0xdb, 0, 4, 1, 2, 0xff, 0xda, 1, 2, 3, 0xff, 0xd9]);
@@ -119,9 +132,49 @@ describe("prepare, a PDF", () => {
     expect(pdfjs.destroy).toHaveBeenCalledTimes(1);
   });
 
-  it("counts its pages toward the ten: eight held and three more are too many", async () => {
+  it("counts its pages toward the ten: eight held and three more are too many, and the next PDF is never opened", async () => {
     opens(3);
     expect(await prepare([pdf()], holding(8), stub)).toEqual({ refused: "too_many" });
+    pdfjs.getDocument.mockClear();
+    expect(await prepare([pdf(), pdf()], holding(8), stub)).toEqual({ refused: "too_many" });
+    expect(pdfjs.getDocument).toHaveBeenCalledTimes(1);
+  });
+
+  it("with no page in it is refused as `pdf`: nothing would be sent for it", async () => {
+    opens(0);
+    expect(await prepare([pdf()], holding(1), stub)).toEqual({ refused: "pdf" });
+  });
+
+  it("with a picture pdf.js could not decode is refused as `pdf`: the page was finished without it, and it can be a cover", async () => {
+    opens(1);
+    // a picture that decoded is no reason to refuse
+    page.objs = [["img_p0_1", { width: 8, height: 8 }]];
+    page.commonObjs = [["g_d0_f1", { loadedName: "g_d0_f1" }]];
+    expect(await prepare([pdf()], holding(0), stub)).toHaveProperty("held");
+    for (const where of ["objs", "commonObjs"] as const) {
+      page.objs = [];
+      page.commonObjs = [];
+      page[where] = [["img_p0_1", { width: 8, height: 8 }], ["img_p0_2", null]];
+      pdfjs.destroy.mockClear();
+      expect(await prepare([pdf()], holding(0), stub), where).toEqual({ refused: "pdf" });
+      expect(pdfjs.destroy).toHaveBeenCalledTimes(1);
+    }
+  });
+
+  it("with a form field and a box annotation on one page is refused as `pdf` before the page is drawn", async () => {
+    opens(1);
+    // pdf.js would draw the field over the box, whatever their order in the file
+    for (const kinds of [["Widget", "Square"], ["Link", "Ink", "Widget"]]) {
+      page.getAnnotations.mockResolvedValueOnce(kinds.map((subtype) => ({ subtype })));
+      expect(await prepare([pdf()], holding(0), stub), kinds.join()).toEqual({ refused: "pdf" });
+    }
+    expect(page.render).not.toHaveBeenCalled();
+    // a form with links and notes only, or boxes with no form field, is drawn
+    for (const kinds of [["Widget", "Link", "Popup", "Widget"], ["Square", "Link", "FreeText"]]) {
+      page.getAnnotations.mockResolvedValueOnce(kinds.map((subtype) => ({ subtype })));
+      expect(await prepare([pdf()], holding(0), stub), kinds.join()).toHaveProperty("held");
+    }
+    expect(page.render).toHaveBeenCalledTimes(2);
   });
 
   it("with the demo reader is refused as demo only and never opened", async () => {

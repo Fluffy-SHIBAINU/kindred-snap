@@ -130,17 +130,24 @@ describe("private mode's demo files", () => {
     expect(jpg[4 + jpg.readUInt16BE(4)]).toBe(0xff);
   });
 
+  /** A PDF as pdf.js opens it: its page count, its text, its annotations by page (in the order they are drawn) and its details. */
+  const read = async (name: string) => {
+    const raw = readFileSync(`fixtures/documents/${name}.pdf`);
+    const task = getDocument({ data: new Uint8Array(raw), verbosity: 0 });
+    const pdf = await task.promise;
+    const texts: string[] = [];
+    const annotations: string[][] = [];
+    for (let n = 1; n <= pdf.numPages; n++) {
+      const page = await pdf.getPage(n);
+      texts.push((await page.getTextContent()).items.map((item) => ("str" in item ? item.str : "")).join(" "));
+      annotations.push((await page.getAnnotations()).map((a: { subtype: string; hasAppearance: boolean }) => a.subtype + (a.hasAppearance ? "" : ", no appearance")));
+    }
+    const info = (await pdf.getMetadata()).info as Record<string, unknown>;
+    await task.destroy();
+    return { pages: pdf.numPages, texts, text: texts.join(" "), annotations, info, raw: raw.toString("latin1") };
+  };
+
   it("bill-main-boxed.pdf is one page whose text still holds what its boxes cover, and four-pages.pdf has four", async () => {
-    const read = async (name: string) => {
-      const raw = readFileSync(`fixtures/documents/${name}.pdf`);
-      const task = getDocument({ data: new Uint8Array(raw), verbosity: 0 });
-      const pdf = await task.promise;
-      let text = "";
-      for (let n = 1; n <= pdf.numPages; n++) text += (await (await pdf.getPage(n)).getTextContent()).items.map((item) => ("str" in item ? item.str : "")).join(" ");
-      const pages = pdf.numPages;
-      await task.destroy();
-      return { pages, text, raw: raw.toString("latin1") };
-    };
     const boxed = await read("bill-main-boxed");
     const four = await read("four-pages");
     // one page, or the stub reader of the e2e spec would take a second page for the notice
@@ -150,8 +157,42 @@ describe("private mode's demo files", () => {
     // which is what tests/e2e/private-pdf.spec.ts shows never leaves the phone
     for (const hidden of ["Dorothy M. Hale", "****4821"]) expect(boxed.text, hidden).toContain(hidden);
     expect(boxed.text).toContain("$466.00");
-    // and nothing of the machine that printed them
-    for (const { text, raw } of [boxed, four]) expect(text + raw).not.toMatch(/file:|\/Users\//);
+    // its boxes are part of the page's own drawing, not annotations (covers.pdf has those)
+    expect(boxed.annotations).toEqual([[]]);
+    // and nothing of the machine that printed them: the title is the page's own (Chrome writes the file's address when a
+    // page has none), read from the decoded details, since a title can sit in the file as hex or inside a packed stream
+    for (const [name, { text, raw, info }] of Object.entries({ "bill-main-boxed": boxed, "four-pages": four })) {
+      expect(info.Title, name).toBe(/<title>([^<]+)<\/title>/.exec(html(name))![1]);
+      expect(JSON.stringify(info), name).not.toMatch(/file:|Users|localhost/);
+      expect(text + raw, name).not.toMatch(/file:|\/Users\//);
+    }
+  });
+
+  it("the hand-made PDFs hold what their tests need: covers of two kinds, a field under a box, three pages", async () => {
+    const covers = await read("covers");
+    expect(covers.pages).toBe(1);
+    // the name and the account number are live text, and plain bytes of the file: what the e2e spec looks for in every request
+    for (const hidden of ["Dorothy M. Hale", "****4821"]) {
+      expect(covers.text, hidden).toContain(hidden);
+      expect(covers.raw, hidden).toContain(hidden);
+    }
+    expect(covers.text).toContain("$466.00");
+    // one cover is an annotation with its own appearance, the other a JPEG 2000 picture
+    expect(covers.annotations).toEqual([["Square"]]);
+    expect(covers.raw).toContain("/Filter /JPXDecode");
+    expect(covers.raw).toContain("/BaseFont /ZapfDingbats");
+
+    const field = await read("field-under-box");
+    expect(field.text).not.toContain("Dorothy");
+    expect(field.raw).toContain("/V (Dorothy M. Hale)");
+    // in the file the field comes first and the box after it, so a viewer shows the box; pdf.js draws the field last
+    expect(field.raw).toMatch(/\/Annots \[6 0 R 7 0 R\][^]*\n6 0 obj\n<< \/Type \/Annot \/Subtype \/Widget[^]*\n7 0 obj\n<< \/Type \/Annot \/Subtype \/Square/);
+    expect(field.annotations).toEqual([["Square", "Widget"]]);
+
+    const three = await read("three-pages");
+    expect(three.pages).toBe(3);
+    expect(three.texts.map((t) => /Page \d of 3/.exec(t)?.[0])).toEqual(["Page 1 of 3", "Page 2 of 3", "Page 3 of 3"]);
+    for (const { raw, info } of [covers, field, three]) expect(JSON.stringify(info) + raw).not.toMatch(/file:|Users|localhost/);
   });
 
   it("the demo policy adds a city, a state and the sentence on insured patients", () => {

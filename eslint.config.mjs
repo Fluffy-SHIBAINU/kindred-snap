@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // private mode's browser files, copied from node_modules by scripts/copy-private-assets.mjs
+    "public/pdf/**",
+    "public/ocr/**",
   ]),
 ]);
 

@@ -1,5 +1,5 @@
 // Copies what private mode loads in the browser from node_modules to public/, so every file comes from our own origin
-// (docs/features/snap-incognito.md §8 and §9). public/pdf/ is not committed: `npm run build` and `npm run e2e` run this first.
+// (docs/features/snap-incognito.md §8 and §9). public/pdf/ is not committed: `npm run build`, `npm run dev` and `npm run e2e` run this first.
 // pdf.js: the legacy worker (it pairs with the legacy build that hygiene.ts imports), and what the worker fetches to
 // draw a page: character maps, the standard fonts, the colour profile and the image decoders.
 import { cpSync, rmSync } from "node:fs";
