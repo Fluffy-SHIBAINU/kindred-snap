@@ -6,7 +6,7 @@ import { formatUsd } from "@/lib/money";
 import { riverbendPolicy } from "@/lib/pipeline";
 import { estimateOpportunity } from "@/lib/savings";
 import type { BillLine, BillTotals, MsnLine, MsnTotals } from "@/lib/types";
-import { SimulatedBadge } from "@/components/snap/Badges";
+import { DemoBadge, SimulatedBadge } from "@/components/snap/Badges";
 import { Clipping } from "@/components/snap/Clipping";
 import { DueAlert } from "@/components/snap/DueAlert";
 import { MoneyBlock } from "@/components/snap/MoneyBlock";
@@ -58,7 +58,8 @@ export default function ResultPreview() {
     <figure className="m-0 flex h-full flex-col bg-paper text-ink" aria-label={`Preview of a case result: ${r.firstName} may get ${r.percent}% off`}>
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-6 pb-1 pt-2">
         <span className="text-lg font-extrabold tracking-[-0.02em]">Kindred Snap</span>
-        </div>
+        <DemoBadge>Sample case · Dorothy and Riverbend are demo data</DemoBadge>
+      </div>
       <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-hidden px-6 pb-2">
         <p className="text-2xl font-bold leading-[1.15] tracking-[-0.01em]">
           {r.firstName} May Get {r.percent}% Off
@@ -71,7 +72,7 @@ export default function ResultPreview() {
           <Clipping line={`Medicare line ${r.msnLine.n}, you may be billed`} amount={formatUsd(r.msnLine.youMayBeBilledCents)} source={<><SimulatedBadge /><span>Medicare notice, line {r.msnLine.n} ({r.msnLine.code}): 'may not bill you separately for it.'</span></>} />
         </div>
         <MoneyBlock amountCents={r.estimate.cents} kind="estimated" note={`Estimated. ${r.hospital} decides. ${removed} removed + ${off} off ${formatUsd(r.correctedCents)}.`} />
-        <p className="text-sm text-muted">One tap sends both letters to {r.hospital}.</p>
+        <p className="text-sm text-muted">In a real case, one tap sends both letters to {r.hospital}.</p>
         <DueAlert>
           Bill due {short(r.dueDate)}. We ask {r.hospital} to hold the account while they review.
         </DueAlert>

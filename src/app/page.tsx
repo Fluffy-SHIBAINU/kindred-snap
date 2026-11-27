@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { SimulatedBadge } from "@/components/snap/Badges";
+import { SiteFooter } from "@/components/snap/SiteFooter";
+import { DemoNotice } from "@/components/snap/DemoNotice";
 import { Clipping } from "@/components/snap/Clipping";
 import { MoneyBlock } from "@/components/snap/MoneyBlock";
 import GroundCard from "@/components/landing/GroundCard";
@@ -35,6 +37,9 @@ export default function Landing() {
       </a>
 
       <main id="main" className="flex flex-col">
+        <div className={`${wrap} pt-4`}>
+          <DemoNotice>Demo: every connection is simulated.</DemoNotice>
+        </div>
         <section aria-labelledby="hero-h" className="relative flex items-center overflow-hidden lg:min-h-[900px]">
           <WindowDust />
           <div className={`${wrap} relative grid items-center gap-16 py-12 lg:grid-cols-[minmax(0,1fr)_390px] lg:py-7`}>
@@ -48,7 +53,7 @@ export default function Landing() {
               </p>
               <div className="flex flex-wrap gap-4">
                 <a href="/snap" className={primary}>Snap a bill</a>
-                <a href="/case/demo/result" className={secondary}>See a case</a>
+                <a href="/sample" rel="nofollow" className={secondary}>See a case</a>
                 <a href="/demo-bill" download className={secondary}>Download a demo bill</a>
               </div>
               </div>
@@ -99,7 +104,8 @@ export default function Landing() {
                 </h3>
                 {billClip}
                 <a
-                  href="/case/demo/result"
+                  href="/sample"
+                  rel="nofollow"
                   className={`${btnShape} w-full bg-(--card-btn-bg) text-[color:var(--card-btn-ink)] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-current`}
                 >
                   Read the letter
@@ -110,14 +116,7 @@ export default function Landing() {
         </section>
       </main>
 
-      <footer className="border-t border-rule py-8">
-        <div className={`${wrap} flex flex-wrap items-center gap-6`}>
-          <span className="text-lg font-extrabold tracking-[-0.02em]">Kindred Snap</span>
-          <span className="grow" />
-          <a href="/staff" className={`inline-flex min-h-12 items-center font-medium underline hover:text-accent ${focus}`}>Staff workspace</a>
-          <span className="text-sm text-muted">Policy data: Waive atlas, CC BY 4.0.</span>
-        </div>
-      </footer>
+      <SiteFooter className={wrap} />
     </div>
   );
 }

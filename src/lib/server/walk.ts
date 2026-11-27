@@ -20,6 +20,16 @@ type SearchParams = Record<string, string | string[] | undefined>;
 
 export const isWalkId = (id: string) => WALK_ID.test(id);
 
+const WALK_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+export const newWalkId = () => "walk-" + Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => WALK_ALPHABET[b % 32]).join("");
+
+/** The income the sample case is shown with: the demo patient's 75% tier. */
+export const SAMPLE_INCOME: WalkHints = { incomeCents: 3756000, householdSize: 1 };
+
+/** A new private copy of the sample case for one visitor, at `screen`; the shared `demo` case is never handed out to send. */
+export const sampleCaseHref = (screen: "result" | "done" = "result", h: WalkHints = {}) =>
+  `/case/${newWalkId()}/${screen}${walkQuery({ ...SAMPLE_INCOME, ...h })}`;
+
 const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
 
 export function parseWalkHints(sp: SearchParams): WalkHints {
@@ -47,12 +57,29 @@ export function walkQuery(h: WalkHints): string {
 /** The query to append to a link for this case: the hints for a walk case, nothing for any other. */
 export const walkSuffix = (id: string, h: WalkHints) => (isWalkId(id) ? walkQuery(h) : "");
 
+// One request renders a walk page twice at once (seen in a trace of `next start`); the second render shares the first's build instead of losing the lock to it.
+const inFlight = new WeakMap<Store, Map<string, Promise<Case | null>>>();
+
 /**
  * Materialises a missing walk case with this viewer as its owner, then, for its owner only, brings it (idempotently, in
  * order) to the state its hints imply. Someone else's walk is returned as it is, and caseAccess refuses it. Other ids: the stored case.
  */
-export async function ensureWalkCase(store: Store, id: string, hints: WalkHints, viewer: Viewer | null): Promise<Case | null> {
+export function ensureWalkCase(store: Store, id: string, hints: WalkHints, viewer: Viewer | null): Promise<Case | null> {
   if (!isWalkId(id)) return store.cases.get(id);
+  // the viewer is part of the key: an owner's render never shares a build that a non-owner's request started
+  const key = (viewer?.id ?? "") + "|" + id + walkQuery(hints);
+  let builds = inFlight.get(store);
+  if (!builds) inFlight.set(store, (builds = new Map()));
+  let p = builds.get(key);
+  if (!p) {
+    const own = builds;
+    p = buildWalkCase(store, id, hints, viewer).finally(() => own.delete(key));
+    builds.set(key, p);
+  }
+  return p;
+}
+
+async function buildWalkCase(store: Store, id: string, hints: WalkHints, viewer: Viewer | null): Promise<Case | null> {
   let c = await store.cases.get(id);
   if (!c) {
     if (!viewer) return null;

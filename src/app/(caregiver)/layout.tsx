@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { SiteFooter } from "@/components/snap/SiteFooter";
 
 /**
  * The phone shell for the six caregiver screens (mocks M01…M06): app bar, scrolling region, and the page's ActionBar
@@ -23,6 +24,8 @@ export default function CaregiverLayout({ children }: { children: ReactNode }) {
           </header>
         <main id="main" className="flex min-h-0 flex-1 flex-col overflow-y-auto [&_h1]:text-2xl [&_h1]:leading-[1.15] [&_h2]:text-xl [&_h2]:leading-[1.15]">
           {children}
+          {/* inside the scrolling region: it scrolls with the page and takes no fixed height from the phone viewport */}
+          <SiteFooter className="px-6" />
         </main>
       </div>
     </div>

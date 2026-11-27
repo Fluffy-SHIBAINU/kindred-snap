@@ -21,8 +21,25 @@ test("a demo walk opens for the browser that started it and for no other", async
   }
 });
 
-test("the seeded showcase opens for anyone, read-only", async ({ page }) => {
+test("See a case gives this browser its own copy, and a send on the shared showcase never changes it", async ({ page, browser }) => {
+  await page.goto("/sample");
+  await page.waitForURL(/\/case\/walk-[A-Za-z0-9]{6}\/result\?/);
+  await expect(page.getByRole("button", { name: "Draft the letters and send" })).toBeVisible();
+  const copy = page.url();
+
+  const other = await browser.newContext();
+  try {
+    const stranger = await other.newPage();
+    await stranger.goto(copy);
+    await expect(stranger.getByRole("heading", { level: 1, name: "Not Available" })).toBeVisible();
+  } finally {
+    await other.close();
+  }
+
   await page.goto("/case/demo/result");
-  await expect(page.getByRole("link", { name: "Snap a bill" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Draft the letters and send" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Draft the letters and send" }).click();
+  await page.waitForURL(/\/case\/walk-[A-Za-z0-9]{6}\/done\?/);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Done");
+  await page.goto("/case/demo/result");
+  await expect(page.getByRole("button", { name: "Draft the letters and send" })).toBeVisible();
 });

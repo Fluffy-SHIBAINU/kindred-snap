@@ -211,7 +211,6 @@ describe("staff (STAFF_BYPASS, the existing rule)", () => {
   });
 
   it("does not change a family's case from the caregiver screens (approve() refuses staff; the staff workspace has its own actions)", async () => {
-    expect(textOf(await ResultPage(props("case-ready")))).not.toContain("Draft the letters and send");
     expect(await outcome(() => approveAndSendAction("case-ready"))).toBe("not-found");
     expect(await outcome(() => deleteCaseAction("case-ready"))).toBe("not-found");
     expect(await stateOf("case-ready")).toBe("ready_to_send");
@@ -304,21 +303,27 @@ describe("the demo bill (a walk case)", () => {
   });
 });
 
-describe("the seeded showcase (/case/demo, linked from the landing)", () => {
+describe("the seeded showcase (/case/demo: old links and the /resume example code)", () => {
   beforeEach(async () => {
     await investigate("demo");
     as(OTHER);
   });
 
   it("anyone may read it, by link or by its code", async () => {
-    const page = textOf(await ResultPage(props("demo")));
-    expect(page).toContain("Snap a bill");
-    expect(page).not.toContain("Draft the letters and send");
+    expect(await outcome(() => ResultPage(props("demo")))).toBe("rendered");
     expect(await outcome(() => resumeByCode(form({ code: "SNAP-7K4M2D" })))).toBe("redirect:/case/demo/result");
   });
 
-  it("no visitor may send, close or delete it", async () => {
-    expect(await outcome(() => approveAndSendAction("demo"))).toBe("not-found");
+  it("no visitor may send, close or delete it: a send lands on a private copy this browser owns", async () => {
+    as(null);
+    const sent = await outcome(() => approveAndSendAction("demo"));
+    const id = /^redirect:\/case\/(walk-[A-Za-z0-9]{6})\/done\?/.exec(sent)?.[1];
+    expect(id, sent).toBeTruthy();
+    expect(jar.get(COOKIE)).toMatch(/^[0-9a-f-]{36}$/);
+    expect(await outcome(() => DonePage(props(id!, { income: "3756000", hh: "1", sent: "1" })))).toBe("rendered");
+    expect((await store.cases.get(id!))!.ownerId).toBe(ownerOf(jar.get(COOKIE)!));
+    as(OTHER);
+    expect(await outcome(() => DonePage(props(id!, { income: "3756000", hh: "1", sent: "1" })))).toBe("not-found");
     expect(await outcome(() => closeCaseAction("demo"))).toBe("not-found");
     expect(await outcome(() => deleteCaseAction("demo"))).toBe("not-found");
     expect(await stateOf("demo")).toBe("ready_to_send");
