@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import type { ReactNode } from "react";
 import { ActionBar } from "@/components/snap/ActionBar";
@@ -15,9 +14,9 @@ import { screenFor } from "@/lib/case/route";
 import { WORKING_STATES } from "@/lib/case/state";
 import { formatUsd } from "@/lib/money";
 import { buildSteps } from "@/lib/progress";
-import { daysLeft, daysLeftText, getCase, hrefFor, shortDate } from "@/lib/server/cases";
-import { getServerStore } from "@/lib/server/store";
-import { ensureWalkCase, parseWalkHints, walkSuffix } from "@/lib/server/walk";
+import { caseAccess } from "@/lib/server/access";
+import { daysLeft, daysLeftText, hrefFor, shortDate } from "@/lib/server/cases";
+import { parseWalkHints, walkSuffix } from "@/lib/server/walk";
 import type { Case, Finding } from "@/lib/types";
 import { addNoticeAndResume, retryMedicare } from "./actions";
 
@@ -36,9 +35,7 @@ export default async function WorkingPage({ params, searchParams }: Props) {
   const error = typeof sp.error === "string" ? sp.error : undefined;
   const hints = parseWalkHints(sp);
   const q = walkSuffix(id, hints);
-  await ensureWalkCase(await getServerStore(), id, hints);
-  const { store, c } = await getCase(id);
-  if (!c) notFound();
+  const { store, c } = await caseAccess(id, hints);
 
   const steps = c.steps.length ? c.steps : buildSteps(c.state);
   const current = steps.find((s) => s.status === "active" || s.status === "needs_you");

@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { ActionBar } from "@/components/snap/ActionBar";
 import { SimulatedBadge } from "@/components/snap/Badges";
 import { Clipping, Highlight } from "@/components/snap/Clipping";
@@ -11,9 +11,9 @@ import { TEXT_CLASS, TextAction } from "@/components/snap/TextAction";
 import { matchLines } from "@/lib/compare";
 import { formatUsd } from "@/lib/money";
 import { estimateOpportunity } from "@/lib/savings";
-import { firstName, getCase, hrefFor, shortDate } from "@/lib/server/cases";
-import { getServerStore } from "@/lib/server/store";
-import { ensureWalkCase, parseWalkHints } from "@/lib/server/walk";
+import { caseAccess } from "@/lib/server/access";
+import { firstName, hrefFor, shortDate } from "@/lib/server/cases";
+import { parseWalkHints } from "@/lib/server/walk";
 import type { Action, Case, Document } from "@/lib/types";
 import { approveAndSendAction, closeCaseAction } from "./actions";
 
@@ -25,9 +25,7 @@ const SUMMARY = TEXT_CLASS + " cursor-pointer list-none [&::-webkit-details-mark
 export default async function ResultPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const { id } = await params;
   const hints = parseWalkHints(await searchParams);
-  await ensureWalkCase(await getServerStore(), id, hints);
-  const { store, c } = await getCase(id);
-  if (!c) notFound();
+  const { store, c, canWrite } = await caseAccess(id, hints);
   if (c.state !== "ready_to_send") redirect(hrefFor(c, hints));
 
   const [docs, findings, actions] = await Promise.all([store.documentsFor(id), store.findingsFor(id), store.actionsFor(id)]);
@@ -110,7 +108,10 @@ export default async function ResultPage({ params, searchParams }: { params: Pro
         )}
       </div>
       <ActionBar>
-        {actions.length > 0 ? (
+        {/* a viewer who may only read (the showcase, or staff) gets no send or close button, so the tap never lands on Not Available */}
+        {!canWrite ? (
+          <PrimaryAction href="/snap">Snap a bill</PrimaryAction>
+        ) : actions.length > 0 ? (
           <form action={approve}>
             <PrimaryAction>{gap > 0 ? "Draft the letters and send" : "Check the help program"}</PrimaryAction>
           </form>
@@ -119,7 +120,7 @@ export default async function ResultPage({ params, searchParams }: { params: Pro
             <PrimaryAction>Done for now</PrimaryAction>
           </form>
         )}
-        {actions.length > 0 && gap === 0 && (
+        {canWrite && actions.length > 0 && gap === 0 && (
           <form action={close}>
             <TextAction type="submit">Done for now</TextAction>
           </form>

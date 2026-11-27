@@ -58,6 +58,9 @@ async function outcome(run: () => unknown): Promise<string> {
   }
 }
 
+/** The strings a rendered server component tree carries (its props, not its client components' output). */
+const textOf = (tree: unknown) => JSON.stringify(tree);
+
 const props = (id: string, sp: Record<string, string> = {}) => ({ params: Promise.resolve({ id }), searchParams: Promise.resolve(sp) });
 const form = (fields: Record<string, string>) => {
   const f = new FormData();
@@ -166,7 +169,7 @@ describe("the owner", () => {
 
   it("reads every screen of their case", async () => {
     expect(await outcome(() => CasePage(props("case-ready")))).toBe("redirect:/case/case-ready/result");
-    expect(await outcome(() => ResultPage(props("case-ready")))).toBe("rendered");
+    expect(textOf(await ResultPage(props("case-ready")))).toContain("Draft the letters and send");
     expect(await outcome(() => IncomePage(props("case-new")))).toBe("rendered");
     expect(await outcome(() => WorkingPage(props("case-parked")))).toBe("rendered");
   });
@@ -191,12 +194,18 @@ describe("staff (STAFF_BYPASS, the existing rule)", () => {
     as(OTHER);
   });
 
-  it("reads and deletes any case", async () => {
+  it("reads and resumes any case (canReadCase)", async () => {
     expect(await outcome(() => ResultPage(props("case-ready")))).toBe("rendered");
     expect(await outcome(() => WorkingPage(props("edge-needs-review")))).toBe("rendered");
     expect(await outcome(() => resumeByCode(form({ code: "SNAP-AAAAAA" })))).toBe("redirect:/case/case-ready/result");
-    expect(await outcome(() => deleteCaseAction("case-ready"))).toBe("redirect:/snap");
-    expect((await store.cases.get("case-ready"))!.deletedAt).toBeTruthy();
+  });
+
+  it("does not change a family's case from the caregiver screens (approve() refuses staff; the staff workspace has its own actions)", async () => {
+    expect(textOf(await ResultPage(props("case-ready")))).not.toContain("Draft the letters and send");
+    expect(await outcome(() => approveAndSendAction("case-ready"))).toBe("not-found");
+    expect(await outcome(() => deleteCaseAction("case-ready"))).toBe("not-found");
+    expect(await stateOf("case-ready")).toBe("ready_to_send");
+    expect((await store.cases.get("case-ready"))!.deletedAt).toBeUndefined();
   });
 
   it("is refused in production without ALLOW_DEMO", async () => {
@@ -255,7 +264,9 @@ describe("the seeded showcase (/case/demo, linked from the landing)", () => {
   });
 
   it("anyone may read it, by link or by its code", async () => {
-    expect(await outcome(() => ResultPage(props("demo")))).toBe("rendered");
+    const page = textOf(await ResultPage(props("demo")));
+    expect(page).toContain("Snap a bill");
+    expect(page).not.toContain("Draft the letters and send");
     expect(await outcome(() => resumeByCode(form({ code: "SNAP-7K4M2D" })))).toBe("redirect:/case/demo/result");
   });
 

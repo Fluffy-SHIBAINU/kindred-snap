@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { ActionBar } from "@/components/snap/ActionBar";
 import { SimulatedBadge } from "@/components/snap/Badges";
 import { Clipping } from "@/components/snap/Clipping";
@@ -7,9 +7,9 @@ import { PrimaryAction } from "@/components/snap/PrimaryAction";
 import { TalkToPerson } from "@/components/snap/TalkToPerson";
 import { TEXT_CLASS } from "@/components/snap/TextAction";
 import { formatUsd } from "@/lib/money";
-import { firstName, getCase, hrefFor, shortDate } from "@/lib/server/cases";
-import { getServerStore } from "@/lib/server/store";
-import { ensureWalkCase, parseWalkHints } from "@/lib/server/walk";
+import { caseAccess } from "@/lib/server/access";
+import { firstName, hrefFor, shortDate } from "@/lib/server/cases";
+import { parseWalkHints } from "@/lib/server/walk";
 import { deleteCaseAction } from "./actions";
 
 export const instant = false;
@@ -20,9 +20,7 @@ const SUMMARY = TEXT_CLASS + " cursor-pointer list-none [&::-webkit-details-mark
 export default async function ResolvedPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const { id } = await params;
   const hints = parseWalkHints(await searchParams);
-  await ensureWalkCase(await getServerStore(), id, hints);
-  const { store, c } = await getCase(id);
-  if (!c) notFound();
+  const { store, c, canWrite } = await caseAccess(id, hints);
   if (c.state !== "responded" && c.state !== "resolved" && c.state !== "closed") redirect(hrefFor(c, hints));
 
   const letter = (await store.responses.list({ caseId: id }))[0];
@@ -77,7 +75,7 @@ export default async function ResolvedPage({ params, searchParams }: { params: P
             )}
           </div>
         )}
-        {!deleted && (
+        {!deleted && canWrite && (
           <details className="w-full">
             <summary className={SUMMARY}>Delete everything on this case</summary>
             <form action={remove} className="mt-1 flex flex-col gap-3 rounded-card bg-paper-2 px-4 py-3">

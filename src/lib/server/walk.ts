@@ -5,6 +5,7 @@ import { approveAndSend, deliverResponse } from "@/lib/caseFlow";
 import { loadCaseFixture } from "@/lib/fixtures";
 import { defaultPolicyFor, runInvestigation } from "@/lib/pipeline";
 import type { Case, Consent } from "@/lib/types";
+import type { Viewer } from "./authz";
 
 /**
  * A demo walk-through ("Use the demo bill") must survive serverless: each request may land on an instance whose
@@ -13,7 +14,6 @@ import type { Case, Consent } from "@/lib/types";
  */
 
 const WALK_ID = /^walk-[A-Za-z0-9]{6}$/;
-const HELPER = { id: "demo-helper", role: "helper" } as const;
 
 export type WalkHints = { incomeCents?: number; householdSize?: number; sent?: boolean; responded?: boolean };
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -47,11 +47,19 @@ export function walkQuery(h: WalkHints): string {
 /** The query to append to a link for this case: the hints for a walk case, nothing for any other. */
 export const walkSuffix = (id: string, h: WalkHints) => (isWalkId(id) ? walkQuery(h) : "");
 
-/** Materialises a missing walk case, then brings it (idempotently, in order) to the state its hints imply. Other ids: the stored case. */
-export async function ensureWalkCase(store: Store, id: string, hints: WalkHints): Promise<Case | null> {
+/**
+ * Materialises a missing walk case with this viewer as its owner, then, for its owner only, brings it (idempotently, in
+ * order) to the state its hints imply. Someone else's walk is returned as it is, and caseAccess refuses it. Other ids: the stored case.
+ */
+export async function ensureWalkCase(store: Store, id: string, hints: WalkHints, viewer: Viewer | null): Promise<Case | null> {
   if (!isWalkId(id)) return store.cases.get(id);
   let c = await store.cases.get(id);
-  if (!c) c = await materialise(store, id);
+  if (!c) {
+    if (!viewer) return null;
+    c = await materialise(store, id, viewer.id);
+  }
+  if (c.ownerId !== viewer?.id) return c;
+  const helper = { id: c.ownerId, role: "helper" } as const;
 
   if (hints.incomeCents != null && c.state === "created") {
     // Several instances can serve the same walk case at once; the last writer of this key runs the investigation, the others re-read.
@@ -64,14 +72,14 @@ export async function ensureWalkCase(store: Store, id: string, hints: WalkHints)
       return c;
     }
     const at = new Date().toISOString();
-    const consent: Consent = { caseId: id, grantedAt: at, grantedBy: HELPER.id, role: HELPER.role, scope: "investigate_and_prepare" };
+    const consent: Consent = { caseId: id, grantedAt: at, grantedBy: helper.id, role: helper.role, scope: "investigate_and_prepare" };
     await store.consents.put(consent);
     await store.cases.put({ ...c, consent, income: { annualCents: hints.incomeCents, householdSize: hints.householdSize ?? 1, source: "typed" }, updatedAt: at });
-    await store.appendAudit(id, { at, actor: HELPER.id, role: HELPER.role, action: "consent.granted", details: { scope: consent.scope } });
+    await store.appendAudit(id, { at, actor: helper.id, role: helper.role, action: "consent.granted", details: { scope: consent.scope } });
     c = await runInvestigation(store, id, { claims: new SyntheticBlueButton(), policyFor: defaultPolicyFor, now: () => new Date().toISOString() });
   }
   if (hints.sent && c.state === "ready_to_send") {
-    c = await approveAndSend(store, id, HELPER, new Date().toISOString());
+    c = await approveAndSend(store, id, helper, new Date().toISOString());
   }
   if (hints.responded && c.state === "sent" && c.sentAt) {
     // the hint says the reply has arrived, so the demo clock is bypassed: "now" is exactly when the partner answers
@@ -81,15 +89,15 @@ export async function ensureWalkCase(store: Store, id: string, hints: WalkHints)
   return c;
 }
 
-async function materialise(store: Store, id: string): Promise<Case> {
+async function materialise(store: Store, id: string, ownerId: string): Promise<Case> {
   const fx = loadCaseFixture("main");
   const at = new Date().toISOString();
   const c: Case = {
-    ...fx.case, id, code: "SNAP-" + id.slice(5).toUpperCase(), state: "created", ownerId: HELPER.id, fixtureKey: "main",
+    ...fx.case, id, code: "SNAP-" + id.slice(5).toUpperCase(), state: "created", ownerId, fixtureKey: "main",
     consent: null, income: null, steps: [], createdAt: at, updatedAt: at,
   };
   await store.cases.put(c);
   for (const d of fx.documents) await store.documents.put({ ...d, id: `${id}-${d.kind}`, caseId: id });
-  await store.appendAudit(id, { at, actor: HELPER.id, role: HELPER.role, action: "case.created", details: { code: c.code, fixtureKey: "main", walk: true } });
+  await store.appendAudit(id, { at, actor: ownerId, role: "helper", action: "case.created", details: { code: c.code, fixtureKey: "main", walk: true } });
   return c;
 }
