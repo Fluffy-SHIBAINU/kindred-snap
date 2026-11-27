@@ -57,9 +57,25 @@ export function walkQuery(h: WalkHints): string {
 /** The query to append to a link for this case: the hints for a walk case, nothing for any other. */
 export const walkSuffix = (id: string, h: WalkHints) => (isWalkId(id) ? walkQuery(h) : "");
 
+// One request renders a walk page twice at once (seen in a trace of `next start`); the second render shares the first's build instead of losing the lock to it.
+const inFlight = new WeakMap<Store, Map<string, Promise<Case | null>>>();
+
 /** Materialises a missing walk case, then brings it (idempotently, in order) to the state its hints imply. Other ids: the stored case. */
-export async function ensureWalkCase(store: Store, id: string, hints: WalkHints): Promise<Case | null> {
+export function ensureWalkCase(store: Store, id: string, hints: WalkHints): Promise<Case | null> {
   if (!isWalkId(id)) return store.cases.get(id);
+  const key = id + walkQuery(hints);
+  let builds = inFlight.get(store);
+  if (!builds) inFlight.set(store, (builds = new Map()));
+  let p = builds.get(key);
+  if (!p) {
+    const own = builds;
+    p = buildWalkCase(store, id, hints).finally(() => own.delete(key));
+    builds.set(key, p);
+  }
+  return p;
+}
+
+async function buildWalkCase(store: Store, id: string, hints: WalkHints): Promise<Case | null> {
   let c = await store.cases.get(id);
   if (!c) c = await materialise(store, id);
 

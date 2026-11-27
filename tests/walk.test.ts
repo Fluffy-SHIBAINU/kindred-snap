@@ -65,6 +65,18 @@ describe("ensureWalkCase", () => {
     expect((await store.audit(ID)).length).toBe(auditLen);
   });
 
+  it("two concurrent calls for one new id in one process build it once, with no 1500 ms loser wait", async () => {
+    const store = await fresh();
+    const t0 = Date.now();
+    const [a, b] = await Promise.all([ensureWalkCase(store, ID, INCOME), ensureWalkCase(store, ID, INCOME)]);
+    expect(Date.now() - t0).toBeLessThan(1000); // one 150 ms lock wait; a caller that lost the lock would sleep 1500 ms more
+    expect(a!.state).toBe("ready_to_send");
+    expect(b).toEqual(a);
+    const audit = await store.audit(ID);
+    expect(audit.filter((e) => e.action === "case.created")).toHaveLength(1);
+    expect(audit.filter((e) => e.action === "consent.granted")).toHaveLength(1);
+  });
+
   it("returns the stored case unchanged for a non-walk id", async () => {
     const store = await fresh();
     const before = await store.cases.get("demo");
