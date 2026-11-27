@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import CasePage from "@/app/(caregiver)/case/[id]/page";
 import DonePage from "@/app/(caregiver)/case/[id]/done/page";
@@ -33,10 +34,18 @@ vi.mock("next/headers", () => ({
   }),
 }));
 vi.mock("next/server", async (original) => ({ ...(await original<typeof import("next/server")>()), connection: async () => {} }));
+// a Supabase session stood in for; undefined runs the real getViewer
+const session = vi.hoisted(() => ({ viewer: undefined as { id: string; role: "helper" | "staff" } | null | undefined }));
+vi.mock("@/lib/server/supabaseAuth", async (original) => {
+  const real = await original<typeof import("@/lib/server/supabaseAuth")>();
+  return { ...real, getViewer: async () => (session.viewer === undefined ? real.getViewer() : session.viewer) };
+});
 
 const COOKIE = "snap_visitor";
 const OWNER = "11111111-1111-4111-8111-111111111111";
 const OTHER = "22222222-2222-4222-8222-222222222222";
+/** The owner id a visitor cookie stands for: only its digest is ever stored. */
+const ownerOf = (cookie: string) => "visitor:" + createHash("sha256").update(cookie).digest("hex");
 const T0 = "2026-11-09T05:00:00.000Z";
 const SIGNED_OUT = ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "NEXT_PUBLIC_SUPABASE_ANON_KEY"];
 
@@ -107,14 +116,15 @@ async function investigate(id: string) {
 const stateOf = async (id: string) => (await store.cases.get(id))?.state;
 
 beforeEach(async () => {
+  session.viewer = undefined;
   process.env.STAFF_BYPASS = "0";
   process.env.DEMO_CONTROLS = "0";
   for (const k of SIGNED_OUT) delete process.env[k];
   await useStore(await seeded());
-  await putCase("case-ready", "SNAP-AAAAAA", "visitor:" + OWNER);
+  await putCase("case-ready", "SNAP-AAAAAA", ownerOf(OWNER));
   await investigate("case-ready");
-  await putCase("case-new", "SNAP-BBBBBB", "visitor:" + OWNER);
-  await putCase("case-parked", "SNAP-CCCCCC", "visitor:" + OWNER, { state: "needs_notice" });
+  await putCase("case-new", "SNAP-BBBBBB", ownerOf(OWNER));
+  await putCase("case-parked", "SNAP-CCCCCC", ownerOf(OWNER), { state: "needs_notice" });
 });
 
 afterEach(() => jar.clear());
@@ -181,10 +191,10 @@ describe("the owner", () => {
   it("sends, then deletes, as themselves", async () => {
     expect(await outcome(() => approveAndSendAction("case-ready"))).toBe("redirect:/case/case-ready/done");
     expect(await stateOf("case-ready")).toBe("sent");
-    expect((await store.actionsFor("case-ready")).every((a) => a.approvedBy === "visitor:" + OWNER)).toBe(true);
+    expect((await store.actionsFor("case-ready")).every((a) => a.approvedBy === ownerOf(OWNER))).toBe(true);
     expect(await outcome(() => deleteCaseAction("case-ready"))).toBe("redirect:/snap");
     expect((await store.cases.get("case-ready"))!.deletedAt).toBeTruthy();
-    expect((await store.audit("case-ready")).find((e) => e.action === "case.deleted")).toMatchObject({ actor: "visitor:" + OWNER });
+    expect((await store.audit("case-ready")).find((e) => e.action === "case.deleted")).toMatchObject({ actor: ownerOf(OWNER) });
   });
 });
 
@@ -218,6 +228,41 @@ describe("staff (STAFF_BYPASS, the existing rule)", () => {
   });
 });
 
+describe("a signed-in viewer (Supabase session)", () => {
+  it("owns the case they start and reads it; another account cannot", async () => {
+    session.viewer = { id: "u-jenna", role: "helper" };
+    as(null);
+    const id = /walk-[A-Za-z0-9]{6}/.exec(await outcome(() => createCaseFromUpload(form({ demo: "main" }))))![0];
+    expect(jar.size).toBe(0); // no visitor cookie for a signed-in viewer
+    expect(await outcome(() => IncomePage(props(id)))).toBe("rendered");
+    expect((await store.cases.get(id))!.ownerId).toBe("u-jenna");
+
+    session.viewer = { id: "u-other", role: "helper" };
+    expect(await outcome(() => IncomePage(props(id)))).toBe("not-found");
+    expect(await outcome(() => deleteCaseAction(id))).toBe("not-found");
+  });
+
+  it("with the staff profile role reads any case and changes none", async () => {
+    session.viewer = { id: "u-staff", role: "staff" };
+    as(null);
+    expect(await outcome(() => ResultPage(props("case-ready")))).toBe("rendered");
+    expect(await outcome(() => deleteCaseAction("case-ready"))).toBe("not-found");
+    expect((await store.cases.get("case-ready"))!.deletedAt).toBeUndefined();
+  });
+});
+
+describe("Supabase configured with no session (the deployed setting)", () => {
+  it("a visitor is still known by their cookie, and a stranger still refused", async () => {
+    // unreachable on purpose and no real key: a signed-out request must not need the network
+    process.env.NEXT_PUBLIC_SUPABASE_URL = "http://127.0.0.1:9";
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_test";
+    as(OWNER);
+    expect(await outcome(() => ResultPage(props("case-ready")))).toBe("rendered");
+    as(OTHER);
+    expect(await outcome(() => ResultPage(props("case-ready")))).toBe("not-found");
+  });
+});
+
 describe("the demo bill (a walk case)", () => {
   /** "Use the demo bill" as this browser; returns the walk id. */
   async function startWalk(): Promise<string> {
@@ -233,7 +278,9 @@ describe("the demo bill (a walk case)", () => {
     const visitor = jar.get(COOKIE);
     expect(visitor).toMatch(/^[0-9a-f-]{36}$/);
     expect(await outcome(() => IncomePage(props(id)))).toBe("rendered");
-    expect((await store.cases.get(id))!.ownerId).toBe("visitor:" + visitor);
+    expect((await store.cases.get(id))!.ownerId).toBe(ownerOf(visitor!));
+    // the cookie is the secret: nothing stored for the case carries it
+    expect(JSON.stringify([await store.cases.get(id), await store.audit(id), await store.documentsFor(id)])).not.toContain(visitor);
 
     as(OTHER);
     expect(await outcome(() => IncomePage(props(id)))).toBe("not-found");
@@ -248,7 +295,7 @@ describe("the demo bill (a walk case)", () => {
     as(OWNER);
     await useStore(await seeded());
     expect(await outcome(() => ResultPage(props(id, { income: "3756000", hh: "1" })))).toBe("rendered");
-    expect((await store.cases.get(id))!.ownerId).toBe("visitor:" + OWNER);
+    expect((await store.cases.get(id))!.ownerId).toBe(ownerOf(OWNER));
 
     as(null);
     await useStore(await seeded());

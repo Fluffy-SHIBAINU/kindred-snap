@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
+import { sha256 } from "@/lib/adapters/extract/fixture";
 import type { Store } from "@/lib/adapters/store/types";
 import { DEMO_CASE_ID } from "@/lib/caseFlow";
 import type { Actor, Case } from "@/lib/types";
@@ -20,10 +21,13 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 // a case waits weeks for the hospital's reply, so the browser keeps its id for a year
 const VISITOR_MAX_AGE = 60 * 60 * 24 * 365;
 
-/** "visitor:<uuid>" from this browser's cookie, or null. The prefix and the format check keep a forged cookie from naming any other owner. */
+/** The owner id a cookie stands for. Only the digest is stored, so an owner id read from a case row or the audit log cannot be replayed as the cookie. */
+const ownerIdOf = (secret: string) => "visitor:" + sha256(new TextEncoder().encode(secret));
+
+/** This browser's owner id, or null. The format check and the prefix keep a forged cookie from naming any other owner. */
 async function visitorId(): Promise<string | null> {
   const v = (await cookies()).get(VISITOR_COOKIE)?.value;
-  return v && UUID.test(v) ? "visitor:" + v : null;
+  return v && UUID.test(v) ? ownerIdOf(v) : null;
 }
 
 /** The viewer of this request, or null when it has neither a session nor a visitor id. */
@@ -42,7 +46,7 @@ export async function newCaseOwner(): Promise<string> {
   if (existing) return existing;
   const v = crypto.randomUUID();
   (await cookies()).set(VISITOR_COOKIE, v, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: VISITOR_MAX_AGE });
-  return "visitor:" + v;
+  return ownerIdOf(v);
 }
 
 /** The seeded showcase the landing links to ("See a case"): synthetic, so anyone may read it; only DEMO_CONTROLS changes it. */
