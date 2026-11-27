@@ -20,6 +20,16 @@ type SearchParams = Record<string, string | string[] | undefined>;
 
 export const isWalkId = (id: string) => WALK_ID.test(id);
 
+const WALK_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+export const newWalkId = () => "walk-" + Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => WALK_ALPHABET[b % 32]).join("");
+
+/** The income the sample case is shown with: the demo patient's 75% tier. */
+export const SAMPLE_INCOME: WalkHints = { incomeCents: 3756000, householdSize: 1 };
+
+/** A new private copy of the sample case for one visitor, at `screen`; the shared `demo` case is never handed out to send. */
+export const sampleCaseHref = (screen: "result" | "done" = "result", h: WalkHints = {}) =>
+  `/case/${newWalkId()}/${screen}${walkQuery({ ...SAMPLE_INCOME, ...h })}`;
+
 const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
 
 export function parseWalkHints(sp: SearchParams): WalkHints {

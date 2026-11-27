@@ -1,12 +1,15 @@
 "use server";
 
 import { notFound, redirect } from "next/navigation";
-import { approveAndSend, closeCase, demoClockFor } from "@/lib/caseFlow";
+import { approveAndSend, closeCase, DEMO_CASE_ID, demoClockFor } from "@/lib/caseFlow";
+import { demoControlsEnabled } from "@/lib/server/flags";
 import { getServerStore } from "@/lib/server/store";
-import { ensureWalkCase, isWalkId, walkQuery, type WalkHints } from "@/lib/server/walk";
+import { ensureWalkCase, isWalkId, sampleCaseHref, walkQuery, type WalkHints } from "@/lib/server/walk";
 
 /** "Draft the letters and send": the one approval, then every draft is sent (simulated) and the case is `sent`. */
 export async function approveAndSendAction(id: string, hints: WalkHints = {}): Promise<void> {
+  // the shared sample is never sent by a visitor (an old link to /case/demo): the send lands on a private copy instead; the /demo video controls keep it
+  if (id === DEMO_CASE_ID && !demoControlsEnabled()) redirect(sampleCaseHref("done", { sent: true }));
   const store = await getServerStore();
   if (isWalkId(id)) {
     // the walk case is rebuilt (on a cold instance) and sent in one go; the hint carries "sent" to every later page

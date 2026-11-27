@@ -4,10 +4,8 @@ import { redirect } from "next/navigation";
 import { buildSteps } from "@/lib/progress";
 import { extractDocument, fieldValue, fixtureKeyOf, HELPER, newCaseCode, now, storeDocument, uploadFrom } from "@/lib/server/cases";
 import { getServerStore } from "@/lib/server/store";
+import { newWalkId } from "@/lib/server/walk";
 import type { Case } from "@/lib/types";
-
-const WALK_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-const newWalkId = () => "walk-" + Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => WALK_ALPHABET[b % 32]).join("");
 
 const unreadableHref =(reason: string) => "/snap?unreadable=" + encodeURIComponent(reason);
 

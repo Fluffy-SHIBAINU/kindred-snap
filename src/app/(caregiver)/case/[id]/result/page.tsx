@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { ActionBar } from "@/components/snap/ActionBar";
 import { SimulatedBadge } from "@/components/snap/Badges";
 import { Clipping, Highlight } from "@/components/snap/Clipping";
+import { DemoNotice } from "@/components/snap/DemoNotice";
 import { DueAlert } from "@/components/snap/DueAlert";
 import { CheckIcon } from "@/components/snap/icons";
 import { MoneyBlock } from "@/components/snap/MoneyBlock";
@@ -111,9 +112,12 @@ export default async function ResultPage({ params, searchParams }: { params: Pro
       </div>
       <ActionBar>
         {actions.length > 0 ? (
-          <form action={approve}>
-            <PrimaryAction>{gap > 0 ? "Draft the letters and send" : "Check the help program"}</PrimaryAction>
-          </form>
+          <>
+            <form action={approve}>
+              <PrimaryAction>{gap > 0 ? "Draft the letters and send" : "Check the help program"}</PrimaryAction>
+            </form>
+            <DemoNotice>Demo: nothing is sent to a hospital.</DemoNotice>
+          </>
         ) : (
           <form action={close}>
             <PrimaryAction>Done for now</PrimaryAction>
