@@ -16,3 +16,13 @@ describe("SiteFooter", () => {
     expect(html).not.toContain("/staff");
   });
 });
+
+describe("home hero sample label", () => {
+  it("labels the preview a sample and the send line as a real-case promise", async () => {
+    const { default: ResultPreview } = await import("@/components/landing/ResultPreview");
+    const html = renderToStaticMarkup(createElement(ResultPreview));
+    expect(html).toContain("Sample case · Dorothy and Riverbend are demo data");
+    expect(html).toContain("In a real case, one tap sends both letters to");
+    expect(html).toContain("Simulated");
+  });
+});

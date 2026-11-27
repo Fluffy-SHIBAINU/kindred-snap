@@ -1,8 +1,8 @@
 /** DESIGN.md §6 badges: both appear wherever hospital or Medicare data is on screen. */
-export function DemoBadge() {
+export function DemoBadge({ children = "Demo partner · synthetic data" }: { children?: string }) {
   return (
     <span className="inline-flex min-h-7 w-max items-center rounded-pill bg-paper-3 px-2.5 text-sm font-medium text-ink">
-      Demo partner · synthetic data
+      {children}
     </span>
   );
 }

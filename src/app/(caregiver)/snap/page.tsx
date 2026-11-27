@@ -1,5 +1,6 @@
 import { Disclosure } from "@/components/private/Disclosure";
 import { ActionBar } from "@/components/snap/ActionBar";
+import { DemoNotice } from "@/components/snap/DemoNotice";
 import { CameraIcon } from "@/components/snap/icons";
 import { PRIMARY_CLASS } from "@/components/snap/PrimaryAction";
 import { TalkToPerson } from "@/components/snap/TalkToPerson";
@@ -25,7 +26,7 @@ export default async function SnapPage({ searchParams }: Props) {
       <div className="flex flex-col gap-4 px-6 pb-4">
         <h1>Take a Photo of the Bill</h1>
         <p>Lay it flat, whole page in the box, good light.</p>
-        {demoOnly && <p className="text-sm text-muted">Demo only: use the demo bill; do not upload a real bill.</p>}
+        {demoOnly && <DemoNotice />}
         {/* the guide is kept small, with the camera glyph of mocks M01 and PM0, so the private mode link and the row under it sit inside the first screen of a 390 by 844 phone */}
         <div role="img" aria-label="Camera view with a page guide" className="flex flex-col items-center gap-2 rounded-card bg-paper-3 p-4">
           <CameraIcon size={40} />
@@ -71,7 +72,7 @@ function Unreadable({ reason, demoOnly }: { reason: string; demoOnly: boolean })
         <p className="text-sm text-muted">The photo stays on this phone.</p>
         <p>Try again with the page flat on a table, in good light. Hold still.</p>
         <p>Nothing you&rsquo;ve done is lost.</p>
-        {demoOnly && <p className="text-sm text-muted">Demo only: use the demo bill; do not upload a real bill.</p>}
+        {demoOnly && <DemoNotice />}
       </div>
       <ActionBar>
         <UploadForm action={createCaseFromUpload} capture className={PRIMARY_CLASS} pendingText="Reading the bill…">

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SimulatedBadge } from "@/components/snap/Badges";
 import { SiteFooter } from "@/components/snap/SiteFooter";
+import { DemoNotice } from "@/components/snap/DemoNotice";
 import { Clipping } from "@/components/snap/Clipping";
 import { MoneyBlock } from "@/components/snap/MoneyBlock";
 import GroundCard from "@/components/landing/GroundCard";
@@ -36,6 +37,9 @@ export default function Landing() {
       </a>
 
       <main id="main" className="flex flex-col">
+        <div className={`${wrap} pt-4`}>
+          <DemoNotice>Demo: every connection is simulated.</DemoNotice>
+        </div>
         <section aria-labelledby="hero-h" className="relative flex items-center overflow-hidden lg:min-h-[900px]">
           <WindowDust />
           <div className={`${wrap} relative grid items-center gap-16 py-12 lg:grid-cols-[minmax(0,1fr)_390px] lg:py-7`}>
