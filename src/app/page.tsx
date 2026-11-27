@@ -53,7 +53,7 @@ export default function Landing() {
               </p>
               <div className="flex flex-wrap gap-4">
                 <a href="/snap" className={primary}>Snap a bill</a>
-                <a href="/sample" className={secondary}>See a case</a>
+                <a href="/sample" rel="nofollow" className={secondary}>See a case</a>
                 <a href="/demo-bill" download className={secondary}>Download a demo bill</a>
               </div>
               </div>
@@ -105,6 +105,7 @@ export default function Landing() {
                 {billClip}
                 <a
                   href="/sample"
+                  rel="nofollow"
                   className={`${btnShape} w-full bg-(--card-btn-bg) text-[color:var(--card-btn-ink)] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-current`}
                 >
                   Read the letter
