@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SimulatedBadge } from "@/components/snap/Badges";
+import { SiteFooter } from "@/components/snap/SiteFooter";
 import { Clipping } from "@/components/snap/Clipping";
 import { MoneyBlock } from "@/components/snap/MoneyBlock";
 import GroundCard from "@/components/landing/GroundCard";
@@ -110,14 +111,7 @@ export default function Landing() {
         </section>
       </main>
 
-      <footer className="border-t border-rule py-8">
-        <div className={`${wrap} flex flex-wrap items-center gap-6`}>
-          <span className="text-lg font-extrabold tracking-[-0.02em]">Kindred Snap</span>
-          <span className="grow" />
-          <a href="/staff" className={`inline-flex min-h-12 items-center font-medium underline hover:text-accent ${focus}`}>Staff workspace</a>
-          <span className="text-sm text-muted">Policy data: Waive atlas, CC BY 4.0.</span>
-        </div>
-      </footer>
+      <SiteFooter className={wrap} />
     </div>
   );
 }
