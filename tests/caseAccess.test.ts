@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import CasePage from "@/app/(caregiver)/case/[id]/page";
 import DonePage from "@/app/(caregiver)/case/[id]/done/page";
@@ -13,8 +14,11 @@ import WorkingPage from "@/app/(caregiver)/case/[id]/working/page";
 import PrivatePage from "@/app/(caregiver)/private/page";
 import { resumeByCode } from "@/app/(caregiver)/resume/actions";
 import { createCaseFromUpload } from "@/app/(caregiver)/snap/actions";
+import StaffCasePage from "@/app/staff/cases/[id]/page";
+import { GUEST_LINE, TalkToPerson } from "@/components/snap/TalkToPerson";
 import { SyntheticBlueButton } from "@/lib/adapters/claims/synthetic";
 import { MemoryStore, seedDemo, type Store } from "@/lib/adapters/store";
+import { DELETE_TEXT, DELETED_TEXT, deliverResponse, recordBasisLetter } from "@/lib/caseFlow";
 import { loadCaseFixture } from "@/lib/fixtures";
 import { riverbendPolicy, runInvestigation } from "@/lib/pipeline";
 import type { Case } from "@/lib/types";
@@ -333,6 +337,122 @@ describe("the seeded showcase (/case/demo: old links and the /resume example cod
     process.env.DEMO_CONTROLS = "1";
     expect(await outcome(() => approveAndSendAction("demo"))).toBe("redirect:/case/demo/done");
     expect((await store.actionsFor("demo")).every((a) => a.approvedBy === "demo-helper")).toBe(true);
+  });
+});
+
+describe("the guest line", () => {
+  // the page hands TalkToPerson `guest`; TalkToPerson prints the line
+  const guestOn = (tree: unknown) => textOf(tree).includes('"guest":true');
+
+  it("TalkToPerson prints the line only when told the case is a guest's", () => {
+    expect(textOf(TalkToPerson({ code: "SNAP-AAAAAA", guest: true }))).toContain(GUEST_LINE);
+    expect(textOf(TalkToPerson({ code: "SNAP-AAAAAA" }))).not.toContain(GUEST_LINE);
+  });
+
+  it("shows on a guest's own case screens, and nowhere else", async () => {
+    as(OWNER);
+    expect(guestOn(await ResultPage(props("case-ready")))).toBe(true);
+    expect(guestOn(await WorkingPage(props("case-parked")))).toBe(true);
+    expect(guestOn(await IncomePage(props("case-new")))).toBe(true);
+    await investigate("demo");
+    expect(guestOn(await ResultPage(props("demo")))).toBe(false); // the showcase is anyone's
+    session.viewer = { id: "u-jenna", role: "helper" };
+    expect(guestOn(await ResultPage(props("case-ready")))).toBe(false); // signed in
+    session.viewer = undefined;
+    process.env.STAFF_BYPASS = "1";
+    as(OTHER);
+    expect(guestOn(await ResultPage(props("case-ready")))).toBe(false); // staff, not the owner
+  });
+
+  it("signing in does not take a guest case from this browser, and does not move it to the account", async () => {
+    as(OWNER);
+    session.viewer = { id: "u-jenna", role: "helper" };
+    expect(await outcome(() => ResultPage(props("case-ready")))).toBe("rendered");
+    expect(await outcome(() => resumeByCode(form({ code: "SNAP-AAAAAA" })))).toBe("redirect:/case/case-ready/result");
+    expect((await store.cases.get("case-ready"))!.ownerId).toBe(ownerOf(OWNER));
+    as(null); // the same account in another browser
+    expect(await outcome(() => ResultPage(props("case-ready")))).toBe("not-found");
+  });
+});
+
+describe("delete: the words on the screen match what goes and what stays", () => {
+  it("an uploaded bill, sent, answered and recorded, then deleted", async () => {
+    as(null);
+    const bill = new File([new Uint8Array(readFileSync("fixtures/documents/bill-main.png"))], "bill-main.png", { type: "image/png" });
+    const upload = new FormData();
+    upload.set("document", bill);
+    const created = await outcome(() => createCaseFromUpload(upload));
+    const id = /^redirect:\/case\/([0-9a-f-]{36})\/income$/.exec(created)?.[1];
+    expect(id, created).toBeTruthy();
+    expect((await store.cases.get(id!))!.ownerId).toBe(ownerOf(jar.get(COOKIE)!));
+    const owner = jar.get(COOKIE)!;
+    as(OTHER);
+    expect(await outcome(() => IncomePage(props(id!)))).toBe("not-found");
+    as(owner);
+
+    await investigate(id!);
+    expect(await outcome(() => approveAndSendAction(id!))).toBe(`redirect:/case/${id}/done`);
+    const later = new Date(Date.now() + 40 * 86_400_000).toISOString();
+    expect(await deliverResponse(store, id!, later)).not.toBeNull();
+    const res = await recordBasisLetter(store, id!, { id: "demo-staff", role: "staff" }, later);
+
+    const page = textOf(await ResolvedPage(props(id!)));
+    expect(page).toContain(DELETE_TEXT);
+    expect(page).not.toMatch(/Delete everything|Only the case code|keeps only/);
+
+    expect(await outcome(() => deleteCaseAction(id!))).toBe("redirect:/snap");
+    // what the words say goes
+    expect(await store.documentsFor(id!)).toHaveLength(0);
+    expect(await store.findingsFor(id!)).toHaveLength(0);
+    expect(await store.responses.list({ caseId: id! })).toHaveLength(0);
+    // what the words say stays: the case existed, the savings amounts, the log of actions with file names
+    const tomb = (await store.cases.get(id!))!;
+    expect(tomb).toMatchObject({ id, deletedAt: expect.any(String) });
+    expect(tomb.patientName).not.toMatch(/Dorothy/);
+    expect(await store.resolutions.get(id!)).toMatchObject({ estimatedOpportunityCents: res.estimatedOpportunityCents, confirmedAdjustmentCents: res.confirmedAdjustmentCents });
+    const log = await store.audit(id!);
+    expect(log.find((e) => e.action === "document.uploaded")?.details).toMatchObject({ fileName: "bill-main.png" });
+    expect(log.some((e) => e.action === "case.deleted")).toBe(true);
+
+    const after = textOf(await ResolvedPage(props(id!)));
+    expect(after).toContain(DELETED_TEXT);
+    expect(after).not.toMatch(/Everything on this case|Only the case code/);
+  });
+});
+
+describe("staff views are logged", () => {
+  const views = async (id: string) => (await store.audit(id)).filter((e) => e.action === "case.viewed");
+
+  it("a staff view of someone else's case on the caregiver screens: who, which case, when, and nothing of the case", async () => {
+    process.env.STAFF_BYPASS = "1";
+    as(OTHER);
+    await ResultPage(props("case-ready"));
+    const [v, ...more] = await views("case-ready");
+    expect(more).toHaveLength(0);
+    expect(v).toMatchObject({ caseId: "case-ready", actor: "demo-staff", role: "staff", at: expect.any(String) });
+    expect(v.details).toBeUndefined();
+    expect(JSON.stringify(v)).not.toMatch(/Dorothy|SNAP-AAAAAA|Riverbend|466/);
+  });
+
+  it("names the signed-in staff member, and logs nothing for the owner or a refused viewer", async () => {
+    session.viewer = { id: "u-staff", role: "staff" };
+    as(null);
+    await ResultPage(props("case-ready"));
+    expect((await views("case-ready")).map((v) => v.actor)).toEqual(["u-staff"]);
+    session.viewer = undefined;
+    as(OWNER);
+    await ResultPage(props("case-ready"));
+    as(OTHER);
+    await outcome(() => ResultPage(props("case-ready")));
+    expect(await views("case-ready")).toHaveLength(1);
+  });
+
+  it("a view in the staff workspace", async () => {
+    process.env.STAFF_BYPASS = "1";
+    await StaffCasePage({ params: Promise.resolve({ id: "case-ready" }), searchParams: Promise.resolve({}) });
+    const [v] = await views("case-ready");
+    expect(v).toMatchObject({ caseId: "case-ready", actor: "demo-staff", role: "staff" });
+    expect(v.details).toBeUndefined();
   });
 });
 

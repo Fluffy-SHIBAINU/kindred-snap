@@ -29,7 +29,7 @@ export default async function IncomePage({ params, searchParams }: Props) {
   const sp = await searchParams;
   const error = typeof sp.error === "string" ? sp.error : undefined;
   const hints = parseWalkHints(sp);
-  const { c } = await caseAccess(id, hints);
+  const { c, guest } = await caseAccess(id, hints);
   if (c.state !== "created") redirect(hrefFor(c, hints));
 
   const first = firstName(c.patientName);
@@ -73,7 +73,7 @@ export default async function IncomePage({ params, searchParams }: Props) {
       </div>
       <ActionBar>
         <PrimaryAction form="income-form">Start the case</PrimaryAction>
-        <TalkToPerson code={c.code} />
+        <TalkToPerson code={c.code} guest={guest} />
       </ActionBar>
     </>
   );

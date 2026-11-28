@@ -43,3 +43,26 @@ test("See a case gives this browser its own copy, and a send on the shared showc
   await page.goto("/case/demo/result");
   await expect(page.getByRole("button", { name: "Draft the letters and send" })).toBeVisible();
 });
+
+test("a guest case reopens in the same browser after leaving it, and the browser keeps its id across restarts", async ({ page, context }) => {
+  const guestLine = "Without signing in, you can come back to this case only in this browser, on this device.";
+  await page.goto("/snap");
+  await page.getByRole("button", { name: "Use the demo bill" }).click();
+  await page.waitForURL(/\/case\/walk-[A-Za-z0-9]{6}\/income$/);
+  await expect(page.getByText(guestLine)).toBeVisible();
+  const url = page.url();
+
+  // leave: another page, then close the tab
+  await page.goto("/");
+  await page.close();
+
+  const back = await context.newPage();
+  await back.goto(url);
+  await expect(back.getByRole("heading", { level: 1, name: "Your Income" })).toBeVisible();
+  await expect(back.getByText(guestLine)).toBeVisible();
+
+  // a persistent cookie (a year), not a session one, so closing the browser does not lose the case either
+  const visitor = (await context.cookies()).find((c) => c.name === "snap_visitor");
+  expect(visitor?.httpOnly).toBe(true);
+  expect(visitor!.expires * 1000).toBeGreaterThan(Date.now() + 300 * 86_400_000);
+});

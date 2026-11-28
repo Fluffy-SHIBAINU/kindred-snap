@@ -26,7 +26,7 @@ const SUMMARY = TEXT_CLASS + " cursor-pointer list-none [&::-webkit-details-mark
 export default async function ResultPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const { id } = await params;
   const hints = parseWalkHints(await searchParams);
-  const { store, c } = await caseAccess(id, hints);
+  const { store, c, guest } = await caseAccess(id, hints);
   if (c.state !== "ready_to_send") redirect(hrefFor(c, hints));
 
   const [docs, findings, actions] = await Promise.all([store.documentsFor(id), store.findingsFor(id), store.actionsFor(id)]);
@@ -126,7 +126,7 @@ export default async function ResultPage({ params, searchParams }: { params: Pro
             <TextAction type="submit">Done for now</TextAction>
           </form>
         )}
-        <TalkToPerson code={c.code} />
+        <TalkToPerson code={c.code} guest={guest} />
       </ActionBar>
     </>
   );

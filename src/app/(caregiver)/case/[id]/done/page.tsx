@@ -23,7 +23,7 @@ export default async function DonePage({ params, searchParams }: { params: Promi
   const { id } = await params;
   await connection(); // the due-date and demo-clock reads below are request-time values
   const hints = parseWalkHints(await searchParams);
-  const { store, c: before, canWrite } = await caseAccess(id, hints);
+  const { store, c: before, canWrite, guest } = await caseAccess(id, hints);
   // delivering the simulated reply is a write, so only a viewer who may change the case triggers it
   const delivered = canWrite ? await deliverResponse(store, id, (await demoClockFor(store)).now()) : null;
   const letter = delivered ?? (await store.responses.list({ caseId: id }))[0] ?? null;
@@ -68,7 +68,7 @@ export default async function DonePage({ params, searchParams }: { params: Promi
       <ActionBar>
         {answered ? <PrimaryAction href={`/case/${id}/resolved${q}`}>See what they said</PrimaryAction> : <PrimaryAction href={`/case/${id}${q}`}>Back to my case</PrimaryAction>}
         {answered && <TextAction href={`/case/${id}${q}`}>Back to my case</TextAction>}
-        <TalkToPerson code={c.code} />
+        <TalkToPerson code={c.code} guest={guest} />
       </ActionBar>
     </>
   );

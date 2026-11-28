@@ -9,6 +9,6 @@ import { getServerStore } from "@/lib/server/store";
 export async function resumeByCode(formData: FormData): Promise<void> {
   const code = normalizeCode(String(formData.get("code") ?? ""));
   const c = code ? (await (await getServerStore()).listCases()).find((x) => x.code === code) : undefined;
-  if (!c || !canOpenCase(await caseViewer(), c)) redirect("/resume?notfound=1");
+  if (!c || !canOpenCase(await caseViewer(c.ownerId), c)) redirect("/resume?notfound=1");
   redirect(hrefFor(c));
 }
