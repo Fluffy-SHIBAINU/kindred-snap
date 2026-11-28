@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { ActionBar } from "@/components/snap/ActionBar";
 import { SimulatedBadge } from "@/components/snap/Badges";
 import { Clipping } from "@/components/snap/Clipping";
@@ -6,10 +6,11 @@ import { MoneyBlock } from "@/components/snap/MoneyBlock";
 import { PrimaryAction } from "@/components/snap/PrimaryAction";
 import { TalkToPerson } from "@/components/snap/TalkToPerson";
 import { TEXT_CLASS } from "@/components/snap/TextAction";
+import { DELETE_TEXT, DELETED_TEXT } from "@/lib/caseFlow";
 import { formatUsd } from "@/lib/money";
-import { firstName, getCase, hrefFor, shortDate } from "@/lib/server/cases";
-import { getServerStore } from "@/lib/server/store";
-import { ensureWalkCase, parseWalkHints } from "@/lib/server/walk";
+import { caseAccess } from "@/lib/server/access";
+import { firstName, hrefFor, shortDate } from "@/lib/server/cases";
+import { parseWalkHints } from "@/lib/server/walk";
 import { deleteCaseAction } from "./actions";
 
 export const instant = false;
@@ -20,9 +21,7 @@ const SUMMARY = TEXT_CLASS + " cursor-pointer list-none [&::-webkit-details-mark
 export default async function ResolvedPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const { id } = await params;
   const hints = parseWalkHints(await searchParams);
-  await ensureWalkCase(await getServerStore(), id, hints);
-  const { store, c } = await getCase(id);
-  if (!c) notFound();
+  const { store, c, canWrite, guest } = await caseAccess(id, hints);
   if (c.state !== "responded" && c.state !== "resolved" && c.state !== "closed") redirect(hrefFor(c, hints));
 
   const letter = (await store.responses.list({ caseId: id }))[0];
@@ -37,9 +36,7 @@ export default async function ResolvedPage({ params, searchParams }: { params: P
       <div className="flex flex-col gap-3 px-6 pb-2">
         <h1>{letter ? `${c.hospitalName} Fixed the Bill` : "Case Closed"}</h1>
         {deleted && (
-          <p>
-            Everything on this case was deleted. Only the case code <span className="font-mono">{c.code}</span> remains in the record.
-          </p>
+          <p>{DELETED_TEXT}</p>
         )}
         {letter && (
           <>
@@ -77,15 +74,14 @@ export default async function ResolvedPage({ params, searchParams }: { params: P
             )}
           </div>
         )}
-        {!deleted && (
+        {!deleted && canWrite && (
           <details className="w-full">
-            <summary className={SUMMARY}>Delete everything on this case</summary>
+            <summary className={SUMMARY}>Delete documents, findings and responses</summary>
             <form action={remove} className="mt-1 flex flex-col gap-3 rounded-card bg-paper-2 px-4 py-3">
-              <p className="text-sm">
-                This removes the documents, the letters and {firstName(c.patientName)}&rsquo;s details from this case. It cannot be undone. The record keeps only that case {c.code} existed.
-              </p>
+              <p className="text-sm">{DELETE_TEXT}</p>
+              <p className="text-sm">It cannot be undone.</p>
               <button type="submit" className="flex min-h-14 w-full items-center justify-center rounded-input bg-white px-5 font-medium text-ink shadow-[inset_0_0_0_1px_var(--color-ink)]">
-                Delete everything
+                Delete them
               </button>
             </form>
           </details>
@@ -93,7 +89,7 @@ export default async function ResolvedPage({ params, searchParams }: { params: P
       </div>
       <ActionBar>
         <PrimaryAction href="/snap">Snap another bill</PrimaryAction>
-        <TalkToPerson code={c.code} />
+        <TalkToPerson code={c.code} guest={guest} />
       </ActionBar>
     </>
   );

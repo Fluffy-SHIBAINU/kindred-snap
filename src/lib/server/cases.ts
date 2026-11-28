@@ -8,13 +8,9 @@ import { screenFor } from "@/lib/case/route";
 import type { CaseState } from "@/lib/case/state";
 import { toCents } from "@/lib/money";
 import { defaultPolicyFor, type PipelineDeps } from "@/lib/pipeline";
-import { getServerStore } from "@/lib/server/store";
 import { walkSuffix, type WalkHints } from "@/lib/server/walk";
 import { formatDate } from "@/lib/templates/facts";
-import type { Case, Document, ExtractedField } from "@/lib/types";
-
-/** Until Phase 6 there are no accounts: every caregiver action is the demo helper (the README says the demo is not private). */
-export const HELPER = { id: "demo-helper", role: "helper" } as const;
+import type { Actor, Document, ExtractedField } from "@/lib/types";
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // 32 unambiguous characters, so a byte mod 32 is unbiased
 export const CODE_PATTERN = /^SNAP-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/;
@@ -36,11 +32,6 @@ export const now = () => new Date().toISOString();
 
 export function pipelineDeps(): PipelineDeps {
   return { claims: new SyntheticBlueButton(), policyFor: defaultPolicyFor, now };
-}
-
-export async function getCase(id: string): Promise<{ store: Store; c: Case | null }> {
-  const store = await getServerStore();
-  return { store, c: await store.cases.get(id) };
 }
 
 /** The caregiver screen a case resumes at. `created` already holds its bill and waits for income, so it goes to /income rather than screenFor's /snap. */
@@ -87,9 +78,9 @@ export async function extractDocument(caseId: string, kind: ExtractKind, up: Upl
   return { ok: true, doc };
 }
 
-export async function storeDocument(store: Store, doc: Document): Promise<void> {
+export async function storeDocument(store: Store, doc: Document, actor: Actor): Promise<void> {
   await store.documents.put(doc);
-  await store.appendAudit(doc.caseId, { at: doc.uploadedAt, actor: HELPER.id, role: HELPER.role, action: "document.uploaded", details: { documentId: doc.id, kind: doc.kind, fileName: doc.fileName } });
+  await store.appendAudit(doc.caseId, { at: doc.uploadedAt, actor: actor.id, role: actor.role, action: "document.uploaded", details: { documentId: doc.id, kind: doc.kind, fileName: doc.fileName } });
 }
 
 export const fieldValue = (fields: ExtractedField[], key: string) => fields.find((f) => f.key === key)?.value;

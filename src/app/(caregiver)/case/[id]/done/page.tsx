@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { ActionBar } from "@/components/snap/ActionBar";
 import { SimulatedBadge } from "@/components/snap/Badges";
@@ -11,9 +11,9 @@ import { TextAction } from "@/components/snap/TextAction";
 import { deliverResponse, demoClockFor } from "@/lib/caseFlow";
 import { formatUsd } from "@/lib/money";
 import { estimateOpportunity } from "@/lib/savings";
-import { getCase, hrefFor, shortDate } from "@/lib/server/cases";
-import { getServerStore } from "@/lib/server/store";
-import { ensureWalkCase, parseWalkHints, walkSuffix } from "@/lib/server/walk";
+import { caseAccess } from "@/lib/server/access";
+import { hrefFor, shortDate } from "@/lib/server/cases";
+import { parseWalkHints, walkSuffix } from "@/lib/server/walk";
 import { formatDate } from "@/lib/templates/facts";
 
 export const instant = false;
@@ -23,10 +23,10 @@ export default async function DonePage({ params, searchParams }: { params: Promi
   const { id } = await params;
   await connection(); // the due-date and demo-clock reads below are request-time values
   const hints = parseWalkHints(await searchParams);
-  await ensureWalkCase(await getServerStore(), id, hints);
-  const { store, c: before } = await getCase(id);
-  if (!before) notFound();
-  const letter = (await deliverResponse(store, id, (await demoClockFor(store)).now())) ?? (await store.responses.list({ caseId: id }))[0] ?? null;
+  const { store, c: before, canWrite, guest } = await caseAccess(id, hints);
+  // delivering the simulated reply is a write, so only a viewer who may change the case triggers it
+  const delivered = canWrite ? await deliverResponse(store, id, (await demoClockFor(store)).now()) : null;
+  const letter = delivered ?? (await store.responses.list({ caseId: id }))[0] ?? null;
   const c = letter ? ((await store.cases.get(id)) ?? before) : before;
   // once the reply exists, every link carries "responded" so a cold instance rebuilds the case with it
   const linkHints = c.state === "responded" ? { ...hints, sent: true, responded: true } : hints;
@@ -68,7 +68,7 @@ export default async function DonePage({ params, searchParams }: { params: Promi
       <ActionBar>
         {answered ? <PrimaryAction href={`/case/${id}/resolved${q}`}>See what they said</PrimaryAction> : <PrimaryAction href={`/case/${id}${q}`}>Back to my case</PrimaryAction>}
         {answered && <TextAction href={`/case/${id}${q}`}>Back to my case</TextAction>}
-        <TalkToPerson code={c.code} />
+        <TalkToPerson code={c.code} guest={guest} />
       </ActionBar>
     </>
   );

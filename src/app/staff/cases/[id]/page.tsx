@@ -7,7 +7,7 @@ import { formatUsd } from "@/lib/money";
 import { requireStaff } from "@/lib/server/auth";
 import { demoControlsEnabled } from "@/lib/server/flags";
 import { getServerStore } from "@/lib/server/store";
-import { missingInformation, resolutionFor } from "@/lib/staff/caseDetail";
+import { DEMO_STAFF, missingInformation, resolutionFor } from "@/lib/staff/caseDetail";
 import { STATE_LABELS } from "@/lib/staff/dashboard";
 import { formatDate } from "@/lib/templates/facts";
 import type { Action, AuditEvent, Document, DocumentKind, Finding, FindingKind, ResponseLetter, Resolution, SourceRef } from "@/lib/types";
@@ -56,6 +56,8 @@ export default async function StaffCase({ params, searchParams }: { params: Prom
   const store = await getServerStore();
   const c = await store.cases.get(id);
   if (!c) notFound();
+  // every staff view of a case is logged: who, which case and when, nothing of the case itself
+  await store.appendAudit(id, { at: new Date().toISOString(), actor: DEMO_STAFF.id, role: "staff", action: "case.viewed" });
   const tab: Tab = (TABS.find(([t]) => t === sp.tab)?.[0] ?? "documents") as Tab;
   const [docs, findings, actions, responses, resolution, audit] = await Promise.all([
     store.documentsFor(id), store.findingsFor(id), store.actionsFor(id), store.responses.list({ caseId: id }), resolutionFor(store, c), store.audit(id),

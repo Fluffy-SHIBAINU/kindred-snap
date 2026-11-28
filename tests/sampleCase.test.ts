@@ -1,5 +1,15 @@
+import { createHash } from "node:crypto";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("next/server", async (orig) => ({ ...(await orig<object>()), connection: async () => {} }));
+// the request's cookies: /sample and the send give this browser its visitor id, and the case pages read it
+const jar = vi.hoisted(() => new Map<string, string>());
+vi.mock("next/headers", () => ({
+  cookies: async () => ({
+    get: (name: string) => (jar.has(name) ? { name, value: jar.get(name) } : undefined),
+    getAll: () => [...jar].map(([name, value]) => ({ name, value })),
+    set: (name: string, value: string) => void jar.set(name, value),
+  }),
+}));
 
 // redirect() throws in Next; here it throws the target so a test can read where the visitor was sent
 vi.mock("next/navigation", () => ({
@@ -11,6 +21,8 @@ import { approveAndSendAction } from "@/app/(caregiver)/case/[id]/result/actions
 import { getServerStore } from "@/lib/server/store";
 
 const g = globalThis as typeof globalThis & { __snapStore?: unknown; __snapSeeded?: unknown };
+/** The viewer this browser's cookie stands for (the owner id stores only its digest). */
+const visitor = () => ({ id: "visitor:" + createHash("sha256").update(jar.get("snap_visitor")!).digest("hex"), role: "helper" as const });
 
 async function redirectOf(p: Promise<unknown>): Promise<string> {
   try {
@@ -23,6 +35,7 @@ async function redirectOf(p: Promise<unknown>): Promise<string> {
 }
 
 beforeEach(() => {
+  jar.clear();
   g.__snapStore = undefined;
   g.__snapSeeded = undefined;
 });
@@ -57,19 +70,20 @@ describe("the sample entry (/sample)", () => {
 
     const res = await GET();
     expect(res.status).toBe(307);
+    expect(jar.get("snap_visitor")).toMatch(/^[0-9a-f-]{36}$/); // the copy belongs to this browser
     expect(res.headers.get("Cache-Control")).toBe("no-store");
     const a = parse(res.headers.get("Location")!);
     expect(isWalkId(a.id)).toBe(true);
     expect(a.screen).toBe("result");
-    expect((await ensureWalkCase(store, a.id, a.hints))!.state).toBe("ready_to_send"); // what the result page loads
+    expect((await ensureWalkCase(store, a.id, a.hints, visitor()))!.state).toBe("ready_to_send"); // what the result page loads
 
     const done = parse(await redirectOf(approveAndSendAction(a.id, a.hints)));
     expect(done).toMatchObject({ id: a.id, screen: "done" });
-    expect((await ensureWalkCase(store, done.id, done.hints))!.state).toBe("sent"); // what the done page loads
+    expect((await ensureWalkCase(store, done.id, done.hints, visitor()))!.state).toBe("sent"); // what the done page loads
 
     const b = parse((await GET()).headers.get("Location")!);
     expect(b.id).not.toBe(a.id);
-    expect((await ensureWalkCase(store, b.id, b.hints))!.state).toBe("ready_to_send");
+    expect((await ensureWalkCase(store, b.id, b.hints, visitor()))!.state).toBe("ready_to_send");
     expect(await store.cases.get("demo")).toEqual(demoBefore);
   });
 
@@ -80,6 +94,6 @@ describe("the sample entry (/sample)", () => {
     const [, , id, screen] = u.pathname.split("/");
     expect(isWalkId(id)).toBe(true);
     expect(screen).toBe("done");
-    expect((await ensureWalkCase(store, id, parseWalkHints(Object.fromEntries(u.searchParams))))!.state).toBe("sent");
+    expect((await ensureWalkCase(store, id, parseWalkHints(Object.fromEntries(u.searchParams)), visitor()))!.state).toBe("sent");
   });
 });

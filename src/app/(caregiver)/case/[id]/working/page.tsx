@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import type { ReactNode } from "react";
 import { ActionBar } from "@/components/snap/ActionBar";
@@ -15,9 +14,9 @@ import { screenFor } from "@/lib/case/route";
 import { WORKING_STATES } from "@/lib/case/state";
 import { formatUsd } from "@/lib/money";
 import { buildSteps } from "@/lib/progress";
-import { daysLeft, daysLeftText, getCase, hrefFor, shortDate } from "@/lib/server/cases";
-import { getServerStore } from "@/lib/server/store";
-import { ensureWalkCase, parseWalkHints, walkSuffix } from "@/lib/server/walk";
+import { caseAccess } from "@/lib/server/access";
+import { daysLeft, daysLeftText, hrefFor, shortDate } from "@/lib/server/cases";
+import { parseWalkHints, walkSuffix } from "@/lib/server/walk";
 import type { Case, Finding } from "@/lib/types";
 import { addNoticeAndResume, retryMedicare } from "./actions";
 
@@ -36,9 +35,7 @@ export default async function WorkingPage({ params, searchParams }: Props) {
   const error = typeof sp.error === "string" ? sp.error : undefined;
   const hints = parseWalkHints(sp);
   const q = walkSuffix(id, hints);
-  await ensureWalkCase(await getServerStore(), id, hints);
-  const { store, c } = await getCase(id);
-  if (!c) notFound();
+  const { store, c, guest } = await caseAccess(id, hints);
 
   const steps = c.steps.length ? c.steps : buildSteps(c.state);
   const current = steps.find((s) => s.status === "active" || s.status === "needs_you");
@@ -55,9 +52,9 @@ export default async function WorkingPage({ params, searchParams }: Props) {
   const next = screenFor(c.state) === "/working" ? null : hrefFor(c, hints);
 
   let body: ReactNode;
-  if (c.state === "needs_notice") body = <NeedsNotice c={c} feed={feed} notice={notice} />;
-  else if (c.state === "connector_unavailable") body = <ConnectorUnavailable c={c} feed={feed} notice={notice} />;
-  else if (c.state === "needs_review") body = <NeedsReview c={c} findings={await store.findingsFor(id)} q={q} />;
+  if (c.state === "needs_notice") body = <NeedsNotice c={c} feed={feed} notice={notice} guest={guest} />;
+  else if (c.state === "connector_unavailable") body = <ConnectorUnavailable c={c} feed={feed} notice={notice} guest={guest} />;
+  else if (c.state === "needs_review") body = <NeedsReview c={c} findings={await store.findingsFor(id)} q={q} guest={guest} />;
   else {
     body = (
       <>
@@ -73,7 +70,7 @@ export default async function WorkingPage({ params, searchParams }: Props) {
           {feed}
         </div>
         <ActionBar>
-          <TalkToPerson code={c.code} />
+          <TalkToPerson code={c.code} guest={guest} />
           {c.state === "ready_to_send" && <TextAction href={`/case/${id}/result${q}`}>Preview the result</TextAction>}
         </ActionBar>
       </>
@@ -101,10 +98,10 @@ function BillLine({ c }: { c: Case }) {
   );
 }
 
-type VariantProps = { c: Case; feed: ReactNode; notice: ReactNode };
+type VariantProps = { c: Case; feed: ReactNode; notice: ReactNode; guest: boolean };
 
 /** Mock E02: Medicare has no notice for this visit, so nothing is judged until one arrives. */
-function NeedsNotice({ c, feed, notice }: VariantProps) {
+function NeedsNotice({ c, feed, notice, guest }: VariantProps) {
   return (
     <>
       <div className="flex flex-col gap-4 px-6 pb-4">
@@ -126,14 +123,14 @@ function NeedsNotice({ c, feed, notice }: VariantProps) {
           <input type="hidden" name="caseId" value={c.id} />
           <TextAction type="submit">Connect Medicare (demo)</TextAction>
         </form>
-        <TalkToPerson code={c.code} />
+        <TalkToPerson code={c.code} guest={guest} />
       </ActionBar>
     </>
   );
 }
 
 /** Mock E05: the synthetic connector is down; the paper notice continues the case now, or the caregiver waits. */
-function ConnectorUnavailable({ c, feed, notice }: VariantProps) {
+function ConnectorUnavailable({ c, feed, notice, guest }: VariantProps) {
   return (
     <>
       <div className="flex flex-col gap-4 px-6 pb-4">
@@ -160,14 +157,14 @@ function ConnectorUnavailable({ c, feed, notice }: VariantProps) {
           <input type="hidden" name="caseId" value={c.id} />
           <button type="submit" className={TEXT_CLASS}>Wait and try later</button>
         </form>
-        <TalkToPerson code={c.code} />
+        <TalkToPerson code={c.code} guest={guest} />
       </ActionBar>
     </>
   );
 }
 
 /** Mock E04: a finding needs a billing specialist; the evidence is shown, nothing is asked of the hospital. */
-function NeedsReview({ c, findings, q }: { c: Case; findings: Finding[]; q: string }) {
+function NeedsReview({ c, findings, q, guest }: { c: Case; findings: Finding[]; q: string; guest: boolean }) {
   const open = findings.filter((f) => f.requiresReview && !f.staffStatus);
   return (
     <>
@@ -187,7 +184,7 @@ function NeedsReview({ c, findings, q }: { c: Case; findings: Finding[]; q: stri
       </div>
       <ActionBar>
         <PrimaryAction href={`/case/${c.id}${q}`}>Back to my case</PrimaryAction>
-        <TalkToPerson code={c.code} />
+        <TalkToPerson code={c.code} guest={guest} />
       </ActionBar>
     </>
   );

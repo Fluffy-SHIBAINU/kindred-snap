@@ -110,7 +110,15 @@ export async function recordBasisLetter(store: Store, caseId: string, actor: Act
   return res;
 }
 
-/** Removes everything personal on the case (the store keeps a tombstone and the audit log) and records who did it. */
+/**
+ * What deleteCase does, in the words the resolved screen uses. deleteCaseData removes the documents, findings, letters,
+ * consent and responses and blanks the patient's details; the case row, the resolution and the audit log (file names
+ * included) stay. tests/caseAccess.test.ts holds the words and the behaviour together.
+ */
+export const DELETE_TEXT = "This removes your documents, findings and responses. We keep a record that the case existed, the savings amounts and a log of actions, including file names.";
+export const DELETED_TEXT = "Your documents, findings and responses were deleted. We keep a record that the case existed, the savings amounts and a log of actions, including file names.";
+
+/** Removes what DELETE_TEXT says (the store keeps a tombstone, the resolution and the audit log) and records who did it. */
 export async function deleteCase(store: Store, caseId: string, actor: Actor, now: string): Promise<Case | null> {
   const tombstone = await store.deleteCaseData(caseId, now);
   if (tombstone) await store.appendAudit(caseId, { at: now, actor: actor.id, role: actor.role, action: "case.deleted" });

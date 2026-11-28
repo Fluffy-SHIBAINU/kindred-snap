@@ -2,7 +2,8 @@
 
 import { redirect } from "next/navigation";
 import { buildSteps } from "@/lib/progress";
-import { extractDocument, fieldValue, fixtureKeyOf, HELPER, newCaseCode, now, storeDocument, uploadFrom } from "@/lib/server/cases";
+import { newCaseOwner } from "@/lib/server/access";
+import { extractDocument, fieldValue, fixtureKeyOf, newCaseCode, now, storeDocument, uploadFrom } from "@/lib/server/cases";
 import { getServerStore } from "@/lib/server/store";
 import { newWalkId } from "@/lib/server/walk";
 import type { Case } from "@/lib/types";
@@ -11,7 +12,9 @@ const unreadableHref =(reason: string) => "/snap?unreadable=" + encodeURICompone
 
 /** The bill photo (or the demo bill) becomes a new case in `created`; an unreadable photo re-shows /snap with the reason. */
 export async function createCaseFromUpload(formData: FormData): Promise<void> {
-  // the demo bill is a walk case: it materialises from fixtures on whichever instance serves the next page
+  // this browser owns the case it starts; the cookie is set here because the pages that follow cannot write one
+  const ownerId = await newCaseOwner();
+  // the demo bill is a walk case: it materialises from fixtures, for this owner, on whichever instance serves the next page
   if (formData.get("demo") === "main") redirect(`/case/${newWalkId()}/income`);
   const up = await uploadFrom(formData);
   if (!up) redirect(unreadableHref("No photo or file was chosen."));
@@ -27,7 +30,7 @@ export async function createCaseFromUpload(formData: FormData): Promise<void> {
     state: "created",
     patientName: fieldValue(doc.fields, "patient_name") ?? "the patient",
     hospitalName: fieldValue(doc.fields, "hospital_name") ?? "Riverbend Community Hospital",
-    ownerId: HELPER.id,
+    ownerId,
     fixtureKey: fixtureKeyOf(up.bytes),
     consent: null,
     income: null,
@@ -39,7 +42,8 @@ export async function createCaseFromUpload(formData: FormData): Promise<void> {
   };
   const store = await getServerStore();
   await store.cases.put(c);
-  await store.appendAudit(id, { at, actor: HELPER.id, role: HELPER.role, action: "case.created", details: { code: c.code, fixtureKey: c.fixtureKey ?? null } });
-  await storeDocument(store, doc);
+  const actor = { id: ownerId, role: "helper" } as const;
+  await store.appendAudit(id, { at, actor: actor.id, role: actor.role, action: "case.created", details: { code: c.code, fixtureKey: c.fixtureKey ?? null } });
+  await storeDocument(store, doc, actor);
   redirect(`/case/${id}/income`);
 }

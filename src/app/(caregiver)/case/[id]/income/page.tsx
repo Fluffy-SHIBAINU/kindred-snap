@@ -1,13 +1,13 @@
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { ActionBar } from "@/components/snap/ActionBar";
 import { Field } from "@/components/snap/Field";
 import { DocumentIcon } from "@/components/snap/icons";
 import { PrimaryAction } from "@/components/snap/PrimaryAction";
 import { TalkToPerson } from "@/components/snap/TalkToPerson";
 import { TILE_CLASS, UploadForm } from "@/components/snap/UploadForm";
-import { firstName, getCase, hrefFor } from "@/lib/server/cases";
-import { getServerStore } from "@/lib/server/store";
-import { ensureWalkCase, parseWalkHints } from "@/lib/server/walk";
+import { caseAccess } from "@/lib/server/access";
+import { firstName, hrefFor } from "@/lib/server/cases";
+import { parseWalkHints } from "@/lib/server/walk";
 import { addIncomeDocument, setIncomeAndStart } from "./actions";
 
 /** The server action runs the whole investigation (four 400ms pauses plus work) inside the request. */
@@ -29,9 +29,7 @@ export default async function IncomePage({ params, searchParams }: Props) {
   const sp = await searchParams;
   const error = typeof sp.error === "string" ? sp.error : undefined;
   const hints = parseWalkHints(sp);
-  await ensureWalkCase(await getServerStore(), id, hints);
-  const { c } = await getCase(id);
-  if (!c) notFound();
+  const { c, guest } = await caseAccess(id, hints);
   if (c.state !== "created") redirect(hrefFor(c, hints));
 
   const first = firstName(c.patientName);
@@ -75,7 +73,7 @@ export default async function IncomePage({ params, searchParams }: Props) {
       </div>
       <ActionBar>
         <PrimaryAction form="income-form">Start the case</PrimaryAction>
-        <TalkToPerson code={c.code} />
+        <TalkToPerson code={c.code} guest={guest} />
       </ActionBar>
     </>
   );
